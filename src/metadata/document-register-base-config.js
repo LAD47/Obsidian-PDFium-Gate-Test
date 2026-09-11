@@ -2,7 +2,7 @@
 
 const PDF_DOCUMENT_REGISTER_BASE_VIEW_TYPE = 'pdfium-document-register';
 const PDF_DOCUMENT_REGISTER_STANDARD_BASE_PATH = 'PDF Dokumentregister.base';
-const PDF_DOCUMENT_REGISTER_STANDARD_VIEW_NAME = 'Dokumentregister';
+const PDF_DOCUMENT_REGISTER_STANDARD_VIEW_NAME = 'Document Register';
 
 function metadataDocumentRegisterYamlString(value) {
   return JSON.stringify(String(value == null ? '' : value));
@@ -20,9 +20,9 @@ function metadataDocumentRegisterBaseFields(schema) {
 function metadataDocumentRegisterStandardBaseYaml(schema) {
   const fields = metadataDocumentRegisterBaseFields(schema);
   const lines = [
-    '# PDFium Gate Test — standard Dokumentregister',
-    '# Opprettet av pluginen. Etter opprettelse er dette en vanlig bruker-eid Obsidian Base.',
-    '# Pluginen overskriver ikke senere endringer i denne filen.',
+    '# PDFium Gate Test — standard Document Register',
+    '# Created by the plugin. After creation this is a normal user-owned Obsidian Base.',
+    '# The plugin will not overwrite later changes to this file.', 
     'filters:',
     '  and:',
     `    - ${metadataDocumentRegisterYamlString('file.inFolder("PDF Metadata")')}`,

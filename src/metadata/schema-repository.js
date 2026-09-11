@@ -5,7 +5,8 @@ const METADATA_SCHEMA_REPOSITORY_CONTRACT_VERSION = '0.3';
 function createMetadataSchemaRepository({
   fileStore,
   schemaApi = (typeof metadataSchemaContract !== 'undefined' ? metadataSchemaContract : null),
-  safeWriteApi = (typeof safeConfigFileWriteContract !== 'undefined' ? safeConfigFileWriteContract : null)
+  safeWriteApi = (typeof safeConfigFileWriteContract !== 'undefined' ? safeConfigFileWriteContract : null),
+  defaultSchemaFactory = null
 }) {
   if (!schemaApi) throw new Error('metadata schema repository: schema contract missing');
   if (!safeWriteApi) throw new Error('metadata schema repository: safe config writer missing');
@@ -70,7 +71,8 @@ function createMetadataSchemaRepository({
     const current = await readSchema();
     if (current.exists) return { schema:metadataClone(current.schema), created:false, backupPath:null };
     await fileStore.ensureFolder(METADATA_SCHEMA_ROOT);
-    const result = await writeSchema(metadataDefaultSchema());
+    const defaults = typeof defaultSchemaFactory === 'function' ? defaultSchemaFactory() : metadataDefaultSchema();
+    const result = await writeSchema(defaults);
     return { schema:metadataClone(result.schema), created:true, backupPath:null };
   }
 

@@ -27,12 +27,18 @@ module.exports=async function verifyMetadataSchemaContract(){
   const schema=metadataDefaultSchema();
   const validation=metadataValidateSchema(schema);
   if(!validation.ok) fail(`default metadata schema invalid: ${validation.errors.join('; ')}`);
-  const expectedProperties=['document_date','document_time','sender','document_type','response_received','response_received_date','response_sent','response_sent_date'];
+  const expectedProperties=['document_date','document_time','sender','document_type','response_received','response_received_date','response_sent','response_sent_date','response_sent_link'];
   if(JSON.stringify(schema.fields.map(field=>field.property))!==JSON.stringify(expectedProperties)) fail('default metadata field order/properties drifted');
-  if(schema.fields.length!==8) fail(`default metadata field count drifted: ${schema.fields.length}`);
+  if(schema.fields.length!==9) fail(`default metadata field count drifted: ${schema.fields.length}`);
   if(schema.fields.find(field=>field.property==='document_time')?.type!=='time') fail('document_time is not canonical time type');
   if(schema.fields.find(field=>field.property==='response_received')?.type!=='boolean') fail('response_received is not boolean');
   if(schema.fields.find(field=>field.property==='response_sent_date')?.type!=='date') fail('response_sent_date is not date');
+  if(schema.fields.find(field=>field.property==='response_sent_link')?.type!=='link') fail('response_sent_link is not link');
+  if(schema.fields.find(field=>field.property==='response_sent_link')?.label!=='Sent response') fail('response_sent_link canonical label drifted');
+  if(schema.fields.find(field=>field.property==='document_time')?.label!=='Document time') fail('document_time canonical label drifted');
+  const secondCanonical=metadataDefaultSchema(key=>'SHOULD NOT BE USED');
+  if(JSON.stringify(secondCanonical)!==JSON.stringify(schema)) fail('metadata factory defaults unexpectedly depend on UI language');
+
 
   const reserved=metadataClone(schema);
   reserved.fields[0].property='pdfmeta_user_field';

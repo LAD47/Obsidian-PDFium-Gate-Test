@@ -5,13 +5,17 @@ const HIGHLIGHT_CATEGORIES_BACKUP_SCOPE = 'highlight-categories';
 const PDF_BACKUP_DIR_NAME = '.pdfium-backup';
 const DEFAULT_HIGHLIGHT_OPACITY = 0.45;
 const CATEGORY_ID_UUID_V4_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-const DEFAULT_CATEGORIES = [
-  { id: 'a49dde44-7872-4d89-b97e-027a6e689d94', name: 'Økonomi', color: '#FFD84D', shortcut: 1, enabled: true },
-  { id: '824e1c5a-7074-4232-99ce-e8b1306f20c5', name: 'Forskrift', color: '#6AA9FF', shortcut: 2, enabled: true },
-  { id: 'c44c3b4a-110a-4446-a7e9-e3662e1dc791', name: 'Faktum', color: '#72C472', shortcut: 3, enabled: true },
-  { id: 'ea31f6c8-88dc-4d32-882d-8d3dbdf1f84e', name: 'Dokumentasjon', color: '#B388EB', shortcut: 4, enabled: true },
-  { id: '1886403e-77b2-4474-a255-606acc8a5906', name: 'Må undersøkes', color: '#E57373', shortcut: 5, enabled: true }
-];
+const DEFAULT_CATEGORY_DEFINITIONS = Object.freeze([
+  Object.freeze({ id: 'a49dde44-7872-4d89-b97e-027a6e689d94', name: 'Economy', color: '#FFD84D', shortcut: 1, enabled: true }),
+  Object.freeze({ id: '824e1c5a-7074-4232-99ce-e8b1306f20c5', name: 'Regulation', color: '#6AA9FF', shortcut: 2, enabled: true }),
+  Object.freeze({ id: 'c44c3b4a-110a-4446-a7e9-e3662e1dc791', name: 'Fact', color: '#72C472', shortcut: 3, enabled: true }),
+  Object.freeze({ id: 'ea31f6c8-88dc-4d32-882d-8d3dbdf1f84e', name: 'Documentation', color: '#B388EB', shortcut: 4, enabled: true }),
+  Object.freeze({ id: '1886403e-77b2-4474-a255-606acc8a5906', name: 'Investigate', color: '#E57373', shortcut: 5, enabled: true })
+]);
+function createDefaultCategories() {
+  return DEFAULT_CATEGORY_DEFINITIONS.map(item => ({ ...item }));
+}
+const DEFAULT_CATEGORIES = createDefaultCategories();
 
 function categoryUuidV4() {
   if (typeof crypto !== 'undefined' && crypto && typeof crypto.randomUUID === 'function') return crypto.randomUUID();
@@ -43,7 +47,7 @@ function vaultJoin(...parts) {
 }
 
 function categoryLabel(category) {
-  const name = String(category?.name || category?.id || 'Kategori');
+  const name = String(category?.name || category?.id || 'Category');
   return name;
 }
 

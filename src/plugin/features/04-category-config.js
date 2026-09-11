@@ -360,7 +360,7 @@ class CategoryConfigFeature {
     const config = {
       version: 1,
       inherit,
-      categories: cleanFolder && inherit ? [] : deepClone(DEFAULT_CATEGORIES)
+      categories: cleanFolder && inherit ? [] : createDefaultCategories()
     };
     const yaml = serializeCategoryConfig(config);
     try { parseYaml(yaml); }

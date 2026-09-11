@@ -91,31 +91,33 @@ function metadataDefaultSchema() {
     responseReceived:'77760968-faf2-4eb7-8652-2f1bc28fc333',
     responseReceivedDate:'b004696a-6374-48f2-a1b0-36a5136aadf7',
     responseSent:'62b772bc-0330-4981-872c-3ba56c8195e5',
-    responseSentDate:'b28899d7-dbb1-42bd-bd30-509c0f5e0a27'
+    responseSentDate:'b28899d7-dbb1-42bd-bd30-509c0f5e0a27',
+    responseSentLink:'69606cae-7fd5-447f-b715-00b71a70a66a'
   };
   return {
     format_version: METADATA_SCHEMA_FORMAT_VERSION,
     revision: 1,
     fields: [
-      metadataMakeField({ id:ids.documentDate, property:'document_date', label:'Dokumentdato', type:'date' }),
-      metadataMakeField({ id:ids.documentTime, property:'document_time', label:'Tidspunkt', type:'time' }),
-      metadataMakeField({ id:ids.sender, property:'sender', label:'Avsender', type:'text' }),
+      metadataMakeField({ id:ids.documentDate, property:'document_date', label:'Document date', type:'date' }),
+      metadataMakeField({ id:ids.documentTime, property:'document_time', label:'Document time', type:'time' }),
+      metadataMakeField({ id:ids.sender, property:'sender', label:'Sender', type:'text' }),
       metadataMakeField({
         id:ids.documentType,
         property:'document_type',
-        label:'Dokumenttype',
+        label:'Document type',
         type:'select',
         config:{ options:[
-          metadataMakeOption('decision','Vedtak','4e10087e-4e09-4fab-9aa3-8f201af57f87'),
-          metadataMakeOption('letter','Brev','2041af74-6dfb-4093-a661-ff2a56dad11f'),
-          metadataMakeOption('report','Rapport','0fb750b8-8ead-4634-a65e-c2a864ff6ced'),
-          metadataMakeOption('memo','Notat','ca49c00e-d71b-4df2-b365-dc836229aa2f')
+          metadataMakeOption('decision','Decision','4e10087e-4e09-4fab-9aa3-8f201af57f87'),
+          metadataMakeOption('letter','Letter','2041af74-6dfb-4093-a661-ff2a56dad11f'),
+          metadataMakeOption('report','Report','0fb750b8-8ead-4634-a65e-c2a864ff6ced'),
+          metadataMakeOption('memo','Memo','ca49c00e-d71b-4df2-b365-dc836229aa2f')
         ] }
       }),
-      metadataMakeField({ id:ids.responseReceived, property:'response_received', label:'Svar mottatt', type:'boolean' }),
-      metadataMakeField({ id:ids.responseReceivedDate, property:'response_received_date', label:'Dato svar mottatt', type:'date' }),
-      metadataMakeField({ id:ids.responseSent, property:'response_sent', label:'Svar sendt', type:'boolean' }),
-      metadataMakeField({ id:ids.responseSentDate, property:'response_sent_date', label:'Dato svar sendt', type:'date' })
+      metadataMakeField({ id:ids.responseReceived, property:'response_received', label:'Response received', type:'boolean' }),
+      metadataMakeField({ id:ids.responseReceivedDate, property:'response_received_date', label:'Response received date', type:'date' }),
+      metadataMakeField({ id:ids.responseSent, property:'response_sent', label:'Response sent', type:'boolean' }),
+      metadataMakeField({ id:ids.responseSentDate, property:'response_sent_date', label:'Response sent date', type:'date' }),
+      metadataMakeField({ id:ids.responseSentLink, property:'response_sent_link', label:'Sent response', type:'link' })
     ]
   };
 }

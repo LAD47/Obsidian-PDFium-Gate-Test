@@ -29,7 +29,7 @@ module.exports=function verifyDocumentInfoContract(){
   if(!timeOk.ok||timeOk.value!=='14:35') fail('DocumentInfo time normalization failed');
 
   const selectOk=registry.parseNormalizeValidate(byProperty.document_type,'decision',{});
-  if(!selectOk.ok||selectOk.value!=='decision'||registry.format(byProperty.document_type,'decision',{})!=='Vedtak') fail('DocumentInfo select machine-value/label contract failed');
+  if(!selectOk.ok||selectOk.value!=='decision'||registry.format(byProperty.document_type,'decision',{})!=='Decision') fail('DocumentInfo select machine-value/label contract failed');
 
   const feature=read('src/plugin/features/15-document-info.js');
   const view=read('src/main/pdfium-gate-view.js');

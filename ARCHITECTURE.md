@@ -545,3 +545,15 @@ Visible category validation/errors use `I18nService`; technical diagnostic paylo
 
 ## i18n UI gate extension (0.1.216)
 Command names are user-facing presentation and are translated; command IDs remain stable machine identifiers. Migrated modal/button/notice surfaces are protected by `check:i18n-ui`. Diagnostic payload keys remain stable technical English.
+
+## 0.1.218 canonical-English factory boundary
+
+Factory defaults are canonical project data, not translated UI. New root category configuration, newly created/reset metadata schemas, and newly generated standard Base presentation text are always created in English, regardless of the active UI language. This keeps persisted defaults deterministic across languages and installations.
+
+The five default category names are `Economy`, `Regulation`, `Fact`, `Documentation`, and `Investigate`. Category UUIDs remain the permanent identity and names remain freely user-editable after creation.
+
+The default metadata schema is also canonical English. Its properties and field UUIDs are stable, while human labels remain user-editable after creation. 0.1.218 adds the ninth standard field `response_sent_link` (`Sent response`, type `link`) without changing the identities of the existing eight fields.
+
+UI language never rewrites category names, schema labels/options, or an existing Base. Translator locale files therefore contain UI presentation only; factory defaults are deliberately absent from i18n resources.
+
+UI-language changes remain reload-consistent. The public Obsidian plugin API registers command display names at command registration time and provides no supported command-rename refresh operation. The plugin therefore persists `uiLanguage` but does not partially mutate the running `I18nService`; the Settings text explicitly requires plugin/Obsidian reload for a consistent UI and Command Palette language.

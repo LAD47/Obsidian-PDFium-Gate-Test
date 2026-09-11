@@ -37,3 +37,9 @@ A locale does not need 100% coverage to be useful. Missing keys fall back to Eng
 
 ### Commands and diagnostics
 Translate Command Palette display names and user-facing diagnostic labels/buttons. Never translate command IDs, JSON diagnostic keys, UUIDs, paths, `pdfmeta_*` properties, or canonical machine values.
+
+## Factory defaults and persistent labels
+
+Factory defaults are **not translation resources**. New default category names, metadata field labels/options, and standard Base presentation text are canonical English regardless of UI language. Locale files should not contain `factory.*` keys.
+
+After creation, category names and metadata labels/options are user-owned persistent data and may be edited freely by the user. Translation changes must never rewrite them or change UUIDs, metadata property names, option machine values, or other stable identifiers.

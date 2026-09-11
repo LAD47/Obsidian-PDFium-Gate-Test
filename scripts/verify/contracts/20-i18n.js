@@ -80,6 +80,19 @@ module.exports=function verifyI18nContract(){
   for(const key of ['category.validation.localInvalidFormat','category.validation.effectiveMax','category.notice.editorStopped']) if(!categoryConfig.includes(key)) fail(`category validation/notice translation key missing: ${key}`);
   for(const key of ['commands.createCategoryConfig','commands.editFolderCategories','commands.showEffectiveCategoryConfig']) if(!lifecycle.includes(key)) fail(`category command not localized: ${key}`);
   if(!diagnosticModals.includes("t('category.effective.title')")||!diagnosticModals.includes("t('category.effective.folder'")) fail('effective category config modal is not localized');
+  const categoryFoundation=read('src/core/pdf-link-category-foundation.js');
+  const schemaContractSource=read('src/metadata/schema-contract.js');
+  const schemaRepositorySource=read('src/metadata/schema-repository.js');
+  const baseConfigSource=read('src/metadata/document-register-base-config.js');
+  const documentRegisterFeature=read('src/plugin/features/18-document-register-bases.js');
+  if(!categoryFoundation.includes('function createDefaultCategories()')||!categoryConfig.includes('createDefaultCategories()')||categoryFoundation.includes('factory.category.')) fail('category factory defaults must be canonical English and independent of UI language');
+  if(!schemaContractSource.includes('function metadataDefaultSchema()')||!schemaRepositorySource.includes('defaultSchemaFactory = null')||!read('src/plugin/features/14-metadata-schema.js').includes('metadataDefaultSchema()')||schemaContractSource.includes('factory.metadata.')) fail('metadata factory defaults must be canonical English at creation/reset time');
+  if(!baseConfigSource.includes('metadataDocumentRegisterStandardBaseYaml(schema)')||!documentRegisterFeature.includes('metadataDocumentRegisterStandardBaseYaml(schema)')||baseConfigSource.includes('factory.base.')) fail('standard Base factory text must be canonical English');
+  for(const localeName of ['en','nb']) {
+    const locale=JSON.parse(read(`src/i18n/${localeName}.json`));
+    if(Object.keys(locale).some(key=>key.startsWith('factory.'))) fail(`factory defaults leaked into ${localeName} UI translation keys`);
+  }
+  if(!settings.includes('settings.language.reloadNote')||settings.includes('setRequestedLanguage(')) fail('language change must remain reload-consistent rather than partially switching runtime UI');
 
   for(const key of Object.keys(resolver)) delete global[key];
   return {
@@ -104,6 +117,9 @@ module.exports=function verifyI18nContract(){
     metadataSchemaManagerLocalized:true,
     documentRegisterLocalized:true,
     diagnosticModalsLocalized:true,
-    benchmarkUiLocalized:true
+    benchmarkUiLocalized:true,
+    canonicalEnglishFactoryDefaults:true,
+    persistedLabelsRemainUserOwned:true,
+    reloadConsistentLanguageSwitch:true
   };
 };

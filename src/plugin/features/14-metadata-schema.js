@@ -3,7 +3,8 @@
 class MetadataSchemaFeature {
   async initializeMetadataSchema() {
     this.metadataSchemaRepository = createMetadataSchemaRepository({
-      fileStore:this.obsidianAdapterFileStore
+      fileStore:this.obsidianAdapterFileStore,
+      defaultSchemaFactory:() => metadataDefaultSchema()
     });
     try {
       const loaded = await this.metadataSchemaRepository.loadOrCreateDefault();

@@ -181,3 +181,34 @@ Rollback/comparison: 0.1.199 is the benchmark baseline. 0.1.200 is intentionally
 
 ## 0.1.216 — command/button i18n sweep
 All PDF Command Palette names, diagnostics header, metadata-field editor, Document register, diagnostic dialogs and benchmark/test UI are routed through i18n. `check:i18n-ui` now protects these migrated surfaces.
+
+## 0.1.217 — localized factory defaults
+
+The internationalization layer now also owns the human-readable defaults created for **new** persistent configuration artifacts. New category configuration, a newly created/reset metadata schema, and newly generated standard Base presentation text use the active UI language at creation time. Stable UUIDs, metadata properties and machine values are unchanged.
+
+Existing persistent labels are intentionally not rewritten when the UI language changes. Language changes continue to require a plugin/Obsidian reload so the Settings UI, menus and Command Palette cannot end up in a partially switched state.
+
+
+## 0.1.218 — canonical English factory defaults + Sent response link
+
+0.1.218 supersedes the 0.1.217 experiment where persistent factory labels followed the active UI language. Factory-created persistent data is now deterministic and always English, independent of UI language. Existing user-owned category/schema/Base files are not migrated or rewritten.
+
+Canonical default categories:
+- Economy
+- Regulation
+- Fact
+- Documentation
+- Investigate
+
+Canonical default metadata schema now has nine fields:
+- `document_date` — Document date — `date`
+- `document_time` — Document time — `time`
+- `sender` — Sender — `text`
+- `document_type` — Document type — `select` (`decision`, `letter`, `report`, `memo`)
+- `response_received` — Response received — `boolean`
+- `response_received_date` — Response received date — `date`
+- `response_sent` — Response sent — `boolean`
+- `response_sent_date` — Response sent date — `date`
+- `response_sent_link` — Sent response — `link`
+
+The new field has its own permanent UUID; all existing field UUIDs/properties and document-type machine values are unchanged.

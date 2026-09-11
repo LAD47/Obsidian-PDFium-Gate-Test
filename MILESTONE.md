@@ -367,3 +367,34 @@ No PDF-runtime, metadata persistence, DocumentRecords, cache/startup, or Main Br
 
 ## 0.1.216 test milestone
 Full command/button audit follow-up. English/Norwegian i18n expanded across remaining high-visibility UI surfaces; no persistent metadata or PDF-runtime contract change.
+
+# 0.1.217 — localized factory defaults + reload-consistent language switching
+
+0.1.217 closes the persistent-default gap found during the 0.1.216 menu audit.
+
+- New root highlight-category configs use the active UI language for factory category names while retaining the same permanent UUIDs, colors and shortcuts.
+- A newly created metadata schema uses the active UI language for field/option labels while retaining the same field UUIDs, properties and machine option values.
+- Explicit metadata-schema reset regenerates factory labels in the currently active UI language; this is an explicit destructive/reset action, not automatic language migration.
+- Newly generated standard Document Register Base comments/view text use the active UI language. Existing user-owned Base files are never rewritten.
+- The canonical Base path remains `PDF Dokumentregister.base`; path identity is not made locale-dependent.
+- Existing category names, metadata labels/options and Base contents remain user-owned and are never auto-translated on language change.
+- UI-language switching deliberately remains reload-based so Command Palette names and open UI surfaces cannot drift into a mixed-language runtime state.
+- English remains canonical fallback; Norwegian Bokmål remains complete.
+
+No PDF runtime, annotation, selection, metadata-record, DocumentRecords, cache/startup, or Main Bridge execution contract changes.
+
+
+# 0.1.218 — canonical English persistent defaults
+
+0.1.218 replaces the localized-factory experiment from 0.1.217 with a simpler long-term contract for open-source/multilingual use.
+
+- Factory category names are always English: Economy, Regulation, Fact, Documentation, Investigate.
+- Factory metadata labels/options are always English regardless of UI language.
+- `document_time` canonical label is `Document time`.
+- The standard schema adds `response_sent_link` / `Sent response` with type `link` and a new permanent UUID.
+- Existing eight field UUIDs/properties are unchanged.
+- Existing category files, schema files and user-owned Base files are never automatically rewritten.
+- Factory translation keys are removed from locale files; i18n resources now own UI presentation only.
+- Standard Base generated presentation text is canonical English; the existing canonical Base path remains unchanged for compatibility during the test phase.
+
+No PDF runtime, annotation, selection, DocumentRecords, cache/startup or Main Bridge execution contract changes.

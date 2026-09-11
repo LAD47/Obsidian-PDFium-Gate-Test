@@ -33,7 +33,7 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   const presented=presentation.metadataBasePresentFrontmatter(sourceFrontmatter,schema,settings,registry);
   if(!presented.ok) fail('Bases presentation rejected canonical PDF metadata frontmatter');
   const byProperty=new Map(presented.fields.map(item=>[item.property,item]));
-  if(byProperty.get('document_type')?.raw!=='letter'||byProperty.get('document_type')?.display!=='Brev') fail('Bases select machine-value -> schema-label mapping failed');
+  if(byProperty.get('document_type')?.raw!=='letter'||byProperty.get('document_type')?.display!=='Letter') fail('Bases select machine-value -> schema-label mapping failed');
   if(byProperty.get('document_date')?.display!=='17.03.2016') fail('Bases date presentation did not reuse regional formatter');
   if(byProperty.get('response_received')?.display!=='Ja') fail('Bases boolean presentation did not reuse regional formatter');
   if(JSON.stringify(sourceFrontmatter)!==before) fail('Bases presentation mutated persisted metadata values');
@@ -65,7 +65,9 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   if(baseConfig.PDF_DOCUMENT_REGISTER_BASE_VIEW_TYPE!=='pdfium-document-register') fail('standard Dokumentregister custom view type drifted');
   if(!standardBaseYaml.includes('file.inFolder(\\"PDF Metadata\\")')||!standardBaseYaml.includes('pdfmeta_type == \\"pdf_document\\"')) fail('standard Dokumentregister Base does not scope query to canonical PDF metadata records');
   if(!standardBaseYaml.includes('type: pdfium-document-register')||!standardBaseYaml.includes('property: document_date')||!standardBaseYaml.includes('direction: DESC')) fail('standard Dokumentregister Base lacks custom view/default newest-first sort');
-  if(!standardBaseYaml.includes('displayName: "Dokumentdato"')||!standardBaseYaml.includes('displayName: "Status"')||!standardBaseYaml.includes('displayName: "PDF"')) fail('standard Dokumentregister Base lacks human display names');
+  if(!standardBaseYaml.includes('displayName: "Document date"')||!standardBaseYaml.includes('displayName: "Status"')||!standardBaseYaml.includes('displayName: "PDF"')) fail('standard Document Register Base lacks canonical English human display names');
+  const ignoredLocalizedBase=baseConfig.metadataDocumentRegisterStandardBaseYaml(schema,()=> 'SHOULD NOT BE USED');
+  if(ignoredLocalizedBase!==standardBaseYaml) fail('standard Base factory unexpectedly depends on UI language');
   if(standardBaseYaml.includes('pdfmeta_id')||standardBaseYaml.includes('record filename')) fail('standard Dokumentregister Base exposes technical identity fields');
   const hiddenBaseYaml=baseConfig.metadataDocumentRegisterStandardBaseYaml(hidden);
   if(hiddenBaseYaml.includes('  sender:')||hiddenBaseYaml.includes('      - sender')) fail('standard Dokumentregister Base ignores show_in_default_base=false');
@@ -137,7 +139,7 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   if(!featureSource.includes("name:this.i18n.t('documentRegister.viewName')")||!featureSource.includes('registerBasesView(')) fail('custom Bases registration feature missing');
   if(!featureSource.includes('this.ports.getMetadataSchemaSnapshot()')||!featureSource.includes('this.ports.resolveDocumentRecordPdfPath(')||!featureSource.includes('this.ports.saveDocumentMetadataRecordValues(')||!featureSource.includes('this.ports.relinkMissingDocumentRecord(')) fail('custom Bases feature does not use explicit schema/identity/save/relink ports');
   if(featureSource.includes('obsidianFrontmatterAdapter')||featureSource.includes('processFrontMatter(')||featureSource.includes('modifyText(')) fail('custom Bases feature unexpectedly mutates metadata or overwrites Base files');
-  if(!featureSource.includes('metadataDocumentRegisterStandardBaseYaml(schema)')||!featureSource.includes('this.obsidianVaultWriteAdapter.createText(path, yaml)')) fail('standard Dokumentregister Base create-only path missing');
+  if(!featureSource.includes('metadataDocumentRegisterStandardBaseYaml(schema)')||!featureSource.includes('this.obsidianVaultWriteAdapter.createText(path, yaml)')) fail('canonical English standard Document Register Base create-only path missing');
   if(!featureSource.includes("name:this.i18n.t('commands.openDocumentRegister')")||!featureSource.includes("getLeaf?.('tab')")||!featureSource.includes('await leaf.openFile(ensured.file)')) fail('standard Dokumentregister open command missing');
   const existingGuard=featureSource.indexOf('if (existing)');
   const createBase=featureSource.indexOf('this.obsidianVaultWriteAdapter.createText(path, yaml)');
@@ -187,7 +189,7 @@ module.exports=function verifyDocumentRegisterBasesContract(){
     booleanFilter:true,
     textContainsFilter:true,
     headerFilterDoesNotWriteNativeBasesFilters:true,
-    humanStatusAndPdfActions:viewSource.includes("text:activeRecord ? 'Aktiv' : 'Mangler'")&&viewSource.includes("text:'Åpne'"),
+    humanStatusAndPdfActions:viewSource.includes("text:activeRecord ? this.t('common.active') : this.t('common.missing')")&&viewSource.includes("text:this.t('common.open')"),
     multilingualUiRoadmapDocumented:read('MILESTONE.md').includes('Future localization reminder')
   };
 };

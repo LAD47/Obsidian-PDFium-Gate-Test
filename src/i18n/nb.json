@@ -53,7 +53,7 @@
   "validation.separator.dot": "punktum",
   "validation.separator.comma": "komma",
   "commands.showDocumentInfo": "PDF: Vis dokumentinformasjon",
-  "settings.language.reloadNote": "Trer fullt i kraft etter at pluginen eller Obsidian lastes på nytt.",
+  "settings.language.reloadNote": "Last pluginen eller Obsidian på nytt for å bruke språket konsekvent i hele grensesnittet og Command Palette.",
   "common.yes": "Ja",
   "common.no": "Nei",
   "settings.pdf.section": "PDF-visning og kopiering",

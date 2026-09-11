@@ -84,3 +84,12 @@ Before adding a third first-class locale, the remaining user-facing sections abo
 
 ## 0.1.216 follow-up
 The 0.1.215 button/command audit was migrated in 0.1.216: all PDF command display names plus the diagnostics header, metadata-field editor, Document register, diagnostic modals and benchmark UI are now routed through i18n and protected by the hard-coded UI gate.
+
+## 0.1.217 follow-up
+
+The persistent factory-default gap identified after 0.1.216 is closed for category defaults, metadata schema field/option labels, and standard Base presentation text. Factory labels are localized only at creation/reset time; existing persisted labels remain user-owned and are not auto-translated. UI language remains reload-consistent to avoid stale Command Palette registration names in a partially switched runtime.
+
+
+## 0.1.218 factory-policy update
+
+The 0.1.217 localized-factory experiment is superseded. Factory defaults are now canonical English and are not part of runtime i18n. Locale files own UI presentation only. Existing persistent labels remain user-owned and are never rewritten by language changes.
