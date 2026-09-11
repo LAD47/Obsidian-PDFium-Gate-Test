@@ -1,0 +1,775 @@
+.pdfium-gate-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--background-primary);
+}
+.pdfium-gate-bar {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.35;
+}
+.pdfium-gate-title { font-weight: 600; }
+.pdfium-gate-detail {
+  margin-top: 2px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pdfium-gate-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  contain: layout paint size;
+}
+.pdfium-gate-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: white;
+}
+.pdfium-gate-message {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%);
+  max-width: 75%;
+  padding: 10px 14px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* 0.0.29 control marker: intentionally loud and unmistakable. */
+.pdfium-gate-version-banner {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 18px 10px;
+  border-top: 5px solid #facc15;
+  border-bottom: 5px solid #facc15;
+  background: #b91c1c;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.28);
+}
+.pdfium-gate-version-main {
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.pdfium-gate-version-hint {
+  margin-top: 5px;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+
+.pdfium-gate-focus-diagnostic-button {
+  margin-top: 10px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #7f1d1d;
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+.pdfium-gate-focus-diagnostic-button:hover {
+  background: #fef2f2;
+}
+.pdfium-gate-focus-diagnostic-button:focus-visible {
+  outline: 3px solid #fde047;
+  outline-offset: 2px;
+}
+
+/* 0.0.42 category editor */
+.pdfium-category-editor .setting-item-description {
+  user-select: text;
+}
+.pdfium-category-swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--background-modifier-border);
+  vertical-align: middle;
+  flex: 0 0 16px;
+}
+.pdfium-category-edit-box {
+  margin: 10px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+}
+.pdfium-category-edit-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.pdfium-category-edit-box input[type="color"] {
+  width: 46px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 5px;
+  background: var(--background-primary);
+}
+
+
+/* 0.1.112: advanced diagnostics chrome is opt-in. */
+.pdfium-gate-diagnostics-hidden {
+  display: none !important;
+}
+
+
+/* 0.1.132: compact category editor with drill-down pages and folder picker */
+.pdfium-category-editor {
+  max-width: 720px;
+}
+.pdfium-category-config-path {
+  margin-top: -6px;
+  margin-bottom: 12px;
+}
+.pdfium-category-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+.pdfium-category-section-heading h3 {
+  margin: 0;
+}
+.pdfium-category-compact-row,
+.pdfium-category-nav-row,
+.pdfium-category-folder-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 7px 10px;
+  margin: 4px 0;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: var(--background-primary);
+  cursor: pointer;
+}
+.pdfium-category-compact-row:hover,
+.pdfium-category-nav-row:hover,
+.pdfium-category-folder-row:hover {
+  background: var(--background-modifier-hover);
+}
+.pdfium-category-compact-row.has-error {
+  border-color: var(--text-error);
+}
+.pdfium-category-compact-text {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.pdfium-category-compact-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pdfium-category-inline-action {
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  font-size: var(--font-ui-smaller);
+  white-space: nowrap;
+}
+.pdfium-category-chevron {
+  flex: 0 0 auto;
+  font-size: 18px;
+  color: var(--text-muted);
+}
+.pdfium-category-page-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.pdfium-category-page-header h2 {
+  margin: 0;
+}
+.pdfium-category-page-header button {
+  white-space: nowrap;
+}
+.pdfium-category-validation-summary,
+.pdfium-category-warning {
+  margin: 10px 0;
+  padding: 9px 11px;
+  border-radius: var(--radius-s);
+}
+.pdfium-category-validation-summary {
+  border: 1px solid var(--text-error);
+  background: var(--background-secondary);
+  color: var(--text-error);
+}
+.pdfium-category-validation-title {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.pdfium-category-validation-error {
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+  margin-top: 4px;
+}
+.pdfium-category-warning {
+  border: 1px solid var(--text-warning, var(--text-accent));
+  background: var(--background-secondary);
+}
+.pdfium-category-folder-list {
+  max-height: 52vh;
+  overflow: auto;
+  margin: 10px 0;
+  padding-right: 4px;
+}
+.pdfium-category-folder-row {
+  min-height: 36px;
+  margin: 2px 0;
+}
+.pdfium-category-folder-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pdfium-category-folder-current {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+.pdfium-category-inherited-summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin: 8px 0;
+}
+
+/* Metadata schema manager: keep the ordinary Settings page compact while
+   giving field administration enough room for labels, properties and actions. */
+.pdfium-metadata-schema-manager-modal {
+  width: min(900px, 92vw);
+}
+
+/* 0.1.189: keep first local-category creation visible in an empty scope */
+.pdfium-category-section-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* 0.1.191: lightweight DocumentInfo side panel inside the PDF reading surface. */
+.pdfium-gate-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  overflow: hidden;
+}
+.pdfium-gate-body > .pdfium-gate-stage {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.pdfium-document-info-toggle {
+  position: absolute;
+  z-index: 4;
+  top: 8px;
+  right: 10px;
+  min-height: 30px;
+  padding: 4px 9px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: color-mix(in srgb, var(--background-primary) 92%, transparent);
+  color: var(--text-muted);
+  box-shadow: var(--shadow-s);
+  font-size: var(--font-ui-smaller);
+  cursor: pointer;
+}
+.pdfium-document-info-toggle:hover,
+.pdfium-document-info-toggle.is-active {
+  color: var(--text-normal);
+  background: var(--background-secondary);
+}
+.pdfium-document-info-panel {
+  flex: 0 0 clamp(270px, 28vw, 360px);
+  width: clamp(270px, 28vw, 360px);
+  min-width: 250px;
+  max-width: 42vw;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  overflow: hidden;
+}
+.pdfium-document-info-panel-hidden {
+  display: none !important;
+}
+.pdfium-document-info-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 12px 9px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+}
+.pdfium-document-info-heading-box {
+  min-width: 0;
+}
+.pdfium-document-info-heading-box h3 {
+  margin: 0;
+  font-size: var(--font-ui-medium);
+}
+.pdfium-document-info-file {
+  margin-top: 3px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pdfium-document-info-icon-button {
+  flex: 0 0 auto;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 6px;
+  font-size: 20px;
+  line-height: 1;
+}
+.pdfium-document-info-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 8px 12px 14px;
+}
+.pdfium-document-info-field {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--background-modifier-border-hover);
+}
+.pdfium-document-info-label {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  font-weight: 600;
+}
+.pdfium-document-info-value {
+  color: var(--text-normal);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.pdfium-document-info-control input[type="text"],
+.pdfium-document-info-control select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+.pdfium-document-info-control select[multiple] {
+  min-height: 78px;
+}
+.pdfium-document-info-field-edit {
+  padding: 9px 0;
+}
+.pdfium-document-info-error {
+  min-height: 0;
+  margin-top: 4px;
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+}
+.pdfium-document-info-error:empty {
+  display: none;
+}
+.pdfium-document-info-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 14px;
+}
+.pdfium-document-info-message {
+  padding: 10px 0;
+  color: var(--text-muted);
+}
+.pdfium-document-info-session-note {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border-top: 1px solid var(--background-modifier-border);
+  color: var(--text-faint);
+  background: var(--background-secondary-alt, var(--background-secondary));
+  font-size: var(--font-ui-smaller);
+  line-height: 1.3;
+}
+
+/* 0.1.195: presentation-only hiding of indexed Markdown metadata records.
+   The folder remains a normal vault folder for MetadataCache, Search and Bases.
+   If Obsidian changes File Explorer markup, this deliberately fails open: the
+   folder becomes visible again, while storage/indexing remain untouched. */
+body.pdfium-hide-document-records
+.workspace-leaf-content[data-type="file-explorer"]
+.nav-folder:has(> .nav-folder-title[data-path="PDF Metadata"]) {
+  display: none !important;
+}
+
+/* 0.1.196: schema-aware custom Bases document-register view.
+   Bases owns query/filter membership; this presentation layer formats canonical
+   metadata values through the same field-type registry used by DocumentInfo. */
+.pdfium-document-register-base-view {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.pdfium-document-register-scroll {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.pdfium-document-register-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-ui-small);
+}
+.pdfium-document-register-table th,
+.pdfium-document-register-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+.pdfium-document-register-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.pdfium-document-register-table tbody tr:hover td {
+  background: var(--background-secondary-alt, var(--background-secondary));
+}
+.pdfium-document-register-table tbody tr:hover td:first-child {
+  background: var(--background-secondary-alt, var(--background-secondary));
+}
+.pdfium-document-register-missing {
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+}
+.pdfium-document-register-message {
+  padding: 16px;
+  color: var(--text-muted);
+}
+
+/* 0.1.197: inline editing for the schema-aware PDF document register.
+   Presentation only; persistence still routes through DocumentRecords. */
+.pdfium-document-register-edit-help {
+  padding: 8px 10px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.pdfium-document-register-table td.is-editable {
+  cursor: text;
+}
+.pdfium-document-register-table td.is-editable:hover .pdfium-document-register-cell-value,
+.pdfium-document-register-table td.is-editable:focus .pdfium-document-register-cell-value {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+.pdfium-document-register-table td.is-editing {
+  min-width: 170px;
+  background: var(--background-primary-alt, var(--background-primary));
+}
+.pdfium-document-register-cell-editor {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.pdfium-document-register-cell-control {
+  flex: 1 1 auto;
+  min-width: 110px;
+}
+.pdfium-document-register-cell-control input:not([type="checkbox"]),
+.pdfium-document-register-cell-control select {
+  width: 100%;
+  min-width: 0;
+}
+.pdfium-document-register-cell-control select[multiple] {
+  min-height: 72px;
+}
+.pdfium-document-register-cell-actions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+.pdfium-document-register-cell-actions button {
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+}
+.pdfium-document-register-cell-error {
+  margin-top: 4px;
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+  white-space: normal;
+}
+.pdfium-document-register-table td.is-saving {
+  opacity: 0.72;
+}
+.pdfium-document-register-table td.has-error {
+  box-shadow: inset 0 0 0 1px var(--text-error);
+}
+
+/* 0.1.198: explicit missing-PDF relink workflow.
+   Missing records remain read-only until the user deliberately chooses the
+   replacement PDF. Storage identity and writes remain DocumentRecords-owned. */
+.pdfium-document-register-relink {
+  margin-left: 8px;
+  padding: 2px 7px;
+  min-height: 24px;
+  font-size: var(--font-ui-smaller);
+}
+.pdfium-document-register-missing-path {
+  color: var(--text-muted);
+}
+.pdfium-document-relink-modal .modal-content {
+  min-width: min(720px, 90vw);
+}
+.pdfium-document-relink-previous,
+.pdfium-document-relink-warning,
+.pdfium-document-relink-result-info {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+.pdfium-document-relink-warning {
+  margin-bottom: 12px;
+}
+.pdfium-document-relink-search {
+  width: 100%;
+  margin: 6px 0 8px;
+}
+.pdfium-document-relink-results {
+  max-height: 52vh;
+  overflow: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+}
+.pdfium-document-relink-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+}
+.pdfium-document-relink-choice:last-child {
+  border-bottom: 0;
+}
+.pdfium-document-relink-choice:hover,
+.pdfium-document-relink-choice:focus {
+  background: var(--background-secondary);
+}
+.pdfium-document-relink-choice-name {
+  color: var(--text-normal);
+  font-weight: 600;
+}
+.pdfium-document-relink-choice-path {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  overflow-wrap: anywhere;
+}
+.pdfium-document-relink-empty,
+.pdfium-document-relink-error {
+  padding: 10px;
+}
+.pdfium-document-relink-error {
+  color: var(--text-error);
+}
+.pdfium-document-relink-error:empty {
+  display: none;
+}
+
+
+/* 0.1.204: product polish for the standard PDF Dokumentregister.
+   Technical record paths/UUIDs stay hidden; status and PDF actions are explicit. */
+.pdfium-document-register-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 1px 7px;
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+  font-size: var(--font-ui-smaller);
+}
+.pdfium-document-register-status.is-missing {
+  color: var(--text-error);
+}
+.pdfium-document-register-pdf-cell {
+  min-width: 180px;
+}
+.pdfium-document-register-open {
+  min-height: 26px;
+  padding: 2px 9px;
+}
+.pdfium-document-register-pdf-name {
+  margin-left: 8px;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+/* 0.1.205 test: clickable document-register column headers.
+   Sorting is persisted through the Bases view config. Header filters are an
+   intentionally transient UX prototype and do not alter the user's .base file. */
+.pdfium-document-register-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: max-content;
+}
+.pdfium-document-register-header-sort,
+.pdfium-document-register-header-filter {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  min-height: 24px;
+}
+.pdfium-document-register-header-sort {
+  padding: 1px 3px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pdfium-document-register-header-sort:hover,
+.pdfium-document-register-header-sort:focus-visible,
+.pdfium-document-register-header-sort.is-sorted {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+.pdfium-document-register-sort-indicator {
+  color: var(--interactive-accent);
+}
+.pdfium-document-register-header-filter {
+  width: 24px;
+  padding: 2px;
+  opacity: 0.55;
+  cursor: pointer;
+}
+.pdfium-document-register-header-filter:hover,
+.pdfium-document-register-header-filter:focus-visible,
+.pdfium-document-register-header-filter.is-active {
+  opacity: 1;
+  color: var(--interactive-accent);
+  background: var(--background-modifier-hover);
+}
+.pdfium-document-register-header-filter svg {
+  width: 15px;
+  height: 15px;
+}
+.pdfium-document-register-filter-modal .modal-content {
+  min-width: min(440px, 80vw);
+}
+.pdfium-document-register-filter-input {
+  width: 100%;
+}
+.pdfium-document-register-filter-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+.pdfium-document-register-filter-empty {
+  padding: 18px 10px !important;
+  color: var(--text-muted);
+  text-align: center !important;
+}
+
+/* 0.1.206 test: schema-aware Dokumentregister header filters. */
+.pdfium-document-register-filter-body {
+  margin-top: 10px;
+}
+.pdfium-document-register-filter-select,
+.pdfium-document-register-filter-range input {
+  width: 100%;
+}
+.pdfium-document-register-filter-choices {
+  display: grid;
+  gap: 6px;
+  max-height: 280px;
+  overflow: auto;
+  padding: 4px 2px;
+}
+.pdfium-document-register-filter-choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+}
+.pdfium-document-register-filter-choice:hover {
+  background: var(--background-modifier-hover);
+}
+.pdfium-document-register-filter-choice.is-empty-choice {
+  margin-top: 4px;
+  border-top: 1px solid var(--background-modifier-border);
+  padding-top: 9px;
+}
+.pdfium-document-register-filter-range {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+.pdfium-document-register-filter-range label {
+  display: grid;
+  gap: 4px;
+}
+.pdfium-document-register-filter-range label > span {
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+.pdfium-document-register-filter-error {
+  min-height: 1.4em;
+  margin-top: 8px;
+  color: var(--text-error);
+  font-size: var(--font-ui-small);
+}

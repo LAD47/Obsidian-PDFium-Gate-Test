@@ -1,0 +1,9 @@
+{
+  "id": "obsidian-pdfium-gate-test",
+  "name": "PDFium Gate Test",
+  "version": "0.1.216",
+  "minAppVersion": "1.13.7",
+  "description": "PDFium Gate test build 0.1.216 - full command/button i18n sweep and expanded hard-coded UI verification.",
+  "author": "OpenAI / test build",
+  "isDesktopOnly": true
+}

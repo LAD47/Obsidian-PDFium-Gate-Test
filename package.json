@@ -1,0 +1,12 @@
+{
+  "name": "obsidian-pdfium-gate-test",
+  "private": true,
+  "version": "0.1.216",
+  "scripts": {
+    "build": "node build.js",
+    "verify": "node scripts/verify-build.js",
+    "check": "npm run build && npm run check:i18n && npm run check:i18n-ui && npm run verify",
+    "check:i18n": "node scripts/check-i18n.js",
+    "check:i18n-ui": "node scripts/check-i18n-ui.js"
+  }
+}
