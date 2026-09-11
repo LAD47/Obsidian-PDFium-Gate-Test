@@ -1,0 +1,57 @@
+{
+  "policyVersion": "1.0",
+  "canonicalWrapperAdapter": "src/platform/pdf-wrapper-frame.js",
+  "invariants": [
+    "pdf-token-is-logical-not-physical",
+    "webcontents-id-is-owner-identity",
+    "process-routing-is-physical-frame-identity",
+    "verified-embed-proves-wrapper-readiness",
+    "focused-frame-only-when-focus-is-contractual",
+    "ambiguity-fails-closed",
+    "no-first-match-target-selection",
+    "state-freshness-never-selects-physical-identity"
+  ],
+  "protectedRoutes": [
+    {
+      "name": "createEmbeddedPdfTargetAdapter.resolveExact",
+      "classification": "synchronous-focus-contract"
+    },
+    {
+      "name": "pdfWrapperFrameAdapter.executeExactVerified",
+      "classification": "canonical-wrapper-execution"
+    },
+    {
+      "name": "clearStaleKeyboardSelectionBeforeRoute",
+      "classification": "canonical-wrapper-state-check"
+    },
+    {
+      "name": "ChromiumPdfRuntimeDriver.resolveViewerFrame",
+      "classification": "verified-wrapper-ancestry-only"
+    },
+    {
+      "name": "resolveLocatorEmbeddedPdfTargetExact",
+      "classification": "readiness-discovery-fail-closed"
+    },
+    {
+      "name": "capturePdfWrapperMouseGestureHint",
+      "classification": "gesture-state-after-canonical-identity"
+    }
+  ],
+  "reviewedExceptions": [
+    {
+      "name": "injectInternalPdfAutoScroll",
+      "classification": "discovery-instrumentation",
+      "reason": "intentionally visits frames to install wrapper instrumentation; it does not select viewer identity"
+    }
+  ],
+  "forbiddenPatterns": [
+    {
+      "name": "stale-mouse-first-lastDown-break",
+      "pattern": "if(result?.lastDown){ wrapper={frame,result}; break; }"
+    },
+    {
+      "name": "gesture-latest-token-frame-arbitration",
+      "pattern": "latest-matching-token"
+    }
+  ]
+}
