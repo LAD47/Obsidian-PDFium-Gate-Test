@@ -64,7 +64,7 @@ const RENDERER_PLATFORM_ORDER = Object.freeze([
   'main-process-transport.js'
 ]);
 
-
+const I18N_LOCALE_ORDER = Object.freeze(['en','nb','de','es','sv','da','fr']);
 
 const METADATA_SOURCE_ORDER = Object.freeze([
   'schema-contract.js',
@@ -161,12 +161,16 @@ function buildAnnotatorSource(root) {
   ].join('');
 }
 
-
 function buildI18nSource(root) {
-  const en = JSON.parse(read(root, 'src/i18n/en.json'));
-  const nb = JSON.parse(read(root, 'src/i18n/nb.json'));
+  const dictionaries=Object.fromEntries(I18N_LOCALE_ORDER.map(locale=>[
+    locale,
+    JSON.parse(read(root, `src/i18n/${locale}.json`))
+  ]));
+  const serialized=I18N_LOCALE_ORDER
+    .map(locale=>`${JSON.stringify(locale)}:Object.freeze(${JSON.stringify(dictionaries[locale])})`)
+    .join(',');
   return [
-    `const PDFIUM_I18N_TRANSLATIONS = Object.freeze({ en:Object.freeze(${JSON.stringify(en)}), nb:Object.freeze(${JSON.stringify(nb)}) });`,
+    `const PDFIUM_I18N_TRANSLATIONS = Object.freeze({${serialized}});`,
     moduleBody(root, 'src/i18n/locale-resolver.js'),
     moduleBody(root, 'src/i18n/i18n-service.js')
   ].join('\n');
@@ -244,6 +248,7 @@ module.exports = {
   ANNOTATOR_MESSAGE_CONTRACT_ORDER,
   RENDERER_PLATFORM_ORDER,
   RENDERER_FOUNDATION_ORDER,
+  I18N_LOCALE_ORDER,
   METADATA_SOURCE_ORDER,
   RENDERER_POST_NORMALIZATION_CORE_ORDER,
   MAIN_BRIDGE_RUNTIME_ORDER,
