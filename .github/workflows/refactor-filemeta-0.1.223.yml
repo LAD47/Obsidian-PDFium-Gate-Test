@@ -22,6 +22,17 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Repair refactor harness quoting
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/refactor-filemeta-0.1.223.js')
+          lines=p.read_text(encoding='utf-8').splitlines()
+          lines[153] = r'''  `if (!baseExample.includes('filemeta_type == \\"pdf\\"') || !baseExample.includes('filemeta_profile == \\"document\\"')) fail('native Base must scope examples to the PDF/document profile');\n`);'''
+          p.write_text('\n'.join(lines)+'\n', encoding='utf-8')
+          PY
+          node --check scripts/refactor-filemeta-0.1.223.js
       - name: Apply controlled pre-beta metadata refactor
         run: node scripts/refactor-filemeta-0.1.223.js
       - name: Run full verification
