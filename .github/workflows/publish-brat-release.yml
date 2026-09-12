@@ -1,5 +1,6 @@
 name: Publish BRAT release
 
+# Manual publish trigger: 0.1.222
 # Releases are always built from the already-frozen archive/<manifest-version>
 # branch. workflow_dispatch is the normal manual publisher; a change to this
 # workflow also runs it, which keeps the publishing path testable from GitHub.
