@@ -76,7 +76,7 @@
   "settings.metadata.fields.schemaInactive": "Schema not active · {{path}}",
   "settings.metadata.fields.manage": "Manage metadata fields…",
   "settings.metadata.hideFiles.name": "Hide metadata files in File Explorer",
-  "settings.metadata.hideFiles.description": "Hides only the technical File Metadata folder visually in Obsidian File Explorer. The files remain ordinary Markdown notes and stay available to Obsidian, search, and Bases.",
+  "settings.metadata.hideFiles.description": "Hides only the File Metadata record folder visually in Obsidian File Explorer. The files remain ordinary Markdown notes and stay available to Obsidian, search, and Bases.",
   "settings.documentRegister.section": "Document register",
   "settings.documentRegister.rememberFilters.name": "Remember filters in PDF Document register",
   "settings.documentRegister.rememberFilters.description": "When enabled, column filters are stored in the current .base view and restored the next time it opens. When disabled, column filters are temporary. The default is off.",

@@ -4,6 +4,7 @@ const path=require('path');
 const root=path.resolve(__dirname,'..');
 const fail=message=>{ console.error(`File metadata foundation check failed: ${message}`); process.exit(1); };
 const record=require(path.join(root,'src/metadata/record-contract.js'));
+const basePresentation=require(path.join(root,'src/metadata/base-presentation.js'));
 const expected=['filemeta_type','filemeta_profile','filemeta_version','filemeta_id','filemeta_file','filemeta_status'];
 if(JSON.stringify(record.METADATA_RECORD_SYSTEM_PROPERTIES)!==JSON.stringify(expected)) fail('system property set differs from canonical six-field contract');
 if(record.METADATA_RECORDS_ROOT!=='File Metadata') fail('record root must be File Metadata');
@@ -11,6 +12,10 @@ if(record.METADATA_RECORD_DEFAULT_FILE_TYPE!=='pdf') fail('current default file 
 if(record.METADATA_RECORD_DEFAULT_PROFILE!=='document') fail('current default profile must be document');
 if(!record.metadataRecordSupportedDescriptor('pdf','document')) fail('pdf/document descriptor is missing');
 if(record.metadataRecordSupportedDescriptor('html','web_page')) fail('HTML must not be enabled in 0.1.223');
+const presentationSchema={fields:[{property:'sender',label:'Sender',type:'text',active:true,show_in_default_base:true}]};
+const presentationRegistry={format(_field,value){return String(value ?? '');}};
+if(!basePresentation.metadataBasePresentFrontmatter({filemeta_type:'pdf',filemeta_profile:'document',sender:'Example'},presentationSchema,{},presentationRegistry).ok) fail('PDF/document profile is not accepted by Base presentation');
+if(basePresentation.metadataBasePresentFrontmatter({filemeta_type:'pdf',filemeta_profile:'other',sender:'Example'},presentationSchema,{},presentationRegistry).ok) fail('Base presentation accepted a non-document PDF profile');
 const id='11111111-1111-4111-8111-111111111111';
 const frontmatter={filemeta_type:'pdf',filemeta_profile:'document',filemeta_version:2,filemeta_id:id,filemeta_file:'[[Example/test.pdf]]',filemeta_status:'active'};
 const parsed=record.metadataRecordFromFrontmatter(frontmatter,{fields:[]});

@@ -76,7 +76,7 @@
   "settings.metadata.fields.schemaInactive": "Schema nicht aktiv · {{path}}",
   "settings.metadata.fields.manage": "Metadatenfelder verwalten…",
   "settings.metadata.hideFiles.name": "Metadatendateien im Datei-Explorer ausblenden",
-  "settings.metadata.hideFiles.description": "Blendet nur den technischen Ordner File Metadata im Obsidian-Datei-Explorer visuell aus. Die Dateien bleiben normale Markdown-Notizen und stehen Obsidian, der Suche und Bases weiterhin zur Verfügung.",
+  "settings.metadata.hideFiles.description": "Blendet nur den Ordner File Metadata mit den Metadatensätzen im Obsidian-Datei-Explorer visuell aus. Die Dateien bleiben normale Markdown-Notizen und stehen Obsidian, der Suche und Bases weiterhin zur Verfügung.",
   "settings.documentRegister.section": "Dokumentenregister",
   "settings.documentRegister.rememberFilters.name": "Filter im PDF-Dokumentenregister merken",
   "settings.documentRegister.rememberFilters.description": "Wenn aktiviert, werden Spaltenfilter in der aktuellen .base-Ansicht gespeichert und beim nächsten Öffnen wiederhergestellt. Wenn deaktiviert, sind Spaltenfilter temporär. Standardmäßig ist diese Option ausgeschaltet.",

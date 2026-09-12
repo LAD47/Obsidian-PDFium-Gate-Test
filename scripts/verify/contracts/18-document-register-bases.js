@@ -17,7 +17,8 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   const settings={regionalDateFormat:'DD.MM.YYYY',regionalTimeFormat:'HH:mm',regionalDecimalSeparator:',',uiBooleanLabels:{yes:'Ja',no:'Nei'}};
   const sourceFrontmatter={
     filemeta_type:'pdf',
-    filemeta_version:1,
+    filemeta_profile:'document',
+    filemeta_version:2,
     filemeta_id:'a49dde44-7872-4d89-b97e-027a6e689d94',
     filemeta_file:'[[10_Kilder/PDF/test.pdf]]',
     filemeta_status:'active',
@@ -63,7 +64,7 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   const standardBaseYaml=baseConfig.metadataDocumentRegisterStandardBaseYaml(schema);
   if(baseConfig.PDF_DOCUMENT_REGISTER_STANDARD_BASE_PATH!=='PDF Dokumentregister.base') fail('standard Dokumentregister Base path drifted');
   if(baseConfig.PDF_DOCUMENT_REGISTER_BASE_VIEW_TYPE!=='pdfium-document-register') fail('standard Dokumentregister custom view type drifted');
-  if(!standardBaseYaml.includes('file.inFolder(\\"File Metadata\\")')||!standardBaseYaml.includes('filemeta_type == \\"pdf\\"')) fail('standard Dokumentregister Base does not scope query to canonical PDF metadata records');
+  if(!standardBaseYaml.includes('file.inFolder(\\"File Metadata\\")')||!standardBaseYaml.includes('filemeta_type == \\"pdf\\"')||!standardBaseYaml.includes('filemeta_profile == \\"document\\"')) fail('standard Dokumentregister Base does not scope query to canonical PDF/document metadata records');
   if(!standardBaseYaml.includes('type: pdfium-document-register')||!standardBaseYaml.includes('property: document_date')||!standardBaseYaml.includes('direction: DESC')) fail('standard Dokumentregister Base lacks custom view/default newest-first sort');
   if(!standardBaseYaml.includes('displayName: "Document date"')||!standardBaseYaml.includes('displayName: "Status"')||!standardBaseYaml.includes('displayName: "PDF"')) fail('standard Document Register Base lacks canonical English human display names');
   const ignoredLocalizedBase=baseConfig.metadataDocumentRegisterStandardBaseYaml(schema,()=> 'SHOULD NOT BE USED');

@@ -24,7 +24,7 @@ function metadataBasePrepareFieldUpdate(field, raw, settings = {}, registry = nu
 
 function metadataBasePresentFrontmatter(frontmatter, schema, settings = {}, registry = null) {
   if (!frontmatter || typeof frontmatter !== 'object' || Array.isArray(frontmatter)) return { ok:false, reason:'frontmatter-missing', fields:[] };
-  if (String(frontmatter.filemeta_type || '') !== 'pdf') return { ok:false, reason:'not-pdf-document-record', fields:[] };
+  if (String(frontmatter.filemeta_type || '') !== 'pdf' || String(frontmatter.filemeta_profile || '') !== 'document') return { ok:false, reason:'not-pdf-document-record', fields:[] };
   const fields = metadataBaseVisibleFields(schema).map(field => ({
     property:field.property,
     label:field.label,

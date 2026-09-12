@@ -76,7 +76,7 @@
   "settings.metadata.fields.schemaInactive": "Skjema ikke aktivt · {{path}}",
   "settings.metadata.fields.manage": "Administrer metadatafelt…",
   "settings.metadata.hideFiles.name": "Skjul metadatafiler i filutforskeren",
-  "settings.metadata.hideFiles.description": "Skjuler bare den tekniske File Metadata-mappen visuelt i Obsidian File Explorer. Filene forblir vanlige Markdown-noter og skal fortsatt være tilgjengelige for Obsidian, søk og Bases.",
+  "settings.metadata.hideFiles.description": "Skjuler bare mappen File Metadata med metadataregistreringene visuelt i Obsidian File Explorer. Filene forblir vanlige Markdown-noter og skal fortsatt være tilgjengelige for Obsidian, søk og Bases.",
   "settings.documentRegister.section": "Dokumentregister",
   "settings.documentRegister.rememberFilters.name": "Husk filtre i PDF Dokumentregister",
   "settings.documentRegister.rememberFilters.description": "Når dette er på, lagres kolonnefiltrene i den aktuelle .base-visningen og gjenopprettes neste gang den åpnes. Når dette er av, er kolonnefiltrene midlertidige. Standard er av.",

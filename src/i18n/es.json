@@ -76,7 +76,7 @@
   "settings.metadata.fields.schemaInactive": "Esquema no activo · {{path}}",
   "settings.metadata.fields.manage": "Gestionar campos de metadatos…",
   "settings.metadata.hideFiles.name": "Ocultar archivos de metadatos en el explorador de archivos",
-  "settings.metadata.hideFiles.description": "Solo oculta visualmente la carpeta técnica File Metadata en el explorador de archivos de Obsidian. Los archivos siguen siendo notas Markdown normales y continúan disponibles para Obsidian, la búsqueda y Bases.",
+  "settings.metadata.hideFiles.description": "Solo oculta visualmente la carpeta File Metadata que contiene los registros de metadatos en el explorador de archivos de Obsidian. Los archivos siguen siendo notas Markdown normales y continúan disponibles para Obsidian, la búsqueda y Bases.",
   "settings.documentRegister.section": "Registro de documentos",
   "settings.documentRegister.rememberFilters.name": "Recordar filtros en el registro de documentos PDF",
   "settings.documentRegister.rememberFilters.description": "Cuando está activado, los filtros de columna se guardan en la vista .base actual y se restauran la próxima vez que se abre. Cuando está desactivado, los filtros son temporales. El valor predeterminado es desactivado.",
