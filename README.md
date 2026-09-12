@@ -132,6 +132,7 @@ If you find a reproducible problem, please open a GitHub Issue and include the O
 - [Architecture overview](ARCHITECTURE.md)
 - [Detailed architecture contracts](docs/architecture/)
 - [Translation guide](TRANSLATING.md)
+- [Contributing guide](CONTRIBUTING.md)
 - [Historical development notes](docs/history/DEVELOPMENT-NOTES.md)
 - [Historical milestones](docs/history/MILESTONE.md)
 
@@ -163,4 +164,8 @@ The project is intentionally conservative about data ownership and migration as 
 
 ## Contributing
 
-Testing, bug reports, translation improvements, and focused pull requests are welcome while the project matures. Translation contributors should start with [TRANSLATING.md](TRANSLATING.md); architecture contributors should start with [ARCHITECTURE.md](ARCHITECTURE.md).
+Testing, bug reports, translation improvements, and focused pull requests are welcome while the project matures. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting code or larger documentation changes. Translation contributors should also read [TRANSLATING.md](TRANSLATING.md); architecture contributors should start with [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## License
+
+PDFium Gate Test is released under the [MIT License](LICENSE).
