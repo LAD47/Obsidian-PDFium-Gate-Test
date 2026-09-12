@@ -4,7 +4,7 @@
 const fs=require('fs');
 const path=require('path');
 const ROOT=path.resolve(__dirname,'..');
-const LOCALES=['en','nb'];
+const LOCALES=['en','nb','de','es','sv','da','fr'];
 
 function fail(message){ throw new Error(message); }
 function localePath(locale){ return path.join(ROOT,'src','i18n',`${locale}.json`); }
@@ -49,6 +49,7 @@ for(const locale of LOCALES) {
   const unknown=Object.keys(dict).filter(key=>!canonicalSet.has(key));
   if(unknown.length) fail(`${locale}: unknown translation keys: ${unknown.join(', ')}`);
   const missing=canonicalKeys.filter(key=>!Object.prototype.hasOwnProperty.call(dict,key));
+  if(missing.length) fail(`${locale}: missing translation keys: ${missing.join(', ')}`);
   for(const key of Object.keys(dict)) {
     const expected=placeholders(english[key]);
     const actual=placeholders(dict[key]);
