@@ -40,6 +40,7 @@ The current test builds include:
 - stable UUID-based document metadata identity across normal PDF rename/move operations;
 - conservative handling of deleted/missing PDFs, with explicit relinking instead of unsafe automatic rebinding;
 - an Obsidian Bases-powered **PDF Document register** with schema-driven columns, sorting, datatype-aware filtering, inline editing, and missing-PDF actions;
+- a canonical example set copied once into the Vault to demonstrate ordinary Markdown/YAML records and native Obsidian Bases usage;
 - scalable metadata indexing with a disposable cache while Markdown/YAML remains the source of truth;
 - diagnostics and benchmark tools for testing large document collections;
 - a multilingual interface with live language switching.
@@ -107,8 +108,9 @@ BRAT can also be used to check for and install newer test releases.
 The project deliberately separates durable user data from disposable acceleration data and internal configuration.
 
 - `PDF Metadata/` contains ordinary indexed Markdown/YAML document records.
-- `.pdf-metadata/` contains plugin metadata/configuration and disposable technical data such as the document-record index cache.
+- `.pdf-metadata/` contains plugin metadata/configuration and disposable technical data such as the document-record index cache and the example-bootstrap marker.
 - `PDF Dokumentregister.base` is created on demand as the standard document register. After creation it is treated as user-owned and is not silently overwritten by the plugin.
+- `Examples-Obsidian-PDFium-Gate/` contains a one-time copied example set. These files are user-owned after creation and are never overwritten by the plugin.
 - PDFs remain normal PDF files in the Vault.
 
 The exact internal structures may still evolve before the project reaches a stable 1.0 release. Changes to persisted formats or file layouts require an explicit migration/backward-compatibility review before a public stable release.
@@ -129,6 +131,7 @@ If you find a reproducible problem, please open a GitHub Issue and include the O
 ## Documentation
 
 - [Documentation index](docs/README.md)
+- [Example files](docs/examples/)
 - [Architecture overview](ARCHITECTURE.md)
 - [Detailed architecture contracts](docs/architecture/)
 - [Translation guide](TRANSLATING.md)

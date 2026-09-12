@@ -1,6 +1,6 @@
 # Documentation
 
-This directory contains active architecture documentation, focused test notes, and preserved project history.
+This directory contains active architecture documentation, focused test notes, canonical examples, and preserved project history.
 
 ## Current technical documentation
 
@@ -9,6 +9,10 @@ This directory contains active architecture documentation, focused test notes, a
 - [`../TRANSLATING.md`](../TRANSLATING.md) — translation contribution guide and locale policy.
 
 The architecture documents and automated verification describe the current intended contracts. Historical notes may contain experiments or policies that have since been superseded.
+
+## Examples
+
+- [`examples/`](examples/) — canonical Markdown/YAML document-record examples and a native Obsidian Bases example. The plugin copies the same example set once into `Examples-Obsidian-PDFium-Gate/` in a user's Vault.
 
 ## Testing
 

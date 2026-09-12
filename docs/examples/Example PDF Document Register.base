@@ -1,0 +1,50 @@
+# PDFium Gate examples — native Obsidian Bases view
+# This Base intentionally uses the built-in table view, not the PDFium Gate custom view.
+filters:
+  and:
+    - "file.inFolder(\"Examples-Obsidian-PDFium-Gate\")"
+    - "pdfmeta_type == \"pdf_document\""
+properties:
+  document_date:
+    displayName: "Document date"
+  document_time:
+    displayName: "Document time"
+  sender:
+    displayName: "Sender"
+  document_type:
+    displayName: "Document type"
+  response_received:
+    displayName: "Response received"
+  response_received_date:
+    displayName: "Response received date"
+  response_sent:
+    displayName: "Response sent"
+  response_sent_date:
+    displayName: "Response sent date"
+  response_sent_link:
+    displayName: "Sent response"
+  pdfmeta_status:
+    displayName: "Status"
+  pdfmeta_file:
+    displayName: "PDF"
+  pdfmeta_id:
+    displayName: "Metadata ID"
+views:
+  - type: table
+    name: "PDF metadata examples"
+    order:
+      - document_date
+      - document_time
+      - sender
+      - document_type
+      - response_received
+      - response_received_date
+      - response_sent
+      - response_sent_date
+      - response_sent_link
+      - pdfmeta_status
+      - pdfmeta_file
+      - pdfmeta_id
+    sort:
+      - property: document_date
+        direction: DESC

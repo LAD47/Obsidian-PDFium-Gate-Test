@@ -77,3 +77,21 @@ DocumentRecords background startup is no longer started synchronously inside the
 DocumentRecords owns startup readiness. Lifecycle contributes two explicit signals through declared operation ports: `markDocumentRecordMetadataResolved()` and `markDocumentRecordLayoutReady()`. The metadata-resolved listener is registered early during plugin load; layout-ready is signaled from the existing workspace lifecycle callback. DocumentRecords schedules background warmup only after both latches are true, then uses the existing idle scheduler.
 
 This is an orchestration optimization only. Persistent Markdown/YAML remains source of truth, the disposable cache contract is unchanged, and on-demand callers are never forced to wait for the background gate: they use the same canonical single-flight readiness promise immediately.
+
+## Example-set isolation and bootstrap
+
+The plugin ships a small canonical demonstration set under `docs/examples/` and copies the same set once into the user's Vault at `Examples-Obsidian-PDFium-Gate/`.
+
+The example folder is deliberately outside `PDF Metadata/`. Example notes use valid record-shaped frontmatter and fixed sample UUIDs, but they are teaching/demo material and must never enter the production document-record index merely because they exist in the Vault. A native Obsidian Bases file in the example folder filters that folder directly and demonstrates that ordinary Markdown/YAML properties can be consumed without the PDFium Gate custom Bases view.
+
+Bootstrap rules:
+
+- bootstrap state is technical metadata stored at `.pdf-metadata/example-files-bootstrap.json`;
+- the marker records an explicit example-set version;
+- installation creates the example folder only when needed;
+- an existing example file is always skipped and never overwritten;
+- if creation is interrupted before the marker is written, a later run may fill only the still-missing files;
+- once the current example-set version is marked installed, deleting or renaming the user-owned example folder does not cause it to be recreated on every startup;
+- future example-set versions may add missing examples, but existing user-owned files remain untouched.
+
+The example set is not a source of truth for production records, does not change document identity, and must not participate in record lifecycle events or indexing.
