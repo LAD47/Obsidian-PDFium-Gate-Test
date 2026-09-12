@@ -356,6 +356,7 @@ The pilot intentionally does not migrate the whole plugin in one build. Remainin
 
 - Category bootstrap, folder selection, category editor, inheritance/override actions and validation are localized.
 - Category context-menu actions and category mutation notices/errors are localized.
+- Category Command Palette entries and the effective-category configuration heading are localized.
 - Persisted category identity/data is unchanged and never rewritten on language change.
 - A new `check:i18n-ui` verification step protects migrated surfaces from hard-coded UI text in future changes.
 - `I18N-AUDIT.md` records remaining migration surfaces and persistent-default exceptions.
