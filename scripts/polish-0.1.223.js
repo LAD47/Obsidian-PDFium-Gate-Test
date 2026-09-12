@@ -27,6 +27,17 @@ replaceRequired(
   "const presentationSchema={fields:[{property:'sender',label:'Sender',type:'text',active:true,show_in_default_base:true}]};\nconst presentationRegistry={format(_field,value){return String(value ?? '');}};\nif(!basePresentation.metadataBasePresentFrontmatter({filemeta_type:'pdf',filemeta_profile:'document',sender:'Example'},presentationSchema,{},presentationRegistry).ok) fail('PDF/document profile is not accepted by Base presentation');\nif(basePresentation.metadataBasePresentFrontmatter({filemeta_type:'pdf',filemeta_profile:'other',sender:'Example'},presentationSchema,{},presentationRegistry).ok) fail('Base presentation accepted a non-document PDF profile');\nconst id='11111111-1111-4111-8111-111111111111';"
 );
 
+replaceRequired(
+  'scripts/verify/contracts/18-document-register-bases.js',
+  "    filemeta_type:'pdf',\n    filemeta_version:1,",
+  "    filemeta_type:'pdf',\n    filemeta_profile:'document',\n    filemeta_version:2,"
+);
+replaceRequired(
+  'scripts/verify/contracts/18-document-register-bases.js',
+  "if(!standardBaseYaml.includes('file.inFolder(\\\\\"File Metadata\\\\\")')||!standardBaseYaml.includes('filemeta_type == \\\\\"pdf\\\\\"')) fail('standard Dokumentregister Base does not scope query to canonical PDF metadata records');",
+  "if(!standardBaseYaml.includes('file.inFolder(\\\\\"File Metadata\\\\\")')||!standardBaseYaml.includes('filemeta_type == \\\\\"pdf\\\\\"')||!standardBaseYaml.includes('filemeta_profile == \\\\\"document\\\\\"')) fail('standard Dokumentregister Base does not scope query to canonical PDF/document metadata records');"
+);
+
 const i18nReplacements={
   'src/i18n/en.json':['Hides only the technical File Metadata folder visually in Obsidian File Explorer.','Hides only the File Metadata record folder visually in Obsidian File Explorer.'],
   'src/i18n/nb.json':['Skjuler bare den tekniske File Metadata-mappen visuelt i Obsidian File Explorer.','Skjuler bare mappen File Metadata med metadataregistreringene visuelt i Obsidian File Explorer.'],
