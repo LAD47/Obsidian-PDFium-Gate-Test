@@ -1,14 +1,81 @@
 'use strict';
 
 const PDFIUM_EXAMPLES_ROOT = 'Examples-Obsidian-PDFium-Gate';
-const PDFIUM_EXAMPLES_BOOTSTRAP_VERSION = 1;
 const PDFIUM_EXAMPLE_ACTIVE_RECORD_ID = '11111111-1111-4111-8111-111111111111';
 const PDFIUM_EXAMPLE_MISSING_RECORD_ID = '22222222-2222-4222-8222-222222222222';
+const PDFIUM_EXAMPLE_INSTALLER_LOCALES = Object.freeze(['en','nb','de','es','sv','da','fr']);
+const PDFIUM_EXAMPLE_INSTALLER_TEXT = Object.freeze({
+  en:Object.freeze({
+    name:'Example files for Obsidian Bases',
+    description:'Copies the canonical Markdown and Bases examples to {{path}}. Nothing is copied automatically.',
+    button:'Copy examples…',
+    confirm:'Copy the example files to {{path}}? Existing files with the same example filenames in that folder will be overwritten. Other files in the folder are not changed.',
+    success:'Copied {{count}} example files to {{path}}. {{overwritten}} existing example file(s) were overwritten.',
+    failed:'Could not copy example files: {{error}}'
+  }),
+  nb:Object.freeze({
+    name:'Eksempelfiler for Obsidian Bases',
+    description:'Kopierer de kanoniske Markdown- og Bases-eksemplene til {{path}}. Ingenting kopieres automatisk.',
+    button:'Kopier eksempler…',
+    confirm:'Kopiere eksempelfilene til {{path}}? Eksisterende filer med de samme eksempelfilnavnene i denne mappen blir overskrevet. Andre filer i mappen endres ikke.',
+    success:'Kopierte {{count}} eksempelfiler til {{path}}. {{overwritten}} eksisterende eksempelfil(er) ble overskrevet.',
+    failed:'Kunne ikke kopiere eksempelfiler: {{error}}'
+  }),
+  de:Object.freeze({
+    name:'Beispieldateien für Obsidian Bases',
+    description:'Kopiert die kanonischen Markdown- und Bases-Beispiele nach {{path}}. Es wird nichts automatisch kopiert.',
+    button:'Beispiele kopieren…',
+    confirm:'Beispieldateien nach {{path}} kopieren? Vorhandene Dateien mit denselben Beispieldateinamen in diesem Ordner werden überschrieben. Andere Dateien im Ordner bleiben unverändert.',
+    success:'{{count}} Beispieldateien nach {{path}} kopiert. {{overwritten}} vorhandene Beispieldatei(en) wurden überschrieben.',
+    failed:'Beispieldateien konnten nicht kopiert werden: {{error}}'
+  }),
+  es:Object.freeze({
+    name:'Archivos de ejemplo para Obsidian Bases',
+    description:'Copia los ejemplos canónicos de Markdown y Bases en {{path}}. No se copia nada automáticamente.',
+    button:'Copiar ejemplos…',
+    confirm:'¿Copiar los archivos de ejemplo en {{path}}? Los archivos existentes con los mismos nombres de ejemplo en esa carpeta se sobrescribirán. Los demás archivos de la carpeta no se modificarán.',
+    success:'Se copiaron {{count}} archivos de ejemplo en {{path}}. Se sobrescribieron {{overwritten}} archivo(s) de ejemplo existente(s).',
+    failed:'No se pudieron copiar los archivos de ejemplo: {{error}}'
+  }),
+  sv:Object.freeze({
+    name:'Exempelfiler för Obsidian Bases',
+    description:'Kopierar de kanoniska Markdown- och Bases-exemplen till {{path}}. Inget kopieras automatiskt.',
+    button:'Kopiera exempel…',
+    confirm:'Kopiera exempelfilerna till {{path}}? Befintliga filer med samma exempelfilnamn i mappen skrivs över. Andra filer i mappen ändras inte.',
+    success:'Kopierade {{count}} exempelfiler till {{path}}. {{overwritten}} befintlig(a) exempelfil(er) skrevs över.',
+    failed:'Det gick inte att kopiera exempelfilerna: {{error}}'
+  }),
+  da:Object.freeze({
+    name:'Eksempelfiler til Obsidian Bases',
+    description:'Kopierer de kanoniske Markdown- og Bases-eksempler til {{path}}. Intet kopieres automatisk.',
+    button:'Kopiér eksempler…',
+    confirm:'Kopiér eksempelfilerne til {{path}}? Eksisterende filer med de samme eksempelfilnavne i mappen bliver overskrevet. Andre filer i mappen ændres ikke.',
+    success:'Kopierede {{count}} eksempelfiler til {{path}}. {{overwritten}} eksisterende eksempelfil(er) blev overskrevet.',
+    failed:'Eksempelfilerne kunne ikke kopieres: {{error}}'
+  }),
+  fr:Object.freeze({
+    name:'Fichiers d’exemple pour Obsidian Bases',
+    description:'Copie les exemples Markdown et Bases canoniques dans {{path}}. Rien n’est copié automatiquement.',
+    button:'Copier les exemples…',
+    confirm:'Copier les fichiers d’exemple dans {{path}} ? Les fichiers existants portant les mêmes noms d’exemple dans ce dossier seront remplacés. Les autres fichiers du dossier ne seront pas modifiés.',
+    success:'{{count}} fichiers d’exemple copiés dans {{path}}. {{overwritten}} fichier(s) d’exemple existant(s) ont été remplacés.',
+    failed:'Impossible de copier les fichiers d’exemple : {{error}}'
+  })
+});
+
+function metadataExampleUiText(i18n, key, params = {}) {
+  const locale = i18n?.getResolvedLanguage?.() || 'en';
+  const dictionary = PDFIUM_EXAMPLE_INSTALLER_TEXT[locale] || PDFIUM_EXAMPLE_INSTALLER_TEXT.en;
+  const template = dictionary[key] || PDFIUM_EXAMPLE_INSTALLER_TEXT.en[key] || key;
+  return String(template).replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (_match,name) => {
+    return Object.prototype.hasOwnProperty.call(params,name) ? String(params[name]) : `{{${name}}}`;
+  });
+}
 
 function metadataExampleReadmeMarkdown() {
   return `# PDFium Gate examples
 
-This folder is created once by PDFium Gate Test so you can inspect the plugin's metadata model with ordinary Obsidian files.
+This folder contains optional PDFium Gate examples for inspecting the plugin's metadata model with ordinary Obsidian files.
 
 The files in this folder are **examples only**. They are deliberately stored outside \`PDF Metadata/\`, so PDFium Gate does not index them as real document records. Obsidian Bases can still read their YAML/frontmatter directly.
 
@@ -22,7 +89,7 @@ The files in this folder are **examples only**. They are deliberately stored out
 
 Do not move these example Markdown files unchanged into \`PDF Metadata/\`. They contain fixed sample UUIDs and placeholder PDF links.
 
-PDFium Gate never overwrites files in this example folder. You may edit, rename, copy, or delete them. The initial example set is copied only once for this example-set version.
+The examples are copied only when you choose the example-file action in PDFium Gate Settings. Running that action again restores the canonical example set and overwrites these four example filenames after an explicit warning. Other files in this folder are not changed.
 `;
 }
 
@@ -110,9 +177,11 @@ function metadataExampleFiles() {
 
 module.exports = {
   PDFIUM_EXAMPLES_ROOT,
-  PDFIUM_EXAMPLES_BOOTSTRAP_VERSION,
   PDFIUM_EXAMPLE_ACTIVE_RECORD_ID,
   PDFIUM_EXAMPLE_MISSING_RECORD_ID,
+  PDFIUM_EXAMPLE_INSTALLER_LOCALES,
+  PDFIUM_EXAMPLE_INSTALLER_TEXT,
+  metadataExampleUiText,
   metadataExampleReadmeMarkdown,
   metadataExampleActiveRecordMarkdown,
   metadataExampleMissingRecordMarkdown,
