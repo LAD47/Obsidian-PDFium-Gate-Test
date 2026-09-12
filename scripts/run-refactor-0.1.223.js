@@ -60,6 +60,15 @@ replaceRegion(
 );
 
 replaceRegion(
+  "if(!activeExample.includes('filemeta_profile: document'))",
+  "console.log('File metadata foundation OK",
+  [
+    "if(!activeExample.includes('filemeta_profile:') || !activeExample.includes('document')) fail('active example lacks document profile');",
+    "if(!baseExample.includes('filemeta_profile') || !baseExample.includes('document')) fail('example Base lacks document profile filter');"
+  ]
+);
+
+replaceRegion(
   '// Active source/docs must no longer define or document the old persisted namespace/root.',
   "console.log('Prepared 0.1.223 file-type-neutral metadata foundation.');",
   [
