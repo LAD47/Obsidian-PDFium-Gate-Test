@@ -26,6 +26,7 @@ const activeExample = read('docs/examples/Example - Active PDF record.md');
 const missingExample = read('docs/examples/Example - Missing PDF record.md');
 const baseExample = read('docs/examples/Example PDF Document Register.base');
 const schemaFeature = read('src/plugin/features/14-metadata-schema.js');
+const basesFeature = read('src/plugin/features/18-document-register-bases.js');
 
 for (const field of expectedFields) {
   if (!schemaSource.includes(`property:'${field}'`)) fail(`factory schema is missing ${field}`);
@@ -47,10 +48,12 @@ if (!templateSource.includes(`const PDFIUM_EXAMPLES_ROOT = '${examplesRoot}'`)) 
 if (!baseExample.includes(`file.inFolder(\\\"${examplesRoot}\\\")`)) fail('native Base does not filter the example folder');
 if (!baseExample.includes('- type: table')) fail('example Base must use native Obsidian table view');
 if (baseExample.includes('pdfium-document-register')) fail('example Base must not depend on the custom PDFium Gate view');
-if (!schemaFeature.includes('`${METADATA_SCHEMA_ROOT}/example-files-bootstrap.json`')) fail('one-time bootstrap marker is missing');
-if (!schemaFeature.includes('if (installedVersion >= PDFIUM_EXAMPLES_BOOTSTRAP_VERSION)')) fail('versioned one-time bootstrap guard is missing');
-if (!schemaFeature.includes('if (read.getAbstractFileByPath(example.path))')) fail('existing-file skip guard is missing');
-if (!schemaFeature.includes('await write.createText(example.path, example.content)')) fail('example creation path is missing');
-if (schemaFeature.includes('modifyText(example.path')) fail('example bootstrap must never overwrite existing files');
+if (!basesFeature.includes('`${METADATA_SCHEMA_ROOT}/example-files-bootstrap.json`')) fail('one-time bootstrap marker is missing');
+if (!basesFeature.includes('if (installedVersion >= PDFIUM_EXAMPLES_BOOTSTRAP_VERSION)')) fail('versioned one-time bootstrap guard is missing');
+if (!basesFeature.includes('if (read.getAbstractFileByPath(example.path))')) fail('existing-file skip guard is missing');
+if (!basesFeature.includes('await write.createText(example.path, example.content)')) fail('example creation path is missing');
+if (basesFeature.includes('modifyText(example.path')) fail('example bootstrap must never overwrite existing files');
+if (!basesFeature.includes('void this.ensureExampleFiles();')) fail('example bootstrap is not started by the Bases owner');
+if (schemaFeature.includes('ensureExampleFiles') || schemaFeature.includes('example-files-bootstrap')) fail('metadata schema owner must remain isolated from example Vault writes');
 
 console.log(`Example files OK: ${expectedFields.length} factory fields, native Base root, one-time non-overwrite bootstrap contract.`);
