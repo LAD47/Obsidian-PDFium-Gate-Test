@@ -1,9 +1,9 @@
 {
   "id": "obsidian-pdfium-gate-test",
   "name": "PDFium Gate Test",
-  "version": "0.1.221",
+  "version": "0.1.222",
   "minAppVersion": "1.13.7",
-  "description": "PDFium Gate test build 0.1.221 - multilingual expansion with seven fully supported UI languages.",
+  "description": "PDFium Gate test build 0.1.222 - canonical Markdown/Bases examples with safe one-time Vault bootstrap.",
   "author": "OpenAI / test build",
   "isDesktopOnly": true
 }
