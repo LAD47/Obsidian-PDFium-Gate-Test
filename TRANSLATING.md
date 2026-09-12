@@ -1,15 +1,18 @@
 # Translating PDFium Gate Test
 
-English (`src/i18n/en.json`) is the canonical translation source. Other locale files may be incomplete; missing strings fall back to English.
+English (`src/i18n/en.json`) is the canonical translation source. The officially supported UI locales are English (`en`), Norwegian Bokmål (`nb`), German (`de`), Spanish (`es`), Swedish (`sv`), Danish (`da`), and French (`fr`). Every officially supported locale must contain the complete canonical key set and pass `npm run check:i18n` with 100% coverage.
+
+English remains the runtime fallback if a translation key is unexpectedly unavailable. Unsupported Obsidian UI languages also fall back to English when the plugin language setting is `Auto`.
 
 ## Add or improve a translation
 
-1. Copy `src/i18n/en.json` to a locale file such as `de.json`.
+1. Copy `src/i18n/en.json` to a locale file such as `it.json` when starting a new language.
 2. Translate only the values on the right-hand side.
 3. Keep every translation key unchanged.
 4. Keep placeholders such as `{{format}}`, `{{type}}`, and `{{value}}` unchanged.
-5. Run `npm run check:i18n` before opening a pull request.
-6. Run `npm run check:i18n-ui` if your change touches an already-migrated UI surface.
+5. Complete the full canonical key set before adding the locale to the official supported-language list.
+6. Run `npm run check:i18n` before opening a pull request.
+7. Run `npm run check:i18n-ui` if your change touches an already-migrated UI surface.
 
 ## Do not translate
 
@@ -25,15 +28,15 @@ English (`src/i18n/en.json`) is the canonical translation source. Other locale f
 
 Source-code identifiers, technical comments, architecture documentation, and contributor documentation use English. User-facing interface text belongs in the i18n locale files.
 
-## Partial translations are welcome
+## Coverage policy
 
-A locale does not need 100% coverage to be useful. Missing keys fall back to English. Unknown keys and placeholder mismatches are rejected by `npm run check:i18n`.
+Officially supported locales are release-gated at 100% coverage. Missing keys, unknown keys, duplicate keys, invalid JSON, and placeholder mismatches fail `npm run check:i18n`.
 
+A proposed new language can be developed in a pull request, but it should not be added to the official runtime locale list until the canonical key set is complete. This keeps the language selector honest: every language shown there is intended to provide the full plugin interface rather than a partial translation.
 
 ## UI migration protection
 
 `npm run check:i18n-ui` prevents hard-coded user-facing text from re-entering modules that have already been migrated. The protected set grows module-by-module during the initial internationalization work. See `I18N-AUDIT.md` for the current migration inventory.
-
 
 ### Commands and diagnostics
 Translate Command Palette display names and user-facing diagnostic labels/buttons. Never translate command IDs, JSON diagnostic keys, UUIDs, paths, `pdfmeta_*` properties, or canonical machine values.
