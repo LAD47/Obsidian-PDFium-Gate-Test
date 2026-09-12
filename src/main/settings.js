@@ -16,6 +16,7 @@ class PdfiumGateSettingsTab extends PluginSettingTab {
     containerEl.createEl('h2', { text: 'PDFium Gate Test' });
 
     const t=(key,params)=>this.plugin.i18n?.t?.(key,params) || key;
+    const exampleText=(key,params)=>metadataExampleUiText(this.plugin.i18n,key,params);
     containerEl.createEl('h3', { text: t('settings.language.section') });
     new Setting(containerEl)
       .setName(t('settings.language.name'))
@@ -108,6 +109,29 @@ class PdfiumGateSettingsTab extends PluginSettingTab {
           await this.saveSetting('hideDocumentMetadataFilesInExplorer', !!value);
           this.plugin.ports.applyDocumentRecordVisibility();
         }));
+
+    new Setting(containerEl)
+      .setName(exampleText('name'))
+      .setDesc(exampleText('description',{path:PDFIUM_EXAMPLES_ROOT}))
+      .addButton(button => button.setButtonText(exampleText('button')).onClick(async () => {
+        const confirmed=window.confirm(exampleText('confirm',{path:PDFIUM_EXAMPLES_ROOT}));
+        if(!confirmed) return;
+        button.setDisabled(true);
+        try {
+          const result=await this.plugin.ports.installMetadataExampleFiles();
+          if(!result?.ok) throw new Error(result?.error || 'Unknown error');
+          new Notice(exampleText('success',{
+            path:PDFIUM_EXAMPLES_ROOT,
+            count:result.total,
+            overwritten:result.overwritten.length
+          }),8000);
+        } catch(error) {
+          const message=error instanceof Error ? error.message : String(error);
+          new Notice(exampleText('failed',{error:message}),10000);
+        } finally {
+          button.setDisabled(false);
+        }
+      }));
 
     containerEl.createEl('h3', { text: t('settings.documentRegister.section') });
 
