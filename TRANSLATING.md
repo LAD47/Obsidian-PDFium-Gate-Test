@@ -36,9 +36,12 @@ A proposed new language can be developed in a pull request, but it should not be
 
 ## UI migration protection
 
-`npm run check:i18n-ui` prevents hard-coded user-facing text from re-entering modules that have already been migrated. The protected set grows module-by-module during the initial internationalization work. See `I18N-AUDIT.md` for the current migration inventory.
+`npm run check:i18n-ui` prevents hard-coded user-facing text from re-entering modules that have already been migrated. The current automated gate is the authoritative protection for migrated UI surfaces.
+
+The earlier migration inventory is preserved for historical context at [`docs/history/i18n/I18N-AUDIT.md`](docs/history/i18n/I18N-AUDIT.md). It documents the staged migration and therefore contains some requirements that were later completed or superseded.
 
 ### Commands and diagnostics
+
 Translate Command Palette display names and user-facing diagnostic labels/buttons. Never translate command IDs, JSON diagnostic keys, UUIDs, paths, `pdfmeta_*` properties, or canonical machine values.
 
 ## Factory defaults and persistent labels
