@@ -29,3 +29,24 @@ v1 field types are text, date, time, integer, decimal, boolean, select, multisel
 ## Canonical factory defaults
 
 Factory-created persistent defaults are canonical English and are not i18n-owned UI text. The standard schema contains nine fields: `document_date`, `document_time`, `sender`, `document_type`, `response_received`, `response_received_date`, `response_sent`, `response_sent_date`, and `response_sent_link`. Labels remain freely user-editable after creation; stable field UUIDs, properties and select machine values do not change when labels change.
+
+## Planned pre-beta multi-file-type metadata direction
+
+The current implementation is PDF-specific, including the reserved `pdfmeta_*` system namespace and `.pdf-metadata` technical storage names. Before public beta, new metadata code should be shaped so that PDF is the first supported type rather than the permanent architectural boundary.
+
+The intended internal model is:
+
+- one file-type-neutral system metadata layer;
+- a file/content type that identifies the underlying format or handling class;
+- a metadata profile that defines the meaningful user fields for that kind of content;
+- one ordinary Markdown/YAML record model and the same validation/persistence machinery across profiles.
+
+The reserved technical namespace should therefore move toward a generic `filemeta_*` form before public beta while destructive pre-release schema changes are still acceptable. The exact migration/build step must be implemented and verified as explicit product work; documentation of this direction does not change the current 0.1.222 runtime by itself.
+
+File type and metadata profile must remain separate. For example, HTML is a file type, while a saved web page is a metadata profile. PDF is a file type, while a document-oriented profile can expose fields such as `document_date`, `sender` and `document_type`. Image formats can later use an image-oriented profile with fields such as creator, captured date, caption, source and rights without forcing those fields into PDF records.
+
+User-facing terminology should follow the content, not the internal architecture. Normal users should see concepts such as **Document information**, **Web page information** and **Image information** rather than being required to understand system namespaces, schema inheritance or metadata-profile mechanics.
+
+Profiles may reuse natural technical property names where useful (`author`, `title`, `published_date`, `source_url`, `sender`, `document_date`) instead of embedding the file type in every property name. Stable field UUIDs remain the durable identity mechanism inside each schema/profile. User-editable labels remain presentation, not identity.
+
+Do not create one universal schema containing every field for every future content type. Each profile should expose only the fields that make sense for that content while reusing the common field type registry, validation semantics, safe persistence path and ordinary Markdown/YAML source-of-truth model.
