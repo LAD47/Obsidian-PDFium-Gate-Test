@@ -46,5 +46,24 @@ replaceRegion(
   ]
 );
 
+replaceRegion(
+  '// Active source/docs must no longer define or document the old persisted namespace/root.',
+  "console.log('Prepared 0.1.223 file-type-neutral metadata foundation.');",
+  [
+    '// Audit actual persistence and shipped examples, while allowing tests/docs to mention',
+    '// the old pre-release format when explicitly proving that it is rejected.',
+    "const repositorySource=read('src/metadata/record-repository.js');",
+    "if(repositorySource.includes('frontmatter.pdfmeta_')) throw new Error('record repository still writes old pdfmeta_ fields');",
+    "if(repositorySource.includes('pdfmeta_file=')) throw new Error('record repository still writes old pdfmeta_file');",
+    "const registerSource=read('src/metadata/document-register-base-config.js');",
+    "if(registerSource.includes('pdfmeta_') || registerSource.includes('PDF Metadata') || registerSource.includes('pdf_document')) throw new Error('standard Base still targets old record identity');",
+    "for(const rel of ['docs/examples/Example - Active PDF record.md','docs/examples/Example - Missing PDF record.md','docs/examples/Example PDF Document Register.base']) {",
+    '  const text=read(rel);',
+    "  if(text.includes('pdfmeta_') || text.includes('PDF Metadata') || text.includes('pdf_document')) throw new Error(rel+': shipped example still contains old record identity');",
+    '}',
+    ''
+  ]
+);
+
 fs.writeFileSync(helper,source,'utf8');
 require(helper);
