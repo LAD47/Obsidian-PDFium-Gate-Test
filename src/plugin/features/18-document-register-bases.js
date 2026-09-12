@@ -1,6 +1,53 @@
 'use strict';
 
 class DocumentRegisterBasesFeature {
+  async ensureExampleFiles() {
+    const statePath = `${METADATA_SCHEMA_ROOT}/example-files-bootstrap.json`;
+    const store = this.obsidianAdapterFileStore;
+    const read = this.obsidianVaultReadAdapter;
+    const write = this.obsidianVaultWriteAdapter;
+    if (!store || !read || !write) return {ok:false,error:'vault adapters unavailable'};
+
+    try {
+      let installedVersion = 0;
+      if (await store.exists(statePath)) {
+        try {
+          const parsed = JSON.parse(await store.readText(statePath));
+          installedVersion = Number(parsed?.example_set_version || 0);
+        } catch (_) {
+          installedVersion = 0;
+        }
+      }
+      if (installedVersion >= PDFIUM_EXAMPLES_BOOTSTRAP_VERSION) {
+        return {ok:true,alreadyInstalled:true,created:[],skipped:[],version:installedVersion};
+      }
+
+      const rootEntry = read.getAbstractFileByPath(PDFIUM_EXAMPLES_ROOT);
+      if (rootEntry && !Array.isArray(rootEntry.children)) {
+        throw new Error(`${PDFIUM_EXAMPLES_ROOT} exists but is not a folder`);
+      }
+      if (!rootEntry) await write.ensureFolder(PDFIUM_EXAMPLES_ROOT);
+
+      const created=[];
+      const skipped=[];
+      for (const example of metadataExampleFiles()) {
+        if (read.getAbstractFileByPath(example.path)) {
+          skipped.push(example.path);
+          continue;
+        }
+        await write.createText(example.path, example.content);
+        created.push(example.path);
+      }
+
+      await store.writeText(statePath, `${JSON.stringify({format_version:1,example_set_version:PDFIUM_EXAMPLES_BOOTSTRAP_VERSION},null,2)}\n`);
+      return {ok:true,alreadyInstalled:false,created,skipped,version:PDFIUM_EXAMPLES_BOOTSTRAP_VERSION};
+    } catch (error) {
+      const message=error instanceof Error ? error.message : String(error);
+      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] Could not install example files: ${message}`);
+      return {ok:false,error:message};
+    }
+  }
+
   async ensureStandardPdfDocumentRegisterBase() {
     const path = PDF_DOCUMENT_REGISTER_STANDARD_BASE_PATH;
     const existing = this.obsidianVaultReadAdapter?.getAbstractFileByPath?.(path) || null;
@@ -53,6 +100,7 @@ class DocumentRegisterBasesFeature {
   }
 
   registerPdfDocumentRegisterBasesView() {
+    void this.ensureExampleFiles();
     if (!this.obsidianPluginRegistrationAdapter || typeof this.obsidianPluginRegistrationAdapter.registerBasesView !== 'function') {
       return { ok:false, registered:false, reason:'bases-registration-adapter-unavailable' };
     }
