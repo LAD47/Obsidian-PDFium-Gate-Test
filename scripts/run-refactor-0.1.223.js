@@ -11,6 +11,11 @@ function replaceRegion(startMarker,endMarker,lines) {
   if(end<0) throw new Error('end marker missing: '+endMarker);
   source=source.slice(0,start)+lines.join('\n')+'\n'+source.slice(end);
 }
+function insertBefore(marker,lines) {
+  const at=source.indexOf(marker);
+  if(at<0) throw new Error('insert marker missing: '+marker);
+  source=source.slice(0,at)+lines.join('\n')+'\n'+source.slice(at);
+}
 
 replaceRegion(
   '// The standard PDF document register is a profile-specific view over the generic',
@@ -55,6 +60,21 @@ replaceRegion(
     "  \"if (!baseExample.includes('- type: table')) fail('example Base must use native Obsidian table view');\",",
     "  \"if (!baseExample.includes('filemeta_profile') || !baseExample.includes('document')) fail('native Base must filter the document profile');\\nif (!baseExample.includes('- type: table')) fail('example Base must use native Obsidian table view');\"",
     ');',
+    ''
+  ]
+);
+
+insertBefore(
+  '// Version bump is source-only here; generated runtime stays out of this refactor commit.',
+  [
+    '// Synchronize the existing strict DocumentRecords verifier with the intentional 0.2 record contract.',
+    "replaceRequired('scripts/verify/contracts/16-document-records.js', `if(recordApi.METADATA_RECORD_CONTRACT_VERSION!=='0.1')`, `if(recordApi.METADATA_RECORD_CONTRACT_VERSION!=='0.2')`);",
+    "replaceRequired('scripts/verify/contracts/16-document-records.js', `if(recordApi.METADATA_RECORD_FORMAT_VERSION!==1)`, `if(recordApi.METADATA_RECORD_FORMAT_VERSION!==2)`);",
+    "replaceRequired('scripts/verify/contracts/16-document-records.js', `    'filemeta_type: \"pdf\"',`, `    'filemeta_type: \"pdf\"',\\n    'filemeta_profile: \"document\"',`);",
+    "replaceRequired('scripts/verify/contracts/16-document-records.js', `    'filemeta_version: 1',`, `    'filemeta_version: 2',`);",
+    "replaceRequired('scripts/verify/contracts/16-document-records.js', `    filemeta_type:'pdf',filemeta_version:1,filemeta_id:id,filemeta_file:'[[Cases/2016/example.pdf]]',filemeta_status:'active',`, `    filemeta_type:'pdf',filemeta_profile:'document',filemeta_version:2,filemeta_id:id,filemeta_file:'[[Cases/2016/example.pdf]]',filemeta_status:'active',`);",
+    "replaceRequired('scripts/verify/contracts/16-document-records.js', `if(repositoryApi.METADATA_RECORD_REPOSITORY_CONTRACT_VERSION!=='0.1')`, `if(repositoryApi.METADATA_RECORD_REPOSITORY_CONTRACT_VERSION!=='0.2')`);",
+    "replaceRequired('scripts/verify/contracts/16-document-records.js', `if(cacheApi.METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION!=='0.1')`, `if(cacheApi.METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION!=='0.2')`);",
     ''
   ]
 );
