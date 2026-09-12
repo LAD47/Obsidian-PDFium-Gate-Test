@@ -92,7 +92,7 @@ module.exports=function verifyI18nContract(){
     const locale=JSON.parse(read(`src/i18n/${localeName}.json`));
     if(Object.keys(locale).some(key=>key.startsWith('factory.'))) fail(`factory defaults leaked into ${localeName} UI translation keys`);
   }
-  if(!settings.includes('settings.language.reloadNote')||settings.includes('setRequestedLanguage(')) fail('language change must remain reload-consistent rather than partially switching runtime UI');
+  if(settings.includes('settings.language.reloadNote')||!settings.includes('setRequestedLanguage(')||!settings.includes("refreshDocumentInfoViews?.('ui-language-change')")||!view.includes('refreshLocalizedUi()')) fail('language change must apply immediately to live Settings/PDF/DocumentInfo UI');
 
   for(const key of Object.keys(resolver)) delete global[key];
   return {
@@ -120,6 +120,7 @@ module.exports=function verifyI18nContract(){
     benchmarkUiLocalized:true,
     canonicalEnglishFactoryDefaults:true,
     persistedLabelsRemainUserOwned:true,
-    reloadConsistentLanguageSwitch:true
+    liveUiLanguageSwitch:true,
+    commandPaletteRefreshRequiresPluginReload:true
   };
 };
