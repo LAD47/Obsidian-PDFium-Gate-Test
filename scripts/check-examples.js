@@ -47,7 +47,7 @@ if (!templateSource.includes(`const PDFIUM_EXAMPLES_ROOT = '${examplesRoot}'`)) 
 if (!baseExample.includes(`file.inFolder(\\\"${examplesRoot}\\\")`)) fail('native Base does not filter the example folder');
 if (!baseExample.includes('- type: table')) fail('example Base must use native Obsidian table view');
 if (baseExample.includes('pdfium-document-register')) fail('example Base must not depend on the custom PDFium Gate view');
-if (!schemaFeature.includes(".pdf-metadata/example-files-bootstrap.json")) fail('one-time bootstrap marker is missing');
+if (!schemaFeature.includes('`${METADATA_SCHEMA_ROOT}/example-files-bootstrap.json`')) fail('one-time bootstrap marker is missing');
 if (!schemaFeature.includes('if (installedVersion >= PDFIUM_EXAMPLES_BOOTSTRAP_VERSION)')) fail('versioned one-time bootstrap guard is missing');
 if (!schemaFeature.includes('if (read.getAbstractFileByPath(example.path))')) fail('existing-file skip guard is missing');
 if (!schemaFeature.includes('await write.createText(example.path, example.content)')) fail('example creation path is missing');
