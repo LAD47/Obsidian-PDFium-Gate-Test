@@ -47,6 +47,19 @@ replaceRegion(
 );
 
 replaceRegion(
+  "replaceRequired(\n  'scripts/check-examples.js',\n  \"if (!baseExample.includes('- type: table'))",
+  '// Version bump is source-only here; generated runtime stays out of this refactor commit.',
+  [
+    'replaceRequired(',
+    "  'scripts/check-examples.js',",
+    "  \"if (!baseExample.includes('- type: table')) fail('example Base must use native Obsidian table view');\",",
+    "  \"if (!baseExample.includes('filemeta_profile') || !baseExample.includes('document')) fail('native Base must filter the document profile');\\nif (!baseExample.includes('- type: table')) fail('example Base must use native Obsidian table view');\"",
+    ');',
+    ''
+  ]
+);
+
+replaceRegion(
   '// Active source/docs must no longer define or document the old persisted namespace/root.',
   "console.log('Prepared 0.1.223 file-type-neutral metadata foundation.');",
   [
