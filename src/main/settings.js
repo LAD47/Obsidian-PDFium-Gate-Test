@@ -118,7 +118,7 @@ class PdfiumGateSettingsTab extends PluginSettingTab {
         if(!confirmed) return;
         button.setDisabled(true);
         try {
-          const result=await this.plugin.ports.installMetadataExampleFiles();
+          const result=await installMetadataExampleFiles(this.plugin.obsidianVaultReadAdapter,this.plugin.obsidianVaultWriteAdapter);
           if(!result?.ok) throw new Error(result?.error || 'Unknown error');
           new Notice(exampleText('success',{
             path:PDFIUM_EXAMPLES_ROOT,

@@ -33,6 +33,7 @@ const fragments = [
   read('src/main/pdfium-gate-view.js'),
   read('src/main/metadata-schema-modal.js'),
   read('src/main/pdf-document-register-bases-view.js'),
+  read('src/main/example-files-installer.js'),
   read('src/main/settings.js'),
   buildPluginSource(ROOT)
 ];
