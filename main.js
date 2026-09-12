@@ -120,7 +120,7 @@ const nodeFsModule = require('fs');
 
 const VIEW_TYPE = 'pdfium-gate-test-view';
 const PDF_EXTENSION = 'pdf';
-const PLUGIN_VERSION = '0.1.219';
+const PLUGIN_VERSION = '0.1.220';
 const OBSIDIAN_RUNTIME_VERSION = obsidianModule?.version || obsidianModule?.apiVersion || null;
 const PLATFORM_CONTRACT_VERSION = '0.1';
 
@@ -5272,6 +5272,19 @@ class PdfiumGateView extends FileView {
     return { stage, loading };
   }
 
+  refreshLocalizedUi() {
+    const t=(key,params)=>this.plugin.i18n?.t?.(key,params) || key;
+    try { this.contentEl?.querySelector?.('.pdfium-gate-version-main')?.setText?.(t('pdfView.banner',{version:PLUGIN_VERSION})); } catch (_) {}
+    try { this.contentEl?.querySelector?.('.pdfium-gate-version-hint')?.setText?.(t('pdfView.bannerHint')); } catch (_) {}
+    try { this.contentEl?.querySelector?.('.pdfium-gate-focus-diagnostic-button')?.setText?.(t('pdfView.openDiagnostics')); } catch (_) {}
+    try { this.contentEl?.querySelector?.('.pdfium-gate-title')?.setText?.(t('pdfView.title',{version:PLUGIN_VERSION})); } catch (_) {}
+    try {
+      if (this.viewerEl && this.file) this.viewerEl.setAttribute('title',t('pdfView.frameTitle',{name:this.file.basename}));
+    } catch (_) {}
+    try { this.plugin?.ports?.renderDocumentInfoForView?.(this); } catch (_) {}
+    return true;
+  }
+
   async renderFullPage(file, page = 1, navigationState = null, linkLocator = null) {
     this.mode = 'full';
     if (file && file.path) this.plugin.state.navigation.lastKnownPdfFilePath = file.path;
@@ -6423,13 +6436,23 @@ class PdfiumGateSettingsTab extends PluginSettingTab {
     containerEl.createEl('h3', { text: t('settings.language.section') });
     new Setting(containerEl)
       .setName(t('settings.language.name'))
-      .setDesc(`${t('settings.language.description')} ${t('settings.language.reloadNote')}`)
+      .setDesc(t('settings.language.description'))
       .addDropdown(dropdown => dropdown
         .addOption('auto',t('settings.language.followObsidian'))
         .addOption('en',t('settings.language.english'))
         .addOption('nb',t('settings.language.norwegianBokmal'))
         .setValue(pdfiumNormalizeLanguageSetting(this.plugin.settings?.uiLanguage || 'auto'))
-        .onChange(async value => { await this.saveSetting('uiLanguage', pdfiumNormalizeLanguageSetting(value)); }));
+        .onChange(async value => {
+          const normalized=pdfiumNormalizeLanguageSetting(value);
+          this.plugin.i18n?.setRequestedLanguage?.(normalized);
+          await this.saveSetting('uiLanguage', normalized);
+          try {
+            const leaves=this.app.workspace?.getLeavesOfType?.(VIEW_TYPE) || [];
+            for(const leaf of leaves) leaf?.view?.refreshLocalizedUi?.();
+          } catch (_) {}
+          try { this.plugin.ports?.refreshDocumentInfoViews?.('ui-language-change'); } catch (_) {}
+          this.display();
+        }));
 
     containerEl.createEl('h3', { text: t('settings.pdf.section') });
 
