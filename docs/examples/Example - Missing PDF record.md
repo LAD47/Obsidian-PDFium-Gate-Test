@@ -1,9 +1,10 @@
 ---
-pdfmeta_type: "pdf_document"
-pdfmeta_version: 1
-pdfmeta_id: "22222222-2222-4222-8222-222222222222"
-pdfmeta_file: "[[Example Documents/missing-example-decision.pdf]]"
-pdfmeta_status: "missing"
+filemeta_type: "pdf"
+filemeta_profile: "document"
+filemeta_version: 1
+filemeta_id: "22222222-2222-4222-8222-222222222222"
+filemeta_file: "[[Example Documents/missing-example-decision.pdf]]"
+filemeta_status: "missing"
 document_date: 2015-11-02
 sender: "Example Public Office"
 document_type: "decision"

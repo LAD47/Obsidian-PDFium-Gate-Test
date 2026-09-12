@@ -9,6 +9,6 @@ const nodeFsModule = require('fs');
 
 const VIEW_TYPE = 'pdfium-gate-test-view';
 const PDF_EXTENSION = 'pdf';
-const PLUGIN_VERSION = '0.1.222';
+const PLUGIN_VERSION = '0.1.223';
 const OBSIDIAN_RUNTIME_VERSION = obsidianModule?.version || obsidianModule?.apiVersion || null;
 const PLATFORM_CONTRACT_VERSION = '0.1';

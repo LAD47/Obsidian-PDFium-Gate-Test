@@ -25,8 +25,9 @@ function metadataDocumentRegisterStandardBaseYaml(schema) {
     '# The plugin will not overwrite later changes to this file.', 
     'filters:',
     '  and:',
-    `    - ${metadataDocumentRegisterYamlString('file.inFolder("PDF Metadata")')}`,
-    `    - ${metadataDocumentRegisterYamlString('pdfmeta_type == "pdf_document"')}`,
+    `    - ${metadataDocumentRegisterYamlString('file.inFolder("File Metadata")')}`,
+    `    - ${metadataDocumentRegisterYamlString('filemeta_type == "pdf"')}`,
+    `    - ${metadataDocumentRegisterYamlString('filemeta_profile == "document"')}`,
     'properties:'
   ];
 
@@ -34,17 +35,17 @@ function metadataDocumentRegisterStandardBaseYaml(schema) {
     lines.push(`  ${field.property}:`);
     lines.push(`    displayName: ${metadataDocumentRegisterYamlString(field.label)}`);
   }
-  lines.push('  pdfmeta_status:');
+  lines.push('  filemeta_status:');
   lines.push(`    displayName: ${metadataDocumentRegisterYamlString('Status')}`);
-  lines.push('  pdfmeta_file:');
+  lines.push('  filemeta_file:');
   lines.push(`    displayName: ${metadataDocumentRegisterYamlString('PDF')}`);
   lines.push('views:');
   lines.push(`  - type: ${PDF_DOCUMENT_REGISTER_BASE_VIEW_TYPE}`);
   lines.push(`    name: ${metadataDocumentRegisterYamlString(PDF_DOCUMENT_REGISTER_STANDARD_VIEW_NAME)}`);
   lines.push('    order:');
   for (const field of fields) lines.push(`      - ${field.property}`);
-  lines.push('      - pdfmeta_status');
-  lines.push('      - pdfmeta_file');
+  lines.push('      - filemeta_status');
+  lines.push('      - filemeta_file');
 
   const hasDocumentDate = fields.some(field => field.property === 'document_date');
   lines.push('    sort:');

@@ -106,7 +106,7 @@ Do not use diagnostics state, timer polling, duplicate `CustomEvent` injection o
 - exact focus return: `MainProcessTransport.focusPdfRuntime()` -> Main Bridge identity locator -> `ChromiumPdfRuntimeDriver.focusViewerRuntime()`
 - persistent record owner: `src/plugin/features/16-document-records.js`
 - record contract/repository: `src/metadata/record-contract.js` + `src/metadata/record-repository.js`
-- canonical records: `PDF Metadata/<UUID-prefix>/<pdfmeta_id>.md`
+- canonical records: `File Metadata/<UUID-prefix>/<filemeta_id>.md`
 - RAM cache/index only: `state.documentRecords.byPdfPath` + `state.documentRecords.byId`
 - PDF rename/delete lifecycle orchestration: `src/plugin/features/01-lifecycle.js` -> document-record ports
 
@@ -139,14 +139,14 @@ Do not use diagnostics state, timer polling, duplicate `CustomEvent` injection o
 - verification: `scripts/verify/contracts/19-metadata-benchmark.js`
 
 Benchmark fixture root: `PDFium Benchmark/`.
-Fixture records remain canonical Markdown under `PDF Metadata/<shard>/<uuid>.md`.
+Fixture records remain canonical Markdown under `File Metadata/<shard>/<uuid>.md`.
 
 ## Document-record startup cache (0.1.201)
 
 - Persistent acceleration file: `.pdf-metadata/document-record-index-cache.json`
 - Owner: `DocumentRecordsFeature`
 - Cache contract: `src/metadata/record-index-cache.js`
-- Source of truth remains `PDF Metadata/**/*.md`.
+- Source of truth remains `File Metadata/**/*.md`.
 - Benchmark metrics: `cacheLoadMs`, `cacheHits`, `cacheMisses`, `diskReadParseMs`, `indexPopulateMs`, `cacheWriteMs`.
 - Delete the cache file to force a full Markdown parse on next startup.
 

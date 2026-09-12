@@ -51,7 +51,7 @@ Cold/full rebuild timing is recorded by the existing `rebuildDocumentRecordIndex
 
 Bulk fixture generation uses direct filesystem writes solely to avoid turning 10k–100k fixture creation events into the benchmark itself. Marked benchmark UUIDs and the dedicated `PDFium Benchmark/` PDF root allow lifecycle suppression to be scoped to benchmark fixtures. Suppression is reset naturally by plugin restart. Measurement must be performed after restart so Obsidian has discovered the files and the canonical cold index is built from disk.
 
-Cleanup is fail-closed: the dedicated root is only recursively removed when a valid benchmark manifest marker is present, and metadata record deletion uses deterministic benchmark UUID paths. Ordinary `PDF Metadata` records are never selected by root-wide deletion.
+Cleanup is fail-closed: the dedicated root is only recursively removed when a valid benchmark manifest marker is present, and metadata record deletion uses deterministic benchmark UUID paths. Ordinary `File Metadata` records are never selected by root-wide deletion.
 
 The benchmark layer must remain removable without changing record format, schema, DocumentInfo, Bases editing, PDF identity, RuntimeDriver, selection or annotation behavior.
 

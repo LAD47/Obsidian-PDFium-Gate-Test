@@ -6,22 +6,22 @@ Markdown/YAML document records are the permanent metadata source of truth. Index
 
 `src/plugin/features/16-document-records.js` is the single owner of per-PDF metadata-record identity, persistence orchestration and RAM indexing. It consumes the canonical schema through a port and does not call back into DocumentInfo; lifecycle owns cross-feature refresh orchestration so the feature graph remains acyclic.
 
-Permanent records are ordinary Markdown notes under `PDF Metadata/<first-two-UUID-hex>/<pdfmeta_id>.md`. The root remains a normal indexed vault folder so Obsidian properties and Bases can consume the records. Since 0.1.195, the root may be visually hidden from File Explorer by a presentation-only feature; it is not moved into a dot-folder or excluded from indexing. `.pdf-metadata/` remains reserved for hidden technical config and backup.
+Permanent records are ordinary Markdown notes under `File Metadata/<first-two-UUID-hex>/<filemeta_id>.md`. The root remains a normal indexed vault folder so Obsidian properties and Bases can consume the records. Since 0.1.195, the root may be visually hidden from File Explorer by a presentation-only feature; it is not moved into a dot-folder or excluded from indexing. `.pdf-metadata/` remains reserved for hidden technical config and backup.
 
-Each record has stable UUID v4 identity and canonical system properties `pdfmeta_type`, `pdfmeta_version`, `pdfmeta_id`, `pdfmeta_file`, and `pdfmeta_status`. `pdfmeta_file` is an Obsidian wikilink to the PDF. User metadata values use the schema properties directly. Markdown/YAML is source of truth; `state.documentRecords` is cache/index only.
+Each record has stable UUID v4 identity and canonical system properties `filemeta_type`, `filemeta_version`, `filemeta_id`, `filemeta_file`, and `filemeta_status`. `filemeta_file` is an Obsidian wikilink to the PDF. User metadata values use the schema properties directly. Markdown/YAML is source of truth; `state.documentRecords` is cache/index only.
 
 The index has two canonical lookup directions: active unambiguous `byPdfPath` and unique `byId`. Duplicate active PDF-path bindings fail closed. Records are created lazily on first valid DocumentInfo save. Existing frontmatter updates use the `FileManager.processFrontMatter` platform adapter and are read back/validated before the index is replaced.
 
-Vault lifecycle listeners are installed only after workspace layout readiness. PDF rename/move updates the existing record's `pdfmeta_file`. PDF deletion retains the metadata note and changes status to `missing`; it is not automatically rebound if a different PDF later appears at the same path. Manual record create/modify/rename/delete updates only the affected index entries.
+Vault lifecycle listeners are installed only after workspace layout readiness. PDF rename/move updates the existing record's `filemeta_file`. PDF deletion retains the metadata note and changes status to `missing`; it is not automatically rebound if a different PDF later appears at the same path. Manual record create/modify/rename/delete updates only the affected index entries.
 
 ## Canonical record-link identity
 
-`pdfmeta_file` is a link representation, not a primary identity key. Obsidian may legitimately rewrite equivalent links between full-path and shortest-path forms.
+`filemeta_file` is a link representation, not a primary identity key. Obsidian may legitimately rewrite equivalent links between full-path and shortest-path forms.
 
 Canonical runtime rule:
 
 1. Physical Markdown/YAML remains source of truth for persisted record content.
-2. Parse `pdfmeta_file` as an Obsidian linkpath.
+2. Parse `filemeta_file` as an Obsidian linkpath.
 3. Resolve it using Obsidian link semantics from the metadata record source path.
 4. Use the resolved PDF `TFile.path` as the only `byPdfPath` identity key.
 5. Direct vault-path lookup is fallback only when link resolution is unavailable/not-found.
@@ -32,15 +32,15 @@ This rule is orthogonal to PDF runtime identity (`PDF token`, `processId + routi
 
 ## Document-record presentation visibility
 
-`src/plugin/features/17-document-record-visibility.js` owns only File Explorer presentation. It toggles the `pdfium-hide-document-records` body class according to the plugin setting `hideDocumentMetadataFilesInExplorer` (default true). `styles.css` scopes the rule to the standard File Explorer and the exact `data-path="PDF Metadata"` folder.
+`src/plugin/features/17-document-record-visibility.js` owns only File Explorer presentation. It toggles the `pdfium-hide-document-records` body class according to the plugin setting `hideDocumentMetadataFilesInExplorer` (default true). `styles.css` scopes the rule to the standard File Explorer and the exact `data-path="File Metadata"` folder.
 
-This owner must never participate in record persistence, record identity, RAM indexing, metadata parsing or lifecycle mutation. Disabling the setting or unloading the plugin removes the body class. Therefore an Obsidian DOM change is deliberately fail-open: `PDF Metadata` can become visible again, but the underlying indexed Markdown records remain untouched.
+This owner must never participate in record persistence, record identity, RAM indexing, metadata parsing or lifecycle mutation. Disabling the setting or unloading the plugin removes the body class. Therefore an Obsidian DOM change is deliberately fail-open: `File Metadata` can become visible again, but the underlying indexed Markdown records remain untouched.
 
 ## Missing-PDF / relink boundary
 
 Deletion breaks reliable file continuity, so document identity must remain fail-closed after a PDF is deleted. `DocumentRecordsFeature` retains the record as `missing` and must never reactivate it merely because a later create event produces the same path or filename.
 
-Move/rename inside the vault is different: Obsidian's rename event supplies both old and new path for the same file lifecycle event, so the existing record may be updated automatically while preserving `pdfmeta_id`.
+Move/rename inside the vault is different: Obsidian's rename event supplies both old and new path for the same file lifecycle event, so the existing record may be updated automatically while preserving `filemeta_id`.
 
 Manual relink is the only supported transition from `missing` back to `active` in 0.1.198. The custom Bases register presents **Koble til PDF…**, but the view is not a write owner. It sends `(recordId, targetPdfPath)` through the explicit `relinkMissingDocumentRecord` operation. `DocumentRecordsFeature` verifies unique record ID, `missing` status, target PDF existence, and absence of another active record binding before writing via the canonical repository and read-back verification.
 
@@ -48,7 +48,7 @@ Relink preserves the record UUID and all user metadata. Only the PDF binding and
 
 ## Disposable document-record index cache
 
-The canonical persistent document metadata remains ordinary Markdown/YAML under `PDF Metadata/`. A performance cache may exist at:
+The canonical persistent document metadata remains ordinary Markdown/YAML under `File Metadata/`. A performance cache may exist at:
 
 ```text
 .pdf-metadata/document-record-index-cache.json
@@ -62,7 +62,7 @@ Cache rules:
 - record/cache contract version mismatch invalidates the cache;
 - each entry is bound to canonical record path plus current `TFile.stat.mtime` and `TFile.stat.size`;
 - mismatch/missing fingerprint => read and parse the physical Markdown record;
-- cached record data never bypasses current Obsidian PDF-link resolution; `addDocumentRecordEntry` still resolves `pdfmeta_file` to canonical `TFile.path` on every RAM-index build;
+- cached record data never bypasses current Obsidian PDF-link resolution; `addDocumentRecordEntry` still resolves `filemeta_file` to canonical `TFile.path` on every RAM-index build;
 - cache write/read failure is fail-open for performance and must not fail metadata indexing;
 - cache entries are rebuilt/pruned from the current indexed Markdown file set.
 
@@ -82,7 +82,7 @@ This is an orchestration optimization only. Persistent Markdown/YAML remains sou
 
 The plugin ships a small canonical demonstration set under `docs/examples/`. The same set can be copied explicitly from plugin Settings to `Examples-Obsidian-PDFium-Gate/` in the user's Vault.
 
-Nothing is written to the Vault automatically for the example set. The example folder is deliberately outside `PDF Metadata/`. Example notes use valid record-shaped frontmatter and fixed sample UUIDs, but they are teaching/demo material and must never enter the production document-record index merely because they exist in the Vault. A native Obsidian Bases file in the example folder filters that folder directly and demonstrates that ordinary Markdown/YAML properties can be consumed without the PDFium Gate custom Bases view.
+Nothing is written to the Vault automatically for the example set. The example folder is deliberately outside `File Metadata/`. Example notes use valid record-shaped frontmatter and fixed sample UUIDs, but they are teaching/demo material and must never enter the production document-record index merely because they exist in the Vault. A native Obsidian Bases file in the example folder filters that folder directly and demonstrates that ordinary Markdown/YAML properties can be consumed without the PDFium Gate custom Bases view.
 
 Installer rules:
 
@@ -96,3 +96,7 @@ Installer rules:
 - running the action again is an intentional restore/update operation for the example set.
 
 The example set is not a source of truth for production records, does not change document identity, and must not participate in production record lifecycle events or indexing.
+
+## 0.1.223 file-neutral record identity
+
+Permanent records now live under `File Metadata/` and use `filemeta_type`, `filemeta_profile`, `filemeta_version`, `filemeta_id`, `filemeta_file` and `filemeta_status`. The current supported descriptor is only `pdf` + `document`. Runtime PDF code may use a `pdfPath` adapter alias internally, but that alias is not persisted and is not backward compatibility for the old `pdfmeta_*` format.

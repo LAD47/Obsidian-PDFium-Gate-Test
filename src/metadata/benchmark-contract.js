@@ -68,7 +68,7 @@ function metadataBenchmarkManifest(count, pluginVersion, targetCount = count) {
     target_count:target,
     complete:value===target,
     pdf_root:METADATA_BENCHMARK_PDF_ROOT,
-    metadata_root:typeof METADATA_RECORDS_ROOT!=='undefined' ? METADATA_RECORDS_ROOT : 'PDF Metadata',
+    metadata_root:typeof METADATA_RECORDS_ROOT!=='undefined' ? METADATA_RECORDS_ROOT : 'File Metadata',
     created_at:new Date().toISOString()
   };
 }

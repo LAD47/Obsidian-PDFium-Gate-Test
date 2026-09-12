@@ -1,7 +1,7 @@
 'use strict';
 
-const METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION='0.1';
-const METADATA_RECORD_INDEX_CACHE_FORMAT_VERSION=1;
+const METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION='0.2';
+const METADATA_RECORD_INDEX_CACHE_FORMAT_VERSION=2;
 const METADATA_RECORD_INDEX_CACHE_PATH='.pdf-metadata/document-record-index-cache.json';
 
 function createMetadataRecordIndexCache({fileStore,recordApi,cryptoApi}) {
@@ -27,14 +27,16 @@ function createMetadataRecordIndexCache({fileStore,recordApi,cryptoApi}) {
   function validateCachedRecord(record,recordPath) {
     if(!record || typeof record!=='object' || Array.isArray(record)) return null;
     const id=String(record.id||'').toLowerCase();
-    const pdfPath=recordApi.metadataRecordNormalizeVaultPath(record.pdfPath);
+    const fileType=String(record.fileType || recordApi.METADATA_RECORD_DEFAULT_FILE_TYPE);
+    const profile=String(record.profile || recordApi.METADATA_RECORD_DEFAULT_PROFILE);
+    const filePath=recordApi.metadataRecordNormalizeVaultPath(record.filePath || record.pdfPath);
     const status=String(record.status||'');
     const values=record.values && typeof record.values==='object' && !Array.isArray(record.values) ? clone(record.values) : {};
     if(!recordApi.metadataRecordIsUuidV4(id)) return null;
     if(recordApi.metadataRecordPathFromId(id)!==recordApi.metadataRecordNormalizeVaultPath(recordPath)) return null;
-    if(!pdfPath || !/\.pdf$/i.test(pdfPath)) return null;
+    if(!recordApi.metadataRecordValidateSupportedFilePath(fileType,profile,filePath)) return null;
     if(![recordApi.METADATA_RECORD_STATUS_ACTIVE,recordApi.METADATA_RECORD_STATUS_MISSING].includes(status)) return null;
-    return {id,pdfPath,status,values};
+    return {id,fileType,profile,filePath,pdfPath:filePath,status,values};
   }
 
   async function load(schema) {

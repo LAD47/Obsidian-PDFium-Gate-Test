@@ -3,7 +3,8 @@
 filters:
   and:
     - "file.inFolder(\"Examples-Obsidian-PDFium-Gate\")"
-    - "pdfmeta_type == \"pdf_document\""
+    - "filemeta_type == \"pdf\""
+    - "filemeta_profile == \"document\""
 properties:
   document_date:
     displayName: "Document date"
@@ -23,11 +24,11 @@ properties:
     displayName: "Response sent date"
   response_sent_link:
     displayName: "Sent response"
-  pdfmeta_status:
+  filemeta_status:
     displayName: "Status"
-  pdfmeta_file:
+  filemeta_file:
     displayName: "PDF"
-  pdfmeta_id:
+  filemeta_id:
     displayName: "Metadata ID"
 views:
   - type: table
@@ -42,9 +43,9 @@ views:
       - response_sent
       - response_sent_date
       - response_sent_link
-      - pdfmeta_status
-      - pdfmeta_file
-      - pdfmeta_id
+      - filemeta_status
+      - filemeta_file
+      - filemeta_id
     sort:
       - property: document_date
         direction: DESC

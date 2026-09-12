@@ -1,6 +1,6 @@
 'use strict';
 
-const METADATA_RECORD_REPOSITORY_CONTRACT_VERSION='0.1';
+const METADATA_RECORD_REPOSITORY_CONTRACT_VERSION='0.2';
 
 function createMetadataRecordRepository({vaultReadAdapter,vaultWriteAdapter,frontmatterAdapter,parseYamlFn,recordApi}) {
   if(!vaultReadAdapter || typeof vaultReadAdapter.readText!=='function' || typeof vaultReadAdapter.getAbstractFileByPath!=='function') throw new Error('metadata record repository: vault read adapter incomplete');
@@ -31,7 +31,7 @@ function createMetadataRecordRepository({vaultReadAdapter,vaultWriteAdapter,fron
     if(!file || String(file.extension || '').toLowerCase()!=='md') throw new Error(`metadata record write verification failed: ${recordPath} mangler`);
     const readBack=await readRecordFile(file,schema);
     if(!readBack.ok) throw new Error(`metadata record write verification failed: ${readBack.error}`);
-    if(readBack.record.id!==expectedId) throw new Error('metadata record write verification failed: pdfmeta_id mismatch');
+    if(readBack.record.id!==expectedId) throw new Error('metadata record write verification failed: filemeta_id mismatch');
     return readBack;
   }
 
@@ -50,12 +50,17 @@ function createMetadataRecordRepository({vaultReadAdapter,vaultWriteAdapter,fron
   async function updateRecord(file,record,schema) {
     if(!file) throw new Error('metadata record update mangler fil');
     const fieldProperties=new Set(Array.isArray(schema?.fields)?schema.fields.map(field=>field.property):[]);
+    const fileType=String(record.fileType || recordApi.METADATA_RECORD_DEFAULT_FILE_TYPE);
+    const profile=String(record.profile || recordApi.METADATA_RECORD_DEFAULT_PROFILE);
+    const filePath=record.filePath || record.pdfPath;
+    if(!recordApi.metadataRecordValidateSupportedFilePath(fileType,profile,filePath)) throw new Error('metadata record update har ugyldig file type/profile/path');
     await frontmatterAdapter.processFrontMatter(file,frontmatter=>{
-      frontmatter.pdfmeta_type=recordApi.METADATA_RECORD_TYPE;
-      frontmatter.pdfmeta_version=recordApi.METADATA_RECORD_FORMAT_VERSION;
-      frontmatter.pdfmeta_id=String(record.id).toLowerCase();
-      frontmatter.pdfmeta_file=recordApi.metadataRecordPdfLink(record.pdfPath);
-      frontmatter.pdfmeta_status=record.status;
+      frontmatter.filemeta_type=fileType;
+      frontmatter.filemeta_profile=profile;
+      frontmatter.filemeta_version=recordApi.METADATA_RECORD_FORMAT_VERSION;
+      frontmatter.filemeta_id=String(record.id).toLowerCase();
+      frontmatter.filemeta_file=recordApi.metadataRecordFileLink(filePath);
+      frontmatter.filemeta_status=record.status;
       const values=record.values && typeof record.values==='object' && !Array.isArray(record.values) ? record.values : {};
       for(const property of fieldProperties) {
         if(Object.prototype.hasOwnProperty.call(values,property) && !recordApi.metadataRecordIsEmptyUserValue(values[property])) frontmatter[property]=recordApi.metadataRecordClone(values[property]);
