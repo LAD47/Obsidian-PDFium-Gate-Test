@@ -63,7 +63,7 @@ Start here when a regression appears. Follow the narrow canonical route before s
 | Final architecture target (ports / no cycles / single writers / keyboard modules) | `scripts/verify/contracts/11-architecture-completion.js` |
 | Metadata schema v1 contract / no-record-write boundary | `scripts/verify/contracts/12-metadata-schema.js` |
 | Shared config/schema backup-write contract | `scripts/verify/contracts/13-safe-config-write.js` |
-| Architecture stability / when foundational refactoring is allowed | `ARCHITECTURE.md` §12 + `README.md` Architecture stability policy |
+| Architecture stability / when foundational refactoring is allowed | `ARCHITECTURE.md` → `docs/architecture/02-core-principles.md` + `docs/architecture/13-testing-and-verification.md` |
 | All regression gates | `scripts/verify/contracts/` → `scripts/verify-build.js` |
 
 ## Production dataflow rule
