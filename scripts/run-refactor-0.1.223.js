@@ -75,6 +75,7 @@ insertBefore(
     "replaceRequired('scripts/verify/contracts/16-document-records.js', `    filemeta_type:'pdf',filemeta_version:1,filemeta_id:id,filemeta_file:'[[Cases/2016/example.pdf]]',filemeta_status:'active',`, `    filemeta_type:'pdf',filemeta_profile:'document',filemeta_version:2,filemeta_id:id,filemeta_file:'[[Cases/2016/example.pdf]]',filemeta_status:'active',`);",
     "replaceRequired('scripts/verify/contracts/16-document-records.js', `if(repositoryApi.METADATA_RECORD_REPOSITORY_CONTRACT_VERSION!=='0.1')`, `if(repositoryApi.METADATA_RECORD_REPOSITORY_CONTRACT_VERSION!=='0.2')`);",
     "replaceRequired('scripts/verify/contracts/16-document-records.js', `if(cacheApi.METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION!=='0.1')`, `if(cacheApi.METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION!=='0.2')`);",
+    "replaceRequired('styles.css', 'data-path=\"PDF Metadata\"', 'data-path=\"File Metadata\"');",
     ''
   ]
 );
