@@ -6,7 +6,7 @@ const { moduleBody, buildAnnotatorSource, buildI18nSource, buildSharedBridgeSour
 
 const ROOT = __dirname;
 function read(p){ return fs.readFileSync(path.join(ROOT,p),'utf8'); }
-function write(p,s){ fs.mkdirSync(path.dirname(path.join(ROOT,p)),{recursive:true}); fs.writeFileSync(path.join(ROOT,p),s,'utf8'); }
+function write(p,s){ fs.mkdirSync(path.dirname(path.join(ROOT,p),{recursive:true})); fs.writeFileSync(path.join(ROOT,p),s,'utf8'); }
 const i18nSource = buildI18nSource(ROOT);
 const sharedBridgeSource = buildSharedBridgeSource(ROOT);
 const platformSource = buildRendererPlatformSource(ROOT);
@@ -33,6 +33,7 @@ const fragments = [
   read('src/main/pdfium-gate-view.js'),
   read('src/main/metadata-schema-modal.js'),
   read('src/main/pdf-document-register-bases-view.js'),
+  read('src/main/example-files-installer.js'),
   read('src/main/settings.js'),
   buildPluginSource(ROOT)
 ];
