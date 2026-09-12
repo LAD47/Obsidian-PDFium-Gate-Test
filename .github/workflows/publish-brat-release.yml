@@ -57,4 +57,4 @@ jobs:
             --target "$archive" \
             --title "$version" \
             --prerelease \
-            --notes "Private BRAT test release. Frozen from $archive."
+            --notes "BRAT test release. Frozen from $archive."
