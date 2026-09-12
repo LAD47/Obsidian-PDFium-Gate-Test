@@ -1,226 +1,166 @@
-# Obsidian PDFium Gate Test
+# PDFium Gate Test
 
-## Architecture documentation
+**PDFium Gate Test** is an experimental desktop plugin for [Obsidian](https://obsidian.md/) that explores a more capable, source-oriented workflow for PDF documents.
 
-`ARCHITECTURE.md` is the stable architecture entry point. Detailed contracts are split by domain under `docs/architecture/`, including runtime boundaries, Main Bridge, PDF identity/lifecycle, annotations/categories, metadata, DocumentRecords, DocumentInfo, Document Register/Bases, i18n, verification, and release readiness.
+The project is built around a simple idea: a PDF should remain a durable source document, while Obsidian should provide the surrounding workspace for reading, highlighting, linking, structured metadata, document registers, notes, and long-term analysis.
 
-Run `npm run check:architecture-docs` to verify that the index is complete and that architecture Markdown links resolve. The check is also part of `npm run check`.
+> [!WARNING]
+> **This is pre-release software.** It is still under active development and has not yet completed broad platform and real-world testing. Make a complete backup of your Obsidian Vault before installing or updating the plugin, especially if the Vault contains important or irreplaceable material.
 
-## 0.1.219 — architecture documentation split
+## Why this project exists
 
-0.1.219 is a documentation/governance-only release-readiness build from 0.1.218. Runtime feature ownership and behavior are unchanged. The former monolithic `ARCHITECTURE.md` is now a short top-level index pointing to 14 domain documents under `docs/architecture/`. A new architecture-doc integrity gate prevents missing/indexless domain files and broken relative Markdown links.
+PDFs are central to journalism, research, public-record work, investigations, administration, and archival projects. A useful long-term workflow needs more than a PDF viewer: it should make it easy to preserve the source, extract and cite evidence, organize documents, add structured information, and return to the exact place where a finding came from.
 
-The release-readiness document also records the planned public sequence (`0.9.x` Beta → `0.99.x` Release Candidate → `1.0.0`) and the requirement to review migration/backward compatibility before changing persisted user-data formats after public release.
+PDFium Gate aims to keep that work inside one Obsidian interface while avoiding unnecessary lock-in. Important metadata is stored as ordinary Markdown/YAML rather than in a proprietary plugin database, and the original PDF remains the primary source document.
 
+The project is guided by a few principles:
 
-## 0.1.215 — category i18n + hard-coded UI gate
+- **Source first.** The PDF remains the document of record.
+- **Traceability.** Quotes, selections, highlights, and notes should lead back to the source location.
+- **Portable metadata.** Document metadata should remain readable and usable without the plugin.
+- **Explicit identity.** The plugin should fail safely rather than guess which document or annotation a destructive action belongs to.
+- **User ownership.** User-created labels, categories, metadata, and Bases remain user data and are not silently rewritten by UI-language changes.
+- **One workspace.** PDF reading, annotation, metadata, and document management should feel like parts of the same Obsidian workflow.
+- **Long-term maintainability.** Architecture, verification, rollback points, and migration decisions are treated as part of the product, not as afterthoughts.
 
-0.1.215 builds directly from 0.1.214 and continues the staged i18n migration without changing PDF runtime, metadata persistence, DocumentRecords, cache/startup, or Main Bridge logic.
+## Current capabilities
 
-- The complete category user journey now uses `I18nService`: bootstrap, folder picker, category editor, inheritance/override controls, validation, context-menu category actions, category mutation notices and the category Command Palette entries.
-- User-defined category names remain persistent user data and are never auto-translated. A newly created placeholder category name is localized only at creation time.
-- The effective-category diagnostic heading is localized; diagnostic machine payloads remain stable.
-- `npm run check:i18n-ui` is added to the normal `npm run check` pipeline. Migrated modules/regions are protected against reintroducing hard-coded user-facing literals.
-- Technical comments/diagnostic reasons in the migrated category modules are English for GitHub contributors.
-- `I18N-AUDIT.md` is now a repository migration inventory for the remaining UI surfaces and the separate persistent-default policy.
-- English and Norwegian Bokmål remain 100% complete for the current translation key set.
+The current test builds include:
 
-**Rollback:** 0.1.211 remains the last fully accepted product baseline before the i18n track. 0.1.214 is the immediate source rollback for this migration step.
+- an integrated Chromium/PDFium-based PDF view inside Obsidian;
+- mouse and keyboard text selection, including multi-page workflows;
+- copying selected text, quotes, and Obsidian links back to PDF selections/pages;
+- configurable exclusion of PDF text marked as headers/footers when copying;
+- PDF highlight categories with colors and keyboard shortcuts;
+- creation, category changes, and removal of PDF highlights;
+- optional automatic backup before the plugin makes its first change to a PDF that does not already have a backup;
+- a configurable metadata schema with text, date, time, integer, decimal, yes/no, select, multi-select, and link fields;
+- **Document information** directly beside the active PDF;
+- one Markdown/YAML metadata record per registered PDF, created lazily on first metadata save;
+- stable UUID-based document metadata identity across normal PDF rename/move operations;
+- conservative handling of deleted/missing PDFs, with explicit relinking instead of unsafe automatic rebinding;
+- an Obsidian Bases-powered **PDF Document register** with schema-driven columns, sorting, datatype-aware filtering, inline editing, and missing-PDF actions;
+- scalable metadata indexing with a disposable cache while Markdown/YAML remains the source of truth;
+- diagnostics and benchmark tools for testing large document collections;
+- a multilingual interface with live language switching.
 
+## Languages
 
-## 0.1.214 — Settings i18n + regional cleanup
+The complete UI currently supports:
 
-0.1.214 bygger direkte fra 0.1.213 og utvider i18n-piloten uten å endre PDF-, metadata-, DocumentRecords-, cache/startup- eller Main Bridge-logikk.
+- English
+- Norwegian Bokmål
+- German
+- Spanish
+- Swedish
+- Danish
+- French
 
-- Hele den ordinære Settings-siden bruker nå `I18nService` for norsk/engelsk presentasjon.
-- Den tidligere `Locale`-innstillingen er fjernet. Den hadde ingen nødvendig selvstendig rolle når datoformat, tidsformat og desimalskilletegn allerede er egne innstillinger.
-- `regionalLocale` er fjernet fra runtime settings-modellen og fra metadataformattering.
-- `Ja/Nei` og `Yes/No` eies nå av UI-språket gjennom i18n, ikke av regional formatering.
-- Datoformat, tidsformat og desimalskilletegn fungerer som før og er fortsatt separate fra UI-språk.
-- `metadataPresentationSettings()` bygger en eksplisitt presentasjonskontekst for språkavhengige boolean-labels uten å endre persistente metadata.
-- Verifieren beskytter at `Locale` ikke kommer tilbake, at Settings-flaten bruker translation keys, og at norsk/engelsk boolean-presentasjon følger UI-språket.
-- English og Norsk bokmål har fortsatt 100 % dekning av det nåværende i18n-keysettet; fremtidige språk kan være ufullstendige og falle tilbake til engelsk.
+English is the canonical fallback language. When **Auto** is selected, the plugin follows a supported Obsidian UI language and falls back to English for unsupported languages.
 
-**Rollback:** 0.1.211 er siste godkjente produktbaseline før i18n-sporet; 0.1.213 er nærmeste i18n-rollback.
+UI language is separate from regional date, time, and decimal formatting. Changing the UI language does not translate or rewrite user-owned metadata labels or category names.
 
-## 0.1.213 — i18n foundation (English + Norsk bokmål)
+Most open UI surfaces change language immediately. Command Palette display names are the known exception and refresh after the plugin is reloaded or Obsidian is restarted.
 
-0.1.213 bygger direkte fra 0.1.211-koden og etablerer det første internasjonaliseringsfundamentet. Den tidligere eksperimentelle 0.1.212-builden for «funn i aktiv PDF» er forkastet og brukes ikke som kilde eller baseline; versjonsnummer 0.1.212 gjenbrukes derfor ikke.
+## Before you install: back up your Vault
 
-### Pilotomfang
+Do not test a pre-release build against the only copy of important data.
 
-- `src/i18n/en.json` er canonical source of truth for brukerrettet UI-tekst.
-- `src/i18n/nb.json` er komplett norsk bokmål for pilotsettet.
-- Engelsk fallback brukes når en oversettelse mangler.
-- Ny separat Settings-verdi `uiLanguage`: `Følg Obsidian`, `English`, `Norsk bokmål`.
-- UI-språk er eksplisitt separat fra regional formatering. I 0.1.213 fantes fortsatt den eldre `regionalLocale`-verdien; den fjernes i 0.1.214 fordi dato, tid og desimal allerede har egne innstillinger.
-- `LocaleResolver` eier språkdeteksjon. Den prøver Obsidian `getLanguage()` når tilgjengelig og holder kompatibilitetsfallback isolert fra produktfunksjoner.
-- Dokumentinfo er første migrerte produktflate: knapp/panel, handlinger, aria-tekster og brukerrettet valideringspresentasjon går gjennom i18n.
-- Metadata-schemaets labels, kategorinavn, UUID-er, `pdfmeta_*`, machine values og andre persistente bruker-/maskinverdier oversettes ikke automatisk.
-- `npm run check:i18n` validerer locale-JSON, ukjente keys, duplikater og `{{placeholder}}`-kontrakter. Ufullstendige fremtidige språk er tillatt fordi de faller tilbake til engelsk.
-- `TRANSLATING.md` beskriver en enkel GitHub-bidragsflyt for oversettere uten kodeendringer.
-- Språkvalg trer fullt i kraft etter plugin-/Obsidian-reload i denne første pilotbuilden.
+Recommended minimum procedure:
 
-Ingen PDF-, metadata-, DocumentRecords-, cache/startup-, Dokumentregister- eller Main Bridge-produksjonskontrakter er endret. Main Bridge-kilden er fortsatt bit-for-bit den samme som i 0.1.211.
+1. Close Obsidian or make sure all pending changes have been written.
+2. Make a complete copy or snapshot of the entire Vault.
+3. Make sure the backup includes your PDFs, Markdown files, Bases, and the hidden `.obsidian` folder.
+4. Store the backup separately from the working Vault.
+5. For especially important collections, test the plugin in a copy of the Vault first.
 
-**Rollback:** 0.1.211 beholdes som nærmeste produktrollback. 0.1.210 er siste fullstendig brukerbekreftede sort/filter-runtimebaseline dersom 0.1.213 skulle avdekke en generell regressjon.
+The plugin's automatic PDF-backup feature is an additional safeguard for PDF modifications. **It is not a replacement for a full Vault backup.** The plugin also creates and updates metadata/configuration files and plugin settings during normal use.
 
-## 0.1.211 — valgfri filterpersistens + konsolidering
+## Installation with BRAT
 
-0.1.211 bygger direkte på den brukerbekreftede 0.1.210-løsningen for enkel single-column sortering og datatype-aware kolonnefiltre. Den endrer ikke metadataformat, DocumentRecords write-path, PDF-identitet, cache/startup eller Main Bridge-runtimekontrakten.
+PDFium Gate Test is not yet distributed through Obsidian Community Plugins. Current test releases are installed through [BRAT](https://github.com/TfTHacker/obsidian42-brat).
 
-- Ny Settings-toggle: **Husk filtre i PDF Dokumentregister**. Standard er **Av**.
-- Av: headerfiltre er view-lokale og midlertidige.
-- På: headerfiltre serialiseres som custom view-state under `pdfiumHeaderFilters` i den aktuelle `.base`-visningen og gjenopprettes når viewet åpnes igjen.
-- Persistens bruker `BasesViewConfig.get()/set()` for custom view configuration; den skriver ikke native Bases `filters` og endrer ikke metadatarecords.
-- Sortering forblir den brukerbekreftede 0.1.210-regelen: første klikk ASC, neste DESC, én kolonne om gangen via `setSortProperty`.
-- Headerknappene bruker ikke lenger både HTML `title` og accessibility-label med samme tekst; dette fjerner den doble tooltip-presentasjonen.
-- Intern `PLUGIN_VERSION`, `manifest.json` og `package.json` er synkronisert til 0.1.211. Runtime Main Bridge-path blir derfor `main-bridge-0.1.211.js`.
-- Den feilgenererte pre-release-filen `main-bridge-0.1.205.js` ryddes bort etter at korrekt 0.1.211-bro er skrevet og lastet.
+1. In Obsidian, open **Settings → Community plugins → Browse**.
+2. Search for **BRAT**, install it, and enable it.
+3. Use BRAT's **Add a beta plugin for testing** command.
+4. Enter this repository:
 
-**Baseline:** 0.1.210 er siste brukerbekreftede working product baseline. 0.1.211 skal brukertestes før baseline-promotering.
+   `LAD47/Obsidian-PDFium-Gate-Test`
 
-## 0.1.210 — rettet Bases sort write-back
+5. Install the latest test release, or select a specific frozen release when doing controlled regression testing.
+6. Enable **PDFium Gate Test** under Community plugins.
 
-Denne testbuilden retter bare Dokumentregister-sorteringen. Klikk på en kolonne bruker nå Obsidian Bases sin dedikerte `setSortProperty`-operasjon i stedet for generisk `config.set('sort', ...)`. Én kolonne er aktiv om gangen; første klikk gir stigende, neste synkende. Datatypefiltrene er uendret.
+The repository is public, so no GitHub token is required for normal BRAT installation.
 
-## 0.1.209 — enkel kolonne-sortering uten Shift
+BRAT can also be used to check for and install newer test releases.
 
-0.1.209 er en avgrenset Dokumentregister-test bygget fra 0.1.208. Sorteringsinteraksjonen er nå eksplisitt låst til vanlig museklikk og én sorteringskolonne om gangen:
+## Requirements and test status
 
-- første klikk på en usortert kolonne → `ASC` / stigende `↑`
-- neste klikk på samme kolonne → `DESC` / synkende `↓`
-- videre klikk veksler bare `ASC ↔ DESC`
-- klikk på en annen kolonne gjør den til eneste sorteringskolonne og starter `ASC`
-- ingen Shift+klikk eller multi-column-sortering
-- datatype-aware headerfilter fra 0.1.206 beholdes uendret og kan brukes samtidig med sortering
-- filteret er fortsatt transient view-state og skriver ikke `.base`-filterkonfigurasjon
+- Desktop Obsidian only (`isDesktopOnly: true`).
+- The current compatibility baseline is **Obsidian 1.13.7**.
+- Most practical development and regression testing has been performed on **Windows 11**.
+- The architecture is intended to remain desktop/cross-platform where Electron and Chromium permit it, but macOS and Linux have not yet received the same level of practical testing.
+- The PDF integration depends on Electron/Chromium's built-in PDF viewer. Changes in future Obsidian/Electron/Chromium releases can therefore require compatibility work.
 
-Ingen metadata-, DocumentRecords-, cache/startup-, identity- eller PDF-runtimekontrakter endres.
+## What the plugin stores
 
-## 0.1.208 — recovery: filter + kjent-god enkel sortering
+The project deliberately separates durable user data from disposable acceleration data and internal configuration.
 
-0.1.208 bygger direkte på 0.1.207, men ruller tilbake bare den nye multi-sorteringsdelen som ga regresjon i 0.1.207. Datatype-aware headerfilter fra 0.1.206 beholdes. Kolonneklikk bruker igjen den brukerbekreftede single-column Bases-sorteringsbanen fra 0.1.206.
+- `PDF Metadata/` contains ordinary indexed Markdown/YAML document records.
+- `.pdf-metadata/` contains plugin metadata/configuration and disposable technical data such as the document-record index cache.
+- `PDF Dokumentregister.base` is created on demand as the standard document register. After creation it is treated as user-owned and is not silently overwritten by the plugin.
+- PDFs remain normal PDF files in the Vault.
 
-- vanlig klikk på kolonnenavn: ASC ↔ DESC via Bases view-config
-- headerfilter kan være aktivt samtidig med sortering
-- filter er fortsatt transient og skriver ikke til `.base`
-- ingen Shift+multi-sort i denne recovery-builden
-- ingen endring i metadataformat, DocumentRecords write-path, cache/startup eller PDF runtime
+The exact internal structures may still evolve before the project reaches a stable 1.0 release. Changes to persisted formats or file layouts require an explicit migration/backward-compatibility review before a public stable release.
 
-## 0.1.207 — kombinert filter + flernivåsortering (test)
+## Beta limitations
 
-0.1.207 bygger direkte på 0.1.206 og endrer bare Dokumentregisterets header-UX og verifier/CSS. Filtrering og sortering kan være aktive samtidig.
+This project should currently be treated as a serious test build rather than finished production software.
 
-- Vanlig klikk på kolonnenavn gjør kolonnen til eneste sorteringsnøkkel og veksler stigende/synkende.
-- **Shift+klikk** legger til en ny sorteringskolonne uten å fjerne eksisterende sortering.
-- Videre Shift+klikk på samme kolonne går `ASC → DESC → fjern fra flernivåsortering`.
-- Når flere sorteringskolonner er aktive, vises prioritet **1, 2, 3 …** ved sorteringspilen.
-- Datatypefiltrene fra 0.1.206 beholdes og kombineres fortsatt som AND.
-- Filtrering skjer over Bases-resultatet etter at Bases har anvendt sin sorteringskonfigurasjon, så filter og sortering virker samtidig.
-- Headerfiltrene er fortsatt transiente og skriver ikke Bases `filters` eller `.base`-filen.
-- Metadataformat, DocumentRecords write-path, PDF-identitet, cache/startup og Main Bridge er uendret.
+Known boundaries include:
 
-## 0.1.206 — datatypebevisste kolonnefiltre (test)
+- Command Palette labels require a plugin reload/restart after changing UI language.
+- Chromium PDF internals are outside the plugin's control and may change with Obsidian/Electron updates.
+- Cross-platform testing is not yet complete.
+- Pre-1.0 builds may still change workflows, configuration, or persisted structures when testing shows that a better long-term design is needed.
 
-0.1.206 bygger direkte på 0.1.205-testen. Endringen er avgrenset til Dokumentregisterets kolonnefilter-UX og CSS. Persistent metadataformat, DocumentRecords write-path, PDF-identitet, cache/startup og Main Bridge er uendret.
+If you find a reproducible problem, please open a GitHub Issue and include the Obsidian version, operating system, plugin version, what you expected, what happened, and any relevant diagnostics.
 
-- **text/link**: tekstsøk (`contains`) i vist verdi.
-- **select/multiselect**: avkryssingsvalg generert fra metadata-schemaets egne alternativer, inkludert valg for tom verdi.
-- **boolean**: Alle / Ja / Nei.
-- **date/time**: Fra / Til med eksisterende regional formattering og canonical validering.
-- **integer/decimal**: Fra / Til med canonical parsing/validering.
-- **Status**: Aktiv / Mangler.
-- **PDF**: tekstsøk i filsti/filnavn.
-- Flere kolonnefiltre kombineres som **OG**.
-- Aktive filtre markeres i headeren og kan endres eller fjernes.
-- Filtrene er fortsatt med vilje **transiente** i denne UX-testen og skriver ikke til `PDF Dokumentregister.base`.
-- Klikkbar kolonne-sortering fra 0.1.205 er beholdt og går fortsatt gjennom Bases view-config.
+## Documentation
 
-## 0.1.205 — klikkbare kolonneoverskrifter (test)
+- [Documentation index](docs/README.md)
+- [Architecture overview](ARCHITECTURE.md)
+- [Detailed architecture contracts](docs/architecture/)
+- [Translation guide](TRANSLATING.md)
+- [Historical development notes](docs/history/DEVELOPMENT-NOTES.md)
+- [Historical milestones](docs/history/MILESTONE.md)
 
+Historical documents are retained because they explain why several architectural and UX decisions were made. They may describe experiments or policies that were later superseded; current architecture documents and source verification are authoritative.
 
-0.1.205 bygger direkte på den brukerbekreftede 0.1.204-baselinen og tester kun Dokumentregister-UX. Ingen persistent metadata-, PDF-identitets-, cache- eller startup-kontrakt endres.
+## Development and verification
 
-- Ny kommando: **PDF: Åpne Dokumentregister**.
-- Ved første bruk opprettes `PDF Dokumentregister.base` i vault-roten hvis filen ikke finnes.
-- Den genererte Base-filen filtrerer til canonical `PDF Metadata`-records, bruker custom view `pdfium-document-register`, og sorterer som standard på `document_date` nyeste først (fallback `file.mtime` hvis feltet ikke finnes).
-- En eksisterende `PDF Dokumentregister.base` behandles som bruker-eid og **overskrives aldri** av pluginen.
-- Registervisningen viser schema-feltene, menneskelig status **Aktiv/Mangler**, og eksplisitt **Åpne** eller **Koble til PDF…** uten å eksponere UUID eller record-filnavn.
-- Inline-redigering bruker fortsatt samme FieldTypeRegistry og canonical DocumentRecords save-port som DocumentInfo.
-- Sortering, filtrering og søk overlates til native Obsidian Bases.
+The root runtime is generated from canonical sources under `src/`.
 
+Run the complete verification pipeline with:
 
-### Dokumentregister-header test
-
-- Klikk på kolonnenavnet: stigende ↔ synkende.
-- Sortering skrives til Bases view-config og Bases leverer resultatene sortert.
-- Filterikon i samme header åpner et enkelt tekstfilter for den viste kolonnen.
-- Headerfiltre er med vilje midlertidige i denne testen og lagres ikke i `.base`-filen.
-- Native Bases toolbar for sortering/filter/søk er fortsatt tilgjengelig.
-
-
-## 0.1.203 — metadata-resolved + layout-ready + idle startup gate
-
-DocumentRecords background warmup now waits for two independent Obsidian startup signals: the first `metadataCache` `resolved` event and `workspace.onLayoutReady()`. Only after both have been observed is warmup scheduled through browser idle. This avoids allowing an unusually early idle callback to compete with metadata-cache startup.
-
-On-demand access remains fail-open for UX: DocumentInfo/Bases can start the canonical single-flight index build immediately before the background gate is complete. Cache format, record format, identity, lifecycle, and UI behavior are unchanged.
-
-## 0.1.202 — idle deferred warm-cache startup
-
-Built from 0.1.201. Persistent records and cache format are unchanged. After `workspace.onLayoutReady()`, background DocumentRecords warmup is scheduled with browser `requestIdleCallback`; if DocumentInfo/Bases needs the index first, it cancels the pending idle warmup and awaits the same single-flight build promise. No fixed startup delay is used.
-
-
-## 0.1.201 — disposable document-record index cache
-
-0.1.201 is built from the 0.1.199 benchmark implementation after rejecting the 0.1.200 concurrent-read experiment. The persistent metadata model is unchanged.
-
-The build adds one disposable acceleration file:
-
-```text
-.pdf-metadata/document-record-index-cache.json
+```bash
+npm run check
 ```
 
-Markdown/YAML records under `PDF Metadata/` remain the permanent source of truth. The cache may be deleted at any time and is rebuilt automatically.
+The pipeline builds the runtime and checks internationalization, migrated UI text, architecture documentation integrity, deterministic build output, dependency boundaries, shared-state ownership, metadata contracts, and other regression gates.
 
-A cached record is accepted only when all relevant contracts match and the current Markdown `TFile` has the same canonical record path, modification time and file size. A schema signature is stored in the cache; schema changes invalidate the cache. Cached `pdfmeta_file` text is still resolved through Obsidian's current link resolver while rebuilding the RAM index, so cache reuse does not replace canonical PDF identity resolution.
+Generated root runtime files are committed so GitHub/BRAT releases can install the plugin directly.
 
-If the cache is missing, invalid, stale, or cannot be written, the plugin falls back to normal Markdown reads. Cache failure is not a metadata failure.
+## Release direction
 
-Benchmark metrics now include cache load time, hits, misses, disk read/parse time, index populate time and cache-write time.
+The current `0.1.x` series is the development/test line. The planned public maturity sequence is:
 
-Rollback/comparison: 0.1.199 is the benchmark baseline. 0.1.200 is intentionally rejected due to slower cold-start and high RSS in the user's 10,000-record test.
+- `0.9.x` — Beta
+- `0.99.x` — Release Candidate
+- `1.0.0` — stable release
 
-## 0.1.216 — command/button i18n sweep
-All PDF Command Palette names, diagnostics header, metadata-field editor, Document register, diagnostic dialogs and benchmark/test UI are routed through i18n. `check:i18n-ui` now protects these migrated surfaces.
+The project is intentionally conservative about data ownership and migration as it approaches those milestones.
 
-## 0.1.217 — localized factory defaults
+## Contributing
 
-The internationalization layer now also owns the human-readable defaults created for **new** persistent configuration artifacts. New category configuration, a newly created/reset metadata schema, and newly generated standard Base presentation text use the active UI language at creation time. Stable UUIDs, metadata properties and machine values are unchanged.
-
-Existing persistent labels are intentionally not rewritten when the UI language changes. Language changes continue to require a plugin/Obsidian reload so the Settings UI, menus and Command Palette cannot end up in a partially switched state.
-
-
-## 0.1.218 — canonical English factory defaults + Sent response link
-
-0.1.218 supersedes the 0.1.217 experiment where persistent factory labels followed the active UI language. Factory-created persistent data is now deterministic and always English, independent of UI language. Existing user-owned category/schema/Base files are not migrated or rewritten.
-
-Canonical default categories:
-- Economy
-- Regulation
-- Fact
-- Documentation
-- Investigate
-
-Canonical default metadata schema now has nine fields:
-- `document_date` — Document date — `date`
-- `document_time` — Document time — `time`
-- `sender` — Sender — `text`
-- `document_type` — Document type — `select` (`decision`, `letter`, `report`, `memo`)
-- `response_received` — Response received — `boolean`
-- `response_received_date` — Response received date — `date`
-- `response_sent` — Response sent — `boolean`
-- `response_sent_date` — Response sent date — `date`
-- `response_sent_link` — Sent response — `link`
-
-The new field has its own permanent UUID; all existing field UUIDs/properties and document-type machine values are unchanged.
+Testing, bug reports, translation improvements, and focused pull requests are welcome while the project matures. Translation contributors should start with [TRANSLATING.md](TRANSLATING.md); architecture contributors should start with [ARCHITECTURE.md](ARCHITECTURE.md).
