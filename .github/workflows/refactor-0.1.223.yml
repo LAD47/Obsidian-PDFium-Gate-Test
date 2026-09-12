@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '24'
       - name: Apply controlled refactor
-        run: node scripts/refactor-0.1.223.js
+        run: node scripts/run-refactor-0.1.223.js
       - name: Verify full project
         run: npm run check
       - name: Keep generated runtime out of source refactor commit
@@ -28,7 +28,7 @@ jobs:
         run: git checkout -- main.js main-bridge.js
       - name: Remove one-time refactor helpers
         shell: bash
-        run: rm scripts/refactor-0.1.223.js .github/workflows/refactor-0.1.223.yml
+        run: rm scripts/refactor-0.1.223.js scripts/run-refactor-0.1.223.js .github/workflows/refactor-0.1.223.yml
       - name: Commit verified source refactor
         shell: bash
         run: |
