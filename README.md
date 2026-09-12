@@ -1,4 +1,16 @@
-# Obsidian PDFium Gate Test 0.1.215
+# Obsidian PDFium Gate Test
+
+## Architecture documentation
+
+`ARCHITECTURE.md` is the stable architecture entry point. Detailed contracts are split by domain under `docs/architecture/`, including runtime boundaries, Main Bridge, PDF identity/lifecycle, annotations/categories, metadata, DocumentRecords, DocumentInfo, Document Register/Bases, i18n, verification, and release readiness.
+
+Run `npm run check:architecture-docs` to verify that the index is complete and that architecture Markdown links resolve. The check is also part of `npm run check`.
+
+## 0.1.219 — architecture documentation split
+
+0.1.219 is a documentation/governance-only release-readiness build from 0.1.218. Runtime feature ownership and behavior are unchanged. The former monolithic `ARCHITECTURE.md` is now a short top-level index pointing to 14 domain documents under `docs/architecture/`. A new architecture-doc integrity gate prevents missing/indexless domain files and broken relative Markdown links.
+
+The release-readiness document also records the planned public sequence (`0.9.x` Beta → `0.99.x` Release Candidate → `1.0.0`) and the requirement to review migration/backward compatibility before changing persisted user-data formats after public release.
 
 
 ## 0.1.215 — category i18n + hard-coded UI gate
