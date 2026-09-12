@@ -1,9 +1,9 @@
 {
   "id": "obsidian-pdfium-gate-test",
   "name": "PDFium Gate Test",
-  "version": "0.1.219",
+  "version": "0.1.220",
   "minAppVersion": "1.13.7",
-  "description": "PDFium Gate test build 0.1.219 - architecture documentation split and release-readiness governance cleanup.",
+  "description": "PDFium Gate test build 0.1.220 - live UI language switching without full Obsidian restart.",
   "author": "OpenAI / test build",
   "isDesktopOnly": true
 }
