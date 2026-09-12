@@ -78,20 +78,21 @@ DocumentRecords owns startup readiness. Lifecycle contributes two explicit signa
 
 This is an orchestration optimization only. Persistent Markdown/YAML remains source of truth, the disposable cache contract is unchanged, and on-demand callers are never forced to wait for the background gate: they use the same canonical single-flight readiness promise immediately.
 
-## Example-set isolation and bootstrap
+## Example-set isolation and opt-in installation
 
-The plugin ships a small canonical demonstration set under `docs/examples/` and copies the same set once into the user's Vault at `Examples-Obsidian-PDFium-Gate/`.
+The plugin ships a small canonical demonstration set under `docs/examples/`. The same set can be copied explicitly from plugin Settings to `Examples-Obsidian-PDFium-Gate/` in the user's Vault.
 
-The example folder is deliberately outside `PDF Metadata/`. Example notes use valid record-shaped frontmatter and fixed sample UUIDs, but they are teaching/demo material and must never enter the production document-record index merely because they exist in the Vault. A native Obsidian Bases file in the example folder filters that folder directly and demonstrates that ordinary Markdown/YAML properties can be consumed without the PDFium Gate custom Bases view.
+Nothing is written to the Vault automatically for the example set. The example folder is deliberately outside `PDF Metadata/`. Example notes use valid record-shaped frontmatter and fixed sample UUIDs, but they are teaching/demo material and must never enter the production document-record index merely because they exist in the Vault. A native Obsidian Bases file in the example folder filters that folder directly and demonstrates that ordinary Markdown/YAML properties can be consumed without the PDFium Gate custom Bases view.
 
-Bootstrap rules:
+Installer rules:
 
-- bootstrap state is technical metadata stored at `.pdf-metadata/example-files-bootstrap.json`;
-- the marker records an explicit example-set version;
-- installation creates the example folder only when needed;
-- an existing example file is always skipped and never overwritten;
-- if creation is interrupted before the marker is written, a later run may fill only the still-missing files;
-- once the current example-set version is marked installed, deleting or renaming the user-owned example folder does not cause it to be recreated on every startup;
-- future example-set versions may add missing examples, but existing user-owned files remain untouched.
+- the user starts the copy explicitly from Settings;
+- before any write, the UI warns that the four canonical example filenames in `Examples-Obsidian-PDFium-Gate/` will be overwritten if they already exist;
+- cancelling the warning performs no write;
+- the folder is created only after confirmation when it does not already exist;
+- existing files with the canonical example filenames are replaced with the current canonical examples;
+- other files in the example folder are never touched;
+- there is no startup bootstrap marker or background recreation behavior;
+- running the action again is an intentional restore/update operation for the example set.
 
-The example set is not a source of truth for production records, does not change document identity, and must not participate in record lifecycle events or indexing.
+The example set is not a source of truth for production records, does not change document identity, and must not participate in production record lifecycle events or indexing.
