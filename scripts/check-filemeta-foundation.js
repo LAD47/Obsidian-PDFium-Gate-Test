@@ -26,6 +26,10 @@ for(const field of expected) if(!markdown.includes(`${field}:`)) fail(`serialize
 if(markdown.includes('pdfmeta_') || markdown.includes('pdf_document')) fail('serialized Markdown contains old system identity');
 const old=record.metadataRecordFromFrontmatter({pdfmeta_type:'pdf_document',pdfmeta_version:1,pdfmeta_id:id,pdfmeta_file:'[[Example/test.pdf]]',pdfmeta_status:'active'},{fields:[]});
 if(old.ok) fail('old 0.1.222 persisted record format must not be accepted');
+const mixed=record.metadataRecordFromFrontmatter({...frontmatter,pdfmeta_id:id},{fields:[]});
+if(mixed.ok) fail('mixed filemeta_/pdfmeta_ record must fail closed');
+const legacyValueMarkdown=record.metadataRecordSerializeMarkdown({id,fileType:'pdf',profile:'document',filePath:'Example/test.pdf',status:'active',values:{pdfmeta_fake:'legacy'}},{fields:[]});
+if(legacyValueMarkdown.includes('pdfmeta_fake:')) fail('serializer emitted legacy reserved user value');
 const activeExample=fs.readFileSync(path.join(root,'docs/examples/Example - Active PDF record.md'),'utf8');
 const baseExample=fs.readFileSync(path.join(root,'docs/examples/Example PDF Document Register.base'),'utf8');
 if(!activeExample.includes('filemeta_profile:') || !activeExample.includes('document')) fail('active example lacks document profile');

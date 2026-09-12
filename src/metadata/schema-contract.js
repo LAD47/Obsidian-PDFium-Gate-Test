@@ -6,6 +6,7 @@ const METADATA_SCHEMA_FILE_NAME = 'document-metadata-schema.json';
 const METADATA_SCHEMA_PATH = `${METADATA_SCHEMA_ROOT}/${METADATA_SCHEMA_FILE_NAME}`;
 const METADATA_SCHEMA_BACKUP_ROOT = '.pdf-metadata/backup/document-metadata-schema';
 const METADATA_RESERVED_PREFIX = 'filemeta_';
+const METADATA_LEGACY_RESERVED_PREFIX = 'pdfmeta_';
 const METADATA_PROPERTY_PATTERN = /^[a-z][a-z0-9_]{0,63}$/;
 const METADATA_UUID_V4_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const METADATA_FIELD_TYPES = Object.freeze(['text','date','time','integer','decimal','boolean','select','multiselect','link']);
@@ -274,6 +275,7 @@ function metadataValidateSchema(schema) {
       if (!METADATA_PROPERTY_PATTERN.test(String(field.property || ''))) errors.push(`${path}.property: must match ${METADATA_PROPERTY_PATTERN}`);
       else {
         if (String(field.property).startsWith(METADATA_RESERVED_PREFIX)) errors.push(`${path}.property: reserved prefix ${METADATA_RESERVED_PREFIX}`);
+        if (String(field.property).startsWith(METADATA_LEGACY_RESERVED_PREFIX)) errors.push(`${path}.property: reserved legacy prefix ${METADATA_LEGACY_RESERVED_PREFIX}`);
         if (METADATA_RESERVED_PROPERTIES.has(field.property)) errors.push(`${path}.property: reserved property`);
         if (properties.has(field.property)) errors.push(`${path}.property: duplicate`); else properties.add(field.property);
       }
@@ -297,6 +299,7 @@ const metadataSchemaContract = Object.freeze({
   METADATA_SCHEMA_PATH,
   METADATA_SCHEMA_BACKUP_ROOT,
   METADATA_RESERVED_PREFIX,
+  METADATA_LEGACY_RESERVED_PREFIX,
   METADATA_PROPERTY_PATTERN,
   METADATA_UUID_V4_PATTERN,
   METADATA_FIELD_TYPES,

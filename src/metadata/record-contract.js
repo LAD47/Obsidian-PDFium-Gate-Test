@@ -20,6 +20,7 @@ const METADATA_RECORD_SYSTEM_PROPERTIES = Object.freeze([
   'filemeta_status'
 ]);
 const METADATA_RECORD_SYSTEM_PROPERTY_SET = new Set(METADATA_RECORD_SYSTEM_PROPERTIES);
+const METADATA_RECORD_LEGACY_PREFIX = 'pdfmeta_';
 const METADATA_RECORD_UUID_V4_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const METADATA_RECORD_SUPPORTED = Object.freeze({
   pdf:Object.freeze({
@@ -104,6 +105,8 @@ function metadataRecordFromFrontmatter(frontmatter, schema = null) {
   if(!frontmatter || typeof frontmatter!=='object' || Array.isArray(frontmatter)) {
     return {ok:false,error:'frontmatter mangler eller er ugyldig'};
   }
+  const legacySystem=Object.keys(frontmatter).filter(key=>String(key).startsWith(METADATA_RECORD_LEGACY_PREFIX));
+  if(legacySystem.length) return {ok:false,error:`legacy pdfmeta_ systemfelter støttes ikke: ${legacySystem.join(', ')}`};
   const unknownSystem=Object.keys(frontmatter).filter(key=>String(key).startsWith('filemeta_') && !METADATA_RECORD_SYSTEM_PROPERTY_SET.has(key));
   if(unknownSystem.length) return {ok:false,error:`ukjente filemeta_ systemfelter: ${unknownSystem.join(', ')}`};
   const id=String(frontmatter.filemeta_id || '').trim().toLowerCase();
@@ -168,7 +171,7 @@ function metadataRecordSerializeMarkdown(record, schema = null) {
       seen.add(field.property);
     }
   }
-  for(const key of Object.keys(values).sort((a,b)=>a.localeCompare(b))) if(!seen.has(key) && !String(key).startsWith('filemeta_')) ordered.push(key);
+  for(const key of Object.keys(values).sort((a,b)=>a.localeCompare(b))) if(!seen.has(key) && !String(key).startsWith('filemeta_') && !String(key).startsWith(METADATA_RECORD_LEGACY_PREFIX)) ordered.push(key);
 
   for(const key of ordered) {
     const value=values[key];
@@ -197,6 +200,7 @@ const metadataRecordContract=Object.freeze({
   METADATA_RECORD_STATUS_ACTIVE,
   METADATA_RECORD_STATUS_MISSING,
   METADATA_RECORD_SYSTEM_PROPERTIES,
+  METADATA_RECORD_LEGACY_PREFIX,
   METADATA_RECORD_SUPPORTED,
   metadataRecordNormalizeVaultPath,
   metadataRecordIsUuidV4,
