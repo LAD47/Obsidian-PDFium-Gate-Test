@@ -73,6 +73,7 @@ const METADATA_SOURCE_ORDER = Object.freeze([
   'document-register-base-config.js',
   'schema-repository.js',
   'record-contract.js',
+  'example-files.js',
   'record-index-cache.js',
   'benchmark-contract.js',
   'record-repository.js'
