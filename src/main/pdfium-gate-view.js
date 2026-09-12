@@ -110,6 +110,19 @@ class PdfiumGateView extends FileView {
     return { stage, loading };
   }
 
+  refreshLocalizedUi() {
+    const t=(key,params)=>this.plugin.i18n?.t?.(key,params) || key;
+    try { this.contentEl?.querySelector?.('.pdfium-gate-version-main')?.setText?.(t('pdfView.banner',{version:PLUGIN_VERSION})); } catch (_) {}
+    try { this.contentEl?.querySelector?.('.pdfium-gate-version-hint')?.setText?.(t('pdfView.bannerHint')); } catch (_) {}
+    try { this.contentEl?.querySelector?.('.pdfium-gate-focus-diagnostic-button')?.setText?.(t('pdfView.openDiagnostics')); } catch (_) {}
+    try { this.contentEl?.querySelector?.('.pdfium-gate-title')?.setText?.(t('pdfView.title',{version:PLUGIN_VERSION})); } catch (_) {}
+    try {
+      if (this.viewerEl && this.file) this.viewerEl.setAttribute('title',t('pdfView.frameTitle',{name:this.file.basename}));
+    } catch (_) {}
+    try { this.plugin?.ports?.renderDocumentInfoForView?.(this); } catch (_) {}
+    return true;
+  }
+
   async renderFullPage(file, page = 1, navigationState = null, linkLocator = null) {
     this.mode = 'full';
     if (file && file.path) this.plugin.state.navigation.lastKnownPdfFilePath = file.path;
