@@ -17,7 +17,7 @@ const expectedFields = [
   'response_sent_date',
   'response_sent_link'
 ];
-const systemFields = ['pdfmeta_type','pdfmeta_version','pdfmeta_id','pdfmeta_file','pdfmeta_status'];
+const systemFields = ['filemeta_type','filemeta_profile','filemeta_version','filemeta_id','filemeta_file','filemeta_status'];
 const examplesRoot = 'Examples-Obsidian-PDFium-Gate';
 const supportedLocales = ['en','nb','de','es','sv','da','fr'];
 const installerTextKeys = ['name','description','button','confirm','success','failed'];
@@ -58,6 +58,7 @@ for (const key of installerTextKeys) {
 
 if (!templateSource.includes(`const PDFIUM_EXAMPLES_ROOT = '${examplesRoot}'`)) fail('runtime example root differs from documented root');
 if (!baseExample.includes(`file.inFolder(\\\"${examplesRoot}\\\")`)) fail('native Base does not filter the example folder');
+if (!baseExample.includes('filemeta_profile') || !baseExample.includes('document')) fail('native Base must filter the document profile');
 if (!baseExample.includes('- type: table')) fail('example Base must use native Obsidian table view');
 if (baseExample.includes('pdfium-document-register')) fail('example Base must not depend on the custom PDFium Gate view');
 

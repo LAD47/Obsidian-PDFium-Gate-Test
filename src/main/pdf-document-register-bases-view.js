@@ -711,8 +711,8 @@ class PdfDocumentRegisterBasesView extends BasesViewBase {
     const thead = table.createEl('thead');
     const headRow = thead.createEl('tr');
     for (const field of fields) this.renderHeaderCell(headRow,{ property:field.property, label:String(field.label || field.property), field });
-    this.renderHeaderCell(headRow,{ property:'pdfmeta_status', label:this.t('documentRegister.status'), systemType:'status' });
-    this.renderHeaderCell(headRow,{ property:'pdfmeta_file', label:this.t('documentRegister.pdf'), systemType:'link' });
+    this.renderHeaderCell(headRow,{ property:'filemeta_status', label:this.t('documentRegister.status'), systemType:'status' });
+    this.renderHeaderCell(headRow,{ property:'filemeta_file', label:this.t('documentRegister.pdf'), systemType:'link' });
 
     const tbody = table.createEl('tbody');
     let visibleRows = 0;
@@ -724,10 +724,10 @@ class PdfDocumentRegisterBasesView extends BasesViewBase {
       const presented = metadataBasePresentFrontmatter(canonicalFrontmatter, schema, this.presentationSettings(), metadataFieldTypeRegistry);
       if (!presented.ok) continue;
 
-      const rawLink = String(frontmatter?.pdfmeta_file || '');
+      const rawLink = String(frontmatter?.filemeta_file || '');
       const linkTarget = metadataRecordPdfPathFromLink(rawLink);
       const resolvedPath = this.host?.resolvePdfPath?.(linkTarget, entry.file?.path || '') || linkTarget;
-      const activeRecord = String(frontmatter?.pdfmeta_status || '') === METADATA_RECORD_STATUS_ACTIVE;
+      const activeRecord = String(frontmatter?.filemeta_status || '') === METADATA_RECORD_STATUS_ACTIVE;
       const canOpenPdf = activeRecord && !!resolvedPath;
       const presentedByProperty = new Map(presented.fields.map(item=>[item.property,item]));
       const filterValues = {};
@@ -735,8 +735,8 @@ class PdfDocumentRegisterBasesView extends BasesViewBase {
         const item = presentedByProperty.get(field.property) || { raw:null, display:'—' };
         filterValues[field.property] = { raw:item.raw, display:item.display || '—' };
       }
-      filterValues.pdfmeta_status = { raw:activeRecord ? 'active' : 'missing', display:activeRecord ? this.t('common.active') : this.t('common.missing') };
-      filterValues.pdfmeta_file = { raw:resolvedPath || linkTarget || '', display:resolvedPath || linkTarget || this.t('documentRegister.pdfMissing') };
+      filterValues.filemeta_status = { raw:activeRecord ? 'active' : 'missing', display:activeRecord ? this.t('common.active') : this.t('common.missing') };
+      filterValues.filemeta_file = { raw:resolvedPath || linkTarget || '', display:resolvedPath || linkTarget || this.t('documentRegister.pdfMissing') };
       if (!this.matchesHeaderFilters(filterValues)) continue;
       visibleRows += 1;
       const row = tbody.createEl('tr');

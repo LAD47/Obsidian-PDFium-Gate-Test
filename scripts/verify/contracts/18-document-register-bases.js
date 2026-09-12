@@ -16,11 +16,12 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   const registry=registryApi.createMetadataFieldTypeRegistry();
   const settings={regionalDateFormat:'DD.MM.YYYY',regionalTimeFormat:'HH:mm',regionalDecimalSeparator:',',uiBooleanLabels:{yes:'Ja',no:'Nei'}};
   const sourceFrontmatter={
-    pdfmeta_type:'pdf_document',
-    pdfmeta_version:1,
-    pdfmeta_id:'a49dde44-7872-4d89-b97e-027a6e689d94',
-    pdfmeta_file:'[[10_Kilder/PDF/test.pdf]]',
-    pdfmeta_status:'active',
+    filemeta_type:'pdf',
+    filemeta_profile:'document',
+    filemeta_version:2,
+    filemeta_id:'a49dde44-7872-4d89-b97e-027a6e689d94',
+    filemeta_file:'[[10_Kilder/PDF/test.pdf]]',
+    filemeta_status:'active',
     document_date:'2016-03-17',
     document_time:'14:35',
     sender:'Oslo kommune',
@@ -63,12 +64,12 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   const standardBaseYaml=baseConfig.metadataDocumentRegisterStandardBaseYaml(schema);
   if(baseConfig.PDF_DOCUMENT_REGISTER_STANDARD_BASE_PATH!=='PDF Dokumentregister.base') fail('standard Dokumentregister Base path drifted');
   if(baseConfig.PDF_DOCUMENT_REGISTER_BASE_VIEW_TYPE!=='pdfium-document-register') fail('standard Dokumentregister custom view type drifted');
-  if(!standardBaseYaml.includes('file.inFolder(\\"PDF Metadata\\")')||!standardBaseYaml.includes('pdfmeta_type == \\"pdf_document\\"')) fail('standard Dokumentregister Base does not scope query to canonical PDF metadata records');
+  if(!standardBaseYaml.includes('file.inFolder(\\"File Metadata\\")')||!standardBaseYaml.includes('filemeta_type == \\"pdf\\"')||!standardBaseYaml.includes('filemeta_profile == \\"document\\"')) fail('standard Dokumentregister Base does not scope query to canonical PDF/document metadata records');
   if(!standardBaseYaml.includes('type: pdfium-document-register')||!standardBaseYaml.includes('property: document_date')||!standardBaseYaml.includes('direction: DESC')) fail('standard Dokumentregister Base lacks custom view/default newest-first sort');
   if(!standardBaseYaml.includes('displayName: "Document date"')||!standardBaseYaml.includes('displayName: "Status"')||!standardBaseYaml.includes('displayName: "PDF"')) fail('standard Document Register Base lacks canonical English human display names');
   const ignoredLocalizedBase=baseConfig.metadataDocumentRegisterStandardBaseYaml(schema,()=> 'SHOULD NOT BE USED');
   if(ignoredLocalizedBase!==standardBaseYaml) fail('standard Base factory unexpectedly depends on UI language');
-  if(standardBaseYaml.includes('pdfmeta_id')||standardBaseYaml.includes('record filename')) fail('standard Dokumentregister Base exposes technical identity fields');
+  if(standardBaseYaml.includes('filemeta_id')||standardBaseYaml.includes('record filename')) fail('standard Dokumentregister Base exposes technical identity fields');
   const hiddenBaseYaml=baseConfig.metadataDocumentRegisterStandardBaseYaml(hidden);
   if(hiddenBaseYaml.includes('  sender:')||hiddenBaseYaml.includes('      - sender')) fail('standard Dokumentregister Base ignores show_in_default_base=false');
 
@@ -118,7 +119,7 @@ module.exports=function verifyDocumentRegisterBasesContract(){
   if(!viewSource.includes("PDF_DOCUMENT_REGISTER_HEADER_FILTERS_CONFIG_KEY = 'pdfiumHeaderFilters'")||!viewSource.includes('pdfDocumentRegisterHeaderFiltersFromConfig(')||!viewSource.includes('pdfDocumentRegisterHeaderFiltersToConfig(')) fail('persistent header-filter config contract missing');
   if(!viewSource.includes('rememberDocumentRegisterFilters')||!viewSource.includes('persistHeaderFiltersIfEnabled()')||!viewSource.includes('this.config.set(')) fail('optional header-filter persistence path missing');
   if(viewSource.includes("sortButton.setAttribute('title'")||viewSource.includes("filterButton.setAttribute('title'")) fail('header buttons must not duplicate native title and Obsidian accessibility tooltip text');
-  if(!viewSource.includes("property:'pdfmeta_status', label:this.t('documentRegister.status')")||!viewSource.includes("property:'pdfmeta_file', label:this.t('documentRegister.pdf')")) fail('status/PDF headers are not wired to localized shared header interaction');
+  if(!viewSource.includes("property:'filemeta_status', label:this.t('documentRegister.status')")||!viewSource.includes("property:'filemeta_file', label:this.t('documentRegister.pdf')")) fail('status/PDF headers are not wired to localized shared header interaction');
   {
     const sanitize=eval(`(${ctx.extractNamedFunction(viewSource,'pdfDocumentRegisterSanitizeStoredFilter')})`);
     const fromConfig=eval(`(function(pdfDocumentRegisterSanitizeStoredFilter){ return (${ctx.extractNamedFunction(viewSource,'pdfDocumentRegisterHeaderFiltersFromConfig')}); })`)(sanitize);

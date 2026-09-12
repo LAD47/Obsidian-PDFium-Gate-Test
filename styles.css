@@ -439,7 +439,7 @@
    folder becomes visible again, while storage/indexing remain untouched. */
 body.pdfium-hide-document-records
 .workspace-leaf-content[data-type="file-explorer"]
-.nav-folder:has(> .nav-folder-title[data-path="PDF Metadata"]) {
+.nav-folder:has(> .nav-folder-title[data-path="File Metadata"]) {
   display: none !important;
 }
 

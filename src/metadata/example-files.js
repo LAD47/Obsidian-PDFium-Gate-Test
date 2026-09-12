@@ -77,7 +77,7 @@ function metadataExampleReadmeMarkdown() {
 
 This folder contains optional PDFium Gate examples for inspecting the plugin's metadata model with ordinary Obsidian files.
 
-The files in this folder are **examples only**. They are deliberately stored outside \`PDF Metadata/\`, so PDFium Gate does not index them as real document records. Obsidian Bases can still read their YAML/frontmatter directly.
+The files in this folder are **examples only**. They are deliberately stored outside \`File Metadata/\`, so PDFium Gate does not index them as real document records. Obsidian Bases can still read their YAML/frontmatter directly.
 
 ## Included files
 
@@ -87,7 +87,7 @@ The files in this folder are **examples only**. They are deliberately stored out
 
 ## Important
 
-Do not move these example Markdown files unchanged into \`PDF Metadata/\`. They contain fixed sample UUIDs and placeholder PDF links.
+Do not move these example Markdown files unchanged into \`File Metadata/\`. They contain fixed sample UUIDs and placeholder PDF links.
 
 The examples are copied only when you choose the example-file action in PDFium Gate Settings. Running that action again restores the canonical example set and overwrites these four example filenames after an explicit warning. Other files in this folder are not changed.
 `;
@@ -97,7 +97,7 @@ function metadataExampleActiveRecordMarkdown() {
   const schema = metadataDefaultSchema();
   return metadataRecordSerializeMarkdown({
     id:PDFIUM_EXAMPLE_ACTIVE_RECORD_ID,
-    pdfPath:'Example Documents/example-letter.pdf',
+    filePath:'Example Documents/example-letter.pdf',
     status:METADATA_RECORD_STATUS_ACTIVE,
     values:{
       document_date:'2016-03-17',
@@ -117,7 +117,7 @@ function metadataExampleMissingRecordMarkdown() {
   const schema = metadataDefaultSchema();
   return metadataRecordSerializeMarkdown({
     id:PDFIUM_EXAMPLE_MISSING_RECORD_ID,
-    pdfPath:'Example Documents/missing-example-decision.pdf',
+    filePath:'Example Documents/missing-example-decision.pdf',
     status:METADATA_RECORD_STATUS_MISSING,
     values:{
       document_date:'2015-11-02',
@@ -139,27 +139,28 @@ function metadataExampleNativeBaseYaml() {
     'filters:',
     '  and:',
     `    - ${q(`file.inFolder("${PDFIUM_EXAMPLES_ROOT}")`)}`,
-    `    - ${q('pdfmeta_type == "pdf_document"')}`,
+    `    - ${q('filemeta_type == "pdf"')}`,
+    `    - ${q('filemeta_profile == "document"')}`,
     'properties:'
   ];
   for (const field of fields) {
     lines.push(`  ${field.property}:`);
     lines.push(`    displayName: ${q(field.label)}`);
   }
-  lines.push('  pdfmeta_status:');
+  lines.push('  filemeta_status:');
   lines.push(`    displayName: ${q('Status')}`);
-  lines.push('  pdfmeta_file:');
+  lines.push('  filemeta_file:');
   lines.push(`    displayName: ${q('PDF')}`);
-  lines.push('  pdfmeta_id:');
+  lines.push('  filemeta_id:');
   lines.push(`    displayName: ${q('Metadata ID')}`);
   lines.push('views:');
   lines.push('  - type: table');
   lines.push(`    name: ${q('PDF metadata examples')}`);
   lines.push('    order:');
   for (const field of fields) lines.push(`      - ${field.property}`);
-  lines.push('      - pdfmeta_status');
-  lines.push('      - pdfmeta_file');
-  lines.push('      - pdfmeta_id');
+  lines.push('      - filemeta_status');
+  lines.push('      - filemeta_file');
+  lines.push('      - filemeta_id');
   lines.push('    sort:');
   lines.push('      - property: document_date');
   lines.push('        direction: DESC');

@@ -1,9 +1,10 @@
 ---
-pdfmeta_type: "pdf_document"
-pdfmeta_version: 1
-pdfmeta_id: "11111111-1111-4111-8111-111111111111"
-pdfmeta_file: "[[Example Documents/example-letter.pdf]]"
-pdfmeta_status: "active"
+filemeta_type: "pdf"
+filemeta_profile: "document"
+filemeta_version: 1
+filemeta_id: "11111111-1111-4111-8111-111111111111"
+filemeta_file: "[[Example Documents/example-letter.pdf]]"
+filemeta_status: "active"
 document_date: 2016-03-17
 document_time: "14:35"
 sender: "Example Municipality"

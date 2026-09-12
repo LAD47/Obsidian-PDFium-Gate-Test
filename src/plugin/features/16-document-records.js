@@ -48,7 +48,7 @@ class DocumentRecordsFeature {
     if(!linkPath) return '';
 
     // Canonical identity is the actual vault TFile.path, never the textual
-    // wikilink representation stored in pdfmeta_file. Obsidian may rewrite
+    // wikilink representation stored in filemeta_file. Obsidian may rewrite
     // an equivalent link from [[Folder/file.pdf]] to [[file.pdf]] after
     // rename; both must resolve to the same index key.
     // Resolve with Obsidian's own link semantics first. This is essential for

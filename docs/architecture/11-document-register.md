@@ -4,7 +4,7 @@ The custom `pdfium-document-register` view is a presentation/editing layer over 
 
 ## 0.1.196 Bases presentation and future localization boundary
 
-The permanent metadata contract remains language-neutral. `field.property`, select/multiselect option `value`, UUID identities and `pdfmeta_*` system properties are storage/API identifiers, not localized UI strings.
+The permanent metadata contract remains language-neutral. `field.property`, select/multiselect option `value`, UUID identities and `filemeta_*` system properties are storage/API identifiers, not localized UI strings.
 
 DocumentInfo and the PDF document-register Bases presentation consume the same metadata schema and field-type registry for user-facing formatting. A select value such as `letter` may therefore render as the schema label `Brev` without modifying the Markdown record.
 
@@ -37,7 +37,7 @@ Creation rules:
 
 - creation is lazy and happens only through **PDF: Åpne Dokumentregister**;
 - if the canonical Base file already exists, it is reused and never modified by the plugin;
-- generated membership is constrained to `PDF Metadata` + `pdfmeta_type == "pdf_document"`;
+- generated membership is constrained to `File Metadata` + `filemeta_type == "pdf"`;
 - generated property labels come from the current metadata schema and respect `show_in_default_base`;
 - technical UUID/record filenames are not standard columns;
 - default sort is `document_date` descending, with `file.mtime` descending only when `document_date` is unavailable.
@@ -79,3 +79,7 @@ The `pdfium-document-register` custom view may optionally persist its own dataty
 This custom state is distinct from native Base `filters`: the plugin must not write `config.set('filters', ...)` and must not rewrite `PDF Dokumentregister.base` directly. Native Bases continues to determine query membership and sort order; the custom view only narrows the already-produced result for its own header-filter UX.
 
 0.1.211 also restores release-version consistency: renderer `PLUGIN_VERSION`, manifest/package version, and the generated runtime bridge filename are aligned. The stale pre-release `main-bridge-0.1.205.js` may be removed only after the current versioned bridge has been successfully written and loaded. The Main Bridge source itself is unchanged.
+
+## 0.1.223 profile filter
+
+The standard PDF Document Register remains a PDF-specific user view, but its Base filter now targets the generic record layer with both `filemeta_type == "pdf"` and `filemeta_profile == "document"`. This keeps the current UI simple while allowing future registers to select other type/profile combinations.

@@ -41,8 +41,11 @@ module.exports=async function verifyMetadataSchemaContract(){
 
 
   const reserved=metadataClone(schema);
-  reserved.fields[0].property='pdfmeta_user_field';
-  if(metadataValidateSchema(reserved).ok) fail('reserved pdfmeta_ prefix was accepted');
+  reserved.fields[0].property='filemeta_user_field';
+  if(metadataValidateSchema(reserved).ok) fail('reserved filemeta_ prefix was accepted');
+  const legacyReserved=metadataClone(schema);
+  legacyReserved.fields[0].property='pdfmeta_user_field';
+  if(metadataValidateSchema(legacyReserved).ok) fail('legacy reserved pdfmeta_ prefix was accepted');
 
   const badDate=metadataClone(schema);
   badDate.fields[0].default='2016-02-31';

@@ -152,7 +152,7 @@ class MetadataBenchmarkFeature {
         if(!this.nodeFilesystemAdapter.exists(recordDir)) this.nodeFilesystemAdapter.ensureDir(recordDir);
         if(this.nodeFilesystemAdapter.exists(recordFsPath)) {
           const existing=this.nodeFilesystemAdapter.readText(recordFsPath,'utf8');
-          if(!existing.includes(`pdfmeta_id: "${id}"`) || !existing.includes(`pdfmeta_file: "[[${pdfPath}]]"`)) {
+          if(!existing.includes(`filemeta_id: "${id}"`) || !existing.includes(`filemeta_file: "[[${pdfPath}]]"`)) {
             throw new Error(this.i18n.t('benchmark.error.uuidCollision',{path:recordPath}));
           }
         } else {
@@ -266,7 +266,7 @@ class MetadataBenchmarkFeature {
         index:core?.index||null,
         memory:core?.memory||null,
         notes:[
-          'PDF Metadata remains ordinary indexed Markdown storage.',
+          'File Metadata remains ordinary indexed Markdown storage.',
           'Forced rebuild mutates only RAM index state; persistent records are not rewritten.',
           'Bases render/search/sort responsiveness must still be judged manually in Obsidian.',
           '0.1.203 gates background cache/index warmup on both metadata-cache resolved and layout-ready, then browser idle; on-demand callers share one build promise.'

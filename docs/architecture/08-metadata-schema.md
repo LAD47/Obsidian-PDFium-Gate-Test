@@ -18,7 +18,7 @@ Schema field identity has three separate concerns:
 - stable English technical `property`;
 - editable user-facing `label`.
 
-System metadata will use the reserved `pdfmeta_*` namespace. User properties must match `^[a-z][a-z0-9_]{0,63}$` and may not collide with reserved Obsidian/Bases names declared by the schema contract.
+System metadata uses the reserved `filemeta_*` namespace. The former pre-release `pdfmeta_*` namespace also remains reserved so legacy-looking fields cannot be created as user metadata. User properties must match `^[a-z][a-z0-9_]{0,63}$` and may not collide with reserved Obsidian/Bases names declared by the schema contract.
 
 v1 field types are text, date, time, integer, decimal, boolean, select, multiselect and link. Canonical persistence is locale-independent. `date` uses `YYYY-MM-DD`; time-only uses `HH:mm` or `HH:mm:ss` without timezone. Regional presentation/input preferences are plugin settings, not schema semantics.
 
@@ -30,23 +30,12 @@ v1 field types are text, date, time, integer, decimal, boolean, select, multisel
 
 Factory-created persistent defaults are canonical English and are not i18n-owned UI text. The standard schema contains nine fields: `document_date`, `document_time`, `sender`, `document_type`, `response_received`, `response_received_date`, `response_sent`, `response_sent_date`, and `response_sent_link`. Labels remain freely user-editable after creation; stable field UUIDs, properties and select machine values do not change when labels change.
 
-## Planned pre-beta multi-file-type metadata direction
+## Multi-file-type metadata foundation (0.1.223)
 
-The current implementation is PDF-specific, including the reserved `pdfmeta_*` system namespace and `.pdf-metadata` technical storage names. Before public beta, new metadata code should be shaped so that PDF is the first supported type rather than the permanent architectural boundary.
+0.1.223 changes the permanent Markdown record identity from the PDF-specific `pdfmeta_*` namespace to the file-type-neutral `filemeta_*` namespace. Records now separate `filemeta_type` from `filemeta_profile`; the first and only enabled combination is `pdf` + `document`. The persisted record root is `File Metadata/`.
 
-The intended internal model is:
+The current document schema remains the first profile schema and keeps its existing nine user fields. Future content types should add profile-specific schemas while reusing the same field type registry, validation rules, record identity and Markdown/YAML persistence. 0.1.223 deliberately does **not** enable HTML, image or SVG product support.
 
-- one file-type-neutral system metadata layer;
-- a file/content type that identifies the underlying format or handling class;
-- a metadata profile that defines the meaningful user fields for that kind of content;
-- one ordinary Markdown/YAML record model and the same validation/persistence machinery across profiles.
+The technical `.pdf-metadata/` configuration root is intentionally unchanged in this build because it also contains PDF-specific configuration such as highlight categories and the current document-profile cache. Renaming or splitting that technical storage is a separate decision and must not be coupled mechanically to record identity.
 
-The reserved technical namespace should therefore move toward a generic `filemeta_*` form before public beta while destructive pre-release schema changes are still acceptable. The exact migration/build step must be implemented and verified as explicit product work; documentation of this direction does not change the current 0.1.222 runtime by itself.
-
-File type and metadata profile must remain separate. For example, HTML is a file type, while a saved web page is a metadata profile. PDF is a file type, while a document-oriented profile can expose fields such as `document_date`, `sender` and `document_type`. Image formats can later use an image-oriented profile with fields such as creator, captured date, caption, source and rights without forcing those fields into PDF records.
-
-User-facing terminology should follow the content, not the internal architecture. Normal users should see concepts such as **Document information**, **Web page information** and **Image information** rather than being required to understand system namespaces, schema inheritance or metadata-profile mechanics.
-
-Profiles may reuse natural technical property names where useful (`author`, `title`, `published_date`, `source_url`, `sender`, `document_date`) instead of embedding the file type in every property name. Stable field UUIDs remain the durable identity mechanism inside each schema/profile. User-editable labels remain presentation, not identity.
-
-Do not create one universal schema containing every field for every future content type. Each profile should expose only the fields that make sense for that content while reusing the common field type registry, validation semantics, safe persistence path and ordinary Markdown/YAML source-of-truth model.
+User-facing terminology continues to follow the content model rather than the internal architecture: Document information for the PDF/document profile now, with future Web page information or Image information only when those product features are actually implemented.

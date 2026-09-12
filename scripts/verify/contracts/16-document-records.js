@@ -11,12 +11,12 @@ module.exports=async function verifyDocumentRecordsContract(){
   const schema=schemaApi.metadataDefaultSchema();
   const id='123e4567-e89b-42d3-a456-426614174000';
 
-  if(recordApi.METADATA_RECORD_CONTRACT_VERSION!=='0.1') fail('metadata record contract version drifted');
-  if(recordApi.METADATA_RECORD_FORMAT_VERSION!==1) fail('metadata record format version drifted');
-  if(recordApi.METADATA_RECORDS_ROOT!=='PDF Metadata') fail(`metadata record root drifted: ${recordApi.METADATA_RECORDS_ROOT}`);
+  if(recordApi.METADATA_RECORD_CONTRACT_VERSION!=='0.2') fail('metadata record contract version drifted');
+  if(recordApi.METADATA_RECORD_FORMAT_VERSION!==2) fail('metadata record format version drifted');
+  if(recordApi.METADATA_RECORDS_ROOT!=='File Metadata') fail(`metadata record root drifted: ${recordApi.METADATA_RECORDS_ROOT}`);
   if(recordApi.METADATA_RECORDS_ROOT.startsWith('.')) fail('metadata record root is hidden from Obsidian indexing');
-  if(recordApi.metadataRecordPathFromId(id)!==`PDF Metadata/12/${id}.md`) fail('metadata UUID sharding path drifted');
-  if(!recordApi.metadataRecordIsPath(`PDF Metadata/12/${id}.md`)) fail('canonical metadata record path not recognized');
+  if(recordApi.metadataRecordPathFromId(id)!==`File Metadata/12/${id}.md`) fail('metadata UUID sharding path drifted');
+  if(!recordApi.metadataRecordIsPath(`File Metadata/12/${id}.md`)) fail('canonical metadata record path not recognized');
   if(recordApi.metadataRecordIsPath(`.pdf-metadata/${id}.md`)) fail('hidden technical metadata root accepted as document record root');
 
   const record={
@@ -33,11 +33,12 @@ module.exports=async function verifyDocumentRecordsContract(){
   };
   const markdown=recordApi.metadataRecordSerializeMarkdown(record,schema);
   for(const required of [
-    'pdfmeta_type: "pdf_document"',
-    'pdfmeta_version: 1',
-    `pdfmeta_id: "${id}"`,
-    'pdfmeta_file: "[[Cases/2016/example.pdf]]"',
-    'pdfmeta_status: "active"',
+    'filemeta_type: "pdf"',
+    'filemeta_profile: "document"',
+    'filemeta_version: 2',
+    `filemeta_id: "${id}"`,
+    'filemeta_file: "[[Cases/2016/example.pdf]]"',
+    'filemeta_status: "active"',
     'document_date: 2016-03-17',
     'document_time: "14:35"',
     'sender: "Oslo kommune"',
@@ -46,7 +47,7 @@ module.exports=async function verifyDocumentRecordsContract(){
   ]) if(!markdown.includes(required)) fail(`metadata record serialization missing: ${required}`);
 
   const parsed=recordApi.metadataRecordFromFrontmatter({
-    pdfmeta_type:'pdf_document',pdfmeta_version:1,pdfmeta_id:id,pdfmeta_file:'[[Cases/2016/example.pdf]]',pdfmeta_status:'active',
+    filemeta_type:'pdf',filemeta_profile:'document',filemeta_version:2,filemeta_id:id,filemeta_file:'[[Cases/2016/example.pdf]]',filemeta_status:'active',
     document_date:'2016-03-17',document_time:'14:35',sender:'Oslo kommune',document_type:'decision',response_received:false
   },schema);
   if(!parsed.ok||parsed.record.id!==id||parsed.record.pdfPath!=='Cases/2016/example.pdf'||parsed.record.values.document_date!=='2016-03-17'||parsed.record.values.response_received!==false) fail('metadata record frontmatter parse contract failed');
@@ -56,8 +57,8 @@ module.exports=async function verifyDocumentRecordsContract(){
   const feature=read('src/plugin/features/16-document-records.js');
   const lifecycle=read('src/plugin/features/01-lifecycle.js');
   const vaultRead=read('src/platform/obsidian-vault-read.js');
-  if(repositoryApi.METADATA_RECORD_REPOSITORY_CONTRACT_VERSION!=='0.1') fail('metadata record repository contract version drifted');
-  if(cacheApi.METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION!=='0.1') fail('metadata record index cache contract version drifted');
+  if(repositoryApi.METADATA_RECORD_REPOSITORY_CONTRACT_VERSION!=='0.2') fail('metadata record repository contract version drifted');
+  if(cacheApi.METADATA_RECORD_INDEX_CACHE_CONTRACT_VERSION!=='0.2') fail('metadata record index cache contract version drifted');
   if(cacheApi.METADATA_RECORD_INDEX_CACHE_PATH!=='.pdf-metadata/document-record-index-cache.json') fail('metadata record index cache path drifted');
   for(const required of ['schema_sha256','mtime','size','record_contract_version','record_format_version']) if(!cacheSource.includes(required)) fail(`metadata record index cache safety contract missing: ${required}`);
   const cacheFiles=new Map();
@@ -68,7 +69,7 @@ module.exports=async function verifyDocumentRecordsContract(){
     async ensureFolder(){return {path:'.pdf-metadata'}}
   };
   const cache=cacheApi.createMetadataRecordIndexCache({fileStore:cacheStore,recordApi,cryptoApi:require('crypto')});
-  const cacheFile={path:`PDF Metadata/12/${id}.md`,extension:'md',stat:{mtime:1000,size:321}};
+  const cacheFile={path:`File Metadata/12/${id}.md`,extension:'md',stat:{mtime:1000,size:321}};
   await cache.write(schema,[{file:cacheFile,parsed:{ok:true,record,recordPath:cacheFile.path}}]);
   let cacheState=await cache.load(schema);
   if(!cacheState.usable||cacheState.entries.size!==1) fail('metadata record index cache did not round-trip');
@@ -216,7 +217,7 @@ module.exports=async function verifyDocumentRecordsContract(){
   // Cold-start rebuild must trust the persisted record, not cache frontmatter.
   owner.state.documentRecords=makeState();
   owner.obsidianMetadataCacheAdapter={getFrontmatter:()=>({
-    pdfmeta_type:'pdf_document',pdfmeta_version:1,pdfmeta_id:firstId,pdfmeta_file:'[[Docs/a.pdf]]',pdfmeta_status:'active',
+    filemeta_type:'pdf',filemeta_version:1,filemeta_id:firstId,filemeta_file:'[[Docs/a.pdf]]',filemeta_status:'active',
     sender:'Oslo kommune',document_date:'2016-03-17'
   })};
   await owner.ensureDocumentRecordIndexReady();
@@ -224,7 +225,7 @@ module.exports=async function verifyDocumentRecordsContract(){
   if(!lookup.registered||lookup.id!==firstId) fail('cold-start rebuild after PDF rename trusted stale metadataCache instead of persisted Markdown record');
   if(owner.getDocumentMetadataRecordState('Docs/a.pdf').registered) fail('cold-start rebuild after PDF rename resurrected stale pre-rename PDF path');
 
-  // Obsidian may rewrite an equivalent pdfmeta_file link to shortest-path form on rename.
+  // Obsidian may rewrite an equivalent filemeta_file link to shortest-path form on rename.
   // The textual link is not document identity: both forms must index as the same TFile.path.
   const shortestId='423e4567-e89b-42d3-a456-426614174000';
   const shortestRecordPath=recordApi.metadataRecordPathFromId(shortestId);
@@ -239,7 +240,7 @@ module.exports=async function verifyDocumentRecordsContract(){
   owner.state.documentRecords=makeState();
   await owner.ensureDocumentRecordIndexReady();
   lookup=owner.getDocumentMetadataRecordState('10_Kilder/PDF/h-2514-b-veileder-for-beregning-av-selvkost_xxx.pdf');
-  if(!lookup.registered||lookup.id!==shortestId||lookup.values.sender!=='Oslo kommune') fail('shortest-path pdfmeta_file was not canonicalized to resolved TFile.path');
+  if(!lookup.registered||lookup.id!==shortestId||lookup.values.sender!=='Oslo kommune') fail('shortest-path filemeta_file was not canonicalized to resolved TFile.path');
   if(owner.getDocumentMetadataRecordState('h-2514-b-veileder-for-beregning-av-selvkost_xxx.pdf').registered) fail('raw shortest wikilink text leaked into byPdfPath identity');
 
   // Restore the first record for delete lifecycle continuation.

@@ -107,7 +107,7 @@ BRAT can also be used to check for and install newer test releases.
 
 The project deliberately separates durable user data from disposable acceleration data and internal configuration.
 
-- `PDF Metadata/` contains ordinary indexed Markdown/YAML document records.
+- `File Metadata/` contains ordinary indexed Markdown/YAML document records.
 - `.pdf-metadata/` contains plugin metadata/configuration and disposable technical data such as the document-record index cache and the example-bootstrap marker.
 - `PDF Dokumentregister.base` is created on demand as the standard document register. After creation it is treated as user-owned and is not silently overwritten by the plugin.
 - `Examples-Obsidian-PDFium-Gate/` contains a one-time copied example set. These files are user-owned after creation and are never overwritten by the plugin.
