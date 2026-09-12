@@ -36,9 +36,11 @@ replaceRegion(
 );
 
 replaceRegion(
-  "replaceRequired(\n  'docs/examples/Example PDF Document Register.base',",
-  '// Keep the example verifier synchronized with the new six system properties.',
+  "for(const rel of ['docs/examples/Example - Active PDF record.md','docs/examples/Example - Missing PDF record.md']) {",
+  "insertProfileFilterLine('docs/examples/Example PDF Document Register.base');",
   [
+    "insertProfileFilterLine('docs/examples/Example - Active PDF record.md');",
+    "insertProfileFilterLine('docs/examples/Example - Missing PDF record.md');",
     "insertProfileFilterLine('docs/examples/Example PDF Document Register.base');",
     ''
   ]
