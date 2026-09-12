@@ -3,7 +3,7 @@
   "name": "PDFium Gate Test",
   "version": "0.1.222",
   "minAppVersion": "1.13.7",
-  "description": "PDFium Gate test build 0.1.222 - canonical Markdown/Bases examples with safe one-time Vault bootstrap.",
+  "description": "PDFium Gate test build 0.1.222 - canonical Markdown/Bases examples with an opt-in Vault installer.",
   "author": "OpenAI / test build",
   "isDesktopOnly": true
 }

@@ -13,8 +13,6 @@ class MetadataSchemaFeature {
       this.state.metadata.lastError = null;
       this.state.metadata.lastBackupPath = loaded.backupPath || null;
       if (loaded.created) new Notice(this.i18n.t('metadataSchema.lifecycle.created',{version:PLUGIN_VERSION,path:METADATA_SCHEMA_PATH}), 7000);
-      const examples = await this._ensureMetadataExampleFiles();
-      if (!examples.ok) console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] example bootstrap skipped: ${examples.error || 'unknown error'}`);
       return { ok:true, created:!!loaded.created, schema:metadataClone(loaded.schema) };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -28,27 +26,12 @@ class MetadataSchemaFeature {
     }
   }
 
-  async _ensureMetadataExampleFiles() {
-    const statePath = `${METADATA_SCHEMA_ROOT}/example-files-bootstrap.json`;
-    const store = this.obsidianAdapterFileStore;
+  async installMetadataExampleFiles() {
     const read = this.obsidianVaultReadAdapter;
     const write = this.obsidianVaultWriteAdapter;
-    if (!store || !read || !write) return {ok:false,error:'vault adapters unavailable'};
+    if (!read || !write) return {ok:false,error:'Vault adapters are unavailable.'};
 
     try {
-      let installedVersion = 0;
-      if (await store.exists(statePath)) {
-        try {
-          const parsed = JSON.parse(await store.readText(statePath));
-          installedVersion = Number(parsed?.example_set_version || 0);
-        } catch (_) {
-          installedVersion = 0;
-        }
-      }
-      if (installedVersion >= PDFIUM_EXAMPLES_BOOTSTRAP_VERSION) {
-        return {ok:true,alreadyInstalled:true,created:[],skipped:[],version:installedVersion};
-      }
-
       const rootEntry = read.getAbstractFileByPath(PDFIUM_EXAMPLES_ROOT);
       if (rootEntry && !Array.isArray(rootEntry.children)) {
         throw new Error(`${PDFIUM_EXAMPLES_ROOT} exists but is not a folder`);
@@ -56,18 +39,21 @@ class MetadataSchemaFeature {
       if (!rootEntry) await write.ensureFolder(PDFIUM_EXAMPLES_ROOT);
 
       const created=[];
-      const skipped=[];
+      const overwritten=[];
       for (const example of metadataExampleFiles()) {
-        if (read.getAbstractFileByPath(example.path)) {
-          skipped.push(example.path);
-          continue;
+        const existing = read.getAbstractFileByPath(example.path);
+        if (existing && Array.isArray(existing.children)) {
+          throw new Error(`${example.path} exists but is a folder`);
         }
-        await write.createText(example.path, example.content);
-        created.push(example.path);
+        if (existing) {
+          await write.modifyText(existing, example.content);
+          overwritten.push(example.path);
+        } else {
+          await write.createText(example.path, example.content);
+          created.push(example.path);
+        }
       }
-
-      await store.writeText(statePath, `${JSON.stringify({format_version:1,example_set_version:PDFIUM_EXAMPLES_BOOTSTRAP_VERSION},null,2)}\n`);
-      return {ok:true,alreadyInstalled:false,created,skipped,version:PDFIUM_EXAMPLES_BOOTSTRAP_VERSION};
+      return {ok:true,created,overwritten,total:created.length+overwritten.length};
     } catch (error) {
       const message=error instanceof Error ? error.message : String(error);
       return {ok:false,error:message};
