@@ -3,10 +3,13 @@ const ctx=require('../context');
 
 module.exports=function verifyI18nContract(){
   const {path,ROOT,fail,read,run}=ctx;
+  const supportedLocales=['en','nb','de','es','sv','da','fr'];
   const report=JSON.parse(run([path.join(ROOT,'scripts/check-i18n.js')]));
   const uiGate=JSON.parse(run([path.join(ROOT,'scripts/check-i18n-ui.js')]));
   if(!report?.ok || report.canonical!=='en') fail('i18n checker/canonical English contract failed');
-  if(report.locales?.en?.coverage!==100 || report.locales?.nb?.coverage!==100) fail('English and Norwegian locale files must remain at 100% coverage during the initial i18n migration');
+  for(const locale of supportedLocales) {
+    if(report.locales?.[locale]?.coverage!==100 || report.locales?.[locale]?.missing!==0) fail(`${locale} locale must remain at 100% coverage`);
+  }
   if(!uiGate?.ok || uiGate.protectedFiles<18 || uiGate.protectedRegions<1) fail('hard-coded migrated-UI gate failed');
 
   const resolverPath=path.join(ROOT,'src/i18n/locale-resolver.js');
@@ -16,31 +19,46 @@ module.exports=function verifyI18nContract(){
   const servicePath=path.join(ROOT,'src/i18n/i18n-service.js');
   delete require.cache[require.resolve(servicePath)];
   const service=require(servicePath);
-  const translations={en:JSON.parse(read('src/i18n/en.json')),nb:JSON.parse(read('src/i18n/nb.json'))};
+  const translations=Object.fromEntries(supportedLocales.map(locale=>[locale,JSON.parse(read(`src/i18n/${locale}.json`))]));
 
-  const en=service.createPdfiumI18n({requestedLanguage:'en',translations});
-  if(en.t('documentInfo.save')!=='Save') fail('English DocumentInfo translation failed');
-  const nb=service.createPdfiumI18n({requestedLanguage:'nb',translations});
-  if(nb.t('documentInfo.save')!=='Lagre') fail('Norwegian DocumentInfo translation failed');
-  if(en.t('category.context.changeCategoryHeading')!=='Change category'||nb.t('category.context.changeCategoryHeading')!=='Endre kategori') fail('category UI translation failed');
-  if(en.t('commands.editFolderCategories')!=='PDF: Edit categories for this folder'||nb.t('commands.editFolderCategories')!=='PDF: Rediger kategorier for denne mappen') fail('category command translation failed');
-  const autoNb=service.createPdfiumI18n({requestedLanguage:'auto',obsidianApi:{getLanguage:()=> 'no'},translations});
-  if(autoNb.getResolvedLanguage()!=='nb') fail('Obsidian no -> nb locale resolution failed');
-  const autoUnsupported=service.createPdfiumI18n({requestedLanguage:'auto',obsidianApi:{getLanguage:()=> 'de'},translations});
-  if(autoUnsupported.getResolvedLanguage()!=='en') fail('unsupported locale must fall back to English');
-  const partialNb=service.createPdfiumI18n({requestedLanguage:'nb',translations:{en:translations.en,nb:{'documentInfo.save':'Lagre'}}});
-  if(partialNb.t('documentInfo.edit')!=='Edit') fail('missing locale key did not fall back to English');
-  if(en.t('validation.expectedDateFormat',{format:'DD.MM.YYYY'})!=='Expected date format DD.MM.YYYY') fail('i18n placeholder interpolation failed');
-  if(service.pdfiumTranslateMetadataValidationMessage(en,'forventet datoformat DD.MM.YYYY')!=='Expected date format DD.MM.YYYY') fail('DocumentInfo validation translation failed');
-  if(service.pdfiumTranslateMetadataValidationMessage(en,'verdi: invalid canonical date')!=='Invalid date') fail('canonical validation translation failed');
-  if(service.pdfiumTranslateMetadataValidationMessage(en,'technical-unknown-message')!=='technical-unknown-message') fail('unknown validation messages must fail open unchanged');
+  const instances=Object.fromEntries(supportedLocales.map(locale=>[
+    locale,
+    service.createPdfiumI18n({requestedLanguage:locale,translations})
+  ]));
+  const saveLabels={en:'Save',nb:'Lagre',de:'Speichern',es:'Guardar',sv:'Spara',da:'Gem',fr:'Enregistrer'};
+  for(const [locale,label] of Object.entries(saveLabels)) {
+    if(instances[locale].t('documentInfo.save')!==label) fail(`${locale} DocumentInfo translation failed`);
+  }
+  if(instances.en.t('category.context.changeCategoryHeading')!=='Change category'||instances.nb.t('category.context.changeCategoryHeading')!=='Endre kategori') fail('category UI translation failed');
+  if(instances.en.t('commands.editFolderCategories')!=='PDF: Edit categories for this folder'||instances.nb.t('commands.editFolderCategories')!=='PDF: Rediger kategorier for denne mappen') fail('category command translation failed');
+
+  const autoCases={
+    no:'nb',
+    'nb-NO':'nb',
+    'de-DE':'de',
+    'es-MX':'es',
+    'sv-SE':'sv',
+    'da-DK':'da',
+    'fr-CA':'fr',
+    'it-IT':'en'
+  };
+  for(const [obsidianLanguage,expected] of Object.entries(autoCases)) {
+    const auto=service.createPdfiumI18n({requestedLanguage:'auto',obsidianApi:{getLanguage:()=>obsidianLanguage},translations});
+    if(auto.getResolvedLanguage()!==expected) fail(`Obsidian ${obsidianLanguage} -> ${expected} locale resolution failed`);
+  }
+  const partialGerman=service.createPdfiumI18n({requestedLanguage:'de',translations:{en:translations.en,de:{'documentInfo.save':'Speichern'}}});
+  if(partialGerman.t('documentInfo.edit')!=='Edit') fail('missing locale key did not fall back to English');
+  if(instances.en.t('validation.expectedDateFormat',{format:'DD.MM.YYYY'})!=='Expected date format DD.MM.YYYY') fail('i18n placeholder interpolation failed');
+  if(service.pdfiumTranslateMetadataValidationMessage(instances.en,'forventet datoformat DD.MM.YYYY')!=='Expected date format DD.MM.YYYY') fail('DocumentInfo validation translation failed');
+  if(service.pdfiumTranslateMetadataValidationMessage(instances.en,'verdi: invalid canonical date')!=='Invalid date') fail('canonical validation translation failed');
+  if(service.pdfiumTranslateMetadataValidationMessage(instances.en,'technical-unknown-message')!=='technical-unknown-message') fail('unknown validation messages must fail open unchanged');
 
   const registryPath=path.join(ROOT,'src/metadata/field-type-registry.js');
   delete require.cache[require.resolve(registryPath)];
   const registryApi=require(registryPath);
   const registry=registryApi.createMetadataFieldTypeRegistry();
-  const nbPresentation=registryApi.metadataPresentationSettings({regionalDateFormat:'DD.MM.YYYY',regionalTimeFormat:'HH:mm',regionalDecimalSeparator:','},nb);
-  const enPresentation=registryApi.metadataPresentationSettings({regionalDateFormat:'DD.MM.YYYY',regionalTimeFormat:'HH:mm',regionalDecimalSeparator:','},en);
+  const nbPresentation=registryApi.metadataPresentationSettings({regionalDateFormat:'DD.MM.YYYY',regionalTimeFormat:'HH:mm',regionalDecimalSeparator:','},instances.nb);
+  const enPresentation=registryApi.metadataPresentationSettings({regionalDateFormat:'DD.MM.YYYY',regionalTimeFormat:'HH:mm',regionalDecimalSeparator:','},instances.en);
   if(registry.format({type:'boolean'},true,nbPresentation)!=='Ja'||registry.format({type:'boolean'},false,nbPresentation)!=='Nei') fail('Norwegian boolean presentation is not owned by i18n');
   if(registry.format({type:'boolean'},true,enPresentation)!=='Yes'||registry.format({type:'boolean'},false,enPresentation)!=='No') fail('English boolean presentation is not owned by i18n');
 
@@ -55,13 +73,13 @@ module.exports=function verifyI18nContract(){
   const categoryMutation=read('src/plugin/features/13-category-mutation.js');
   const diagnosticModals=read('src/main/diagnostic-modals.js');
   const pkg=JSON.parse(read('package.json'));
-  if(!sourceBundle.includes('function buildI18nSource(root)')||!sourceBundle.includes("src/i18n/en.json")||!sourceBundle.includes("src/i18n/nb.json")) fail('i18n source is not bundled from canonical locale files');
+  if(!sourceBundle.includes('function buildI18nSource(root)')||!sourceBundle.includes("const I18N_LOCALE_ORDER = Object.freeze(['en','nb','de','es','sv','da','fr'])")) fail('all supported locale files must be bundled into the root runtime');
   if(!lifecycle.includes("pdfiumNormalizeLanguageSetting(persistedSettings.uiLanguage || 'auto')")||!lifecycle.includes('createPdfiumI18n({')||!lifecycle.includes("name: this.i18n.t('commands.showDocumentInfo')")) fail('plugin i18n initialization/DocumentInfo command pilot missing');
-  if(!settings.includes("saveSetting('uiLanguage'")||!settings.includes("settings.language.followObsidian")||!settings.includes("settings.language.description")) fail('language Settings missing');
+  if(!settings.includes("saveSetting('uiLanguage'")||!settings.includes("settings.language.followObsidian")||!settings.includes('PDFIUM_UI_LANGUAGE_CODES')||!settings.includes('PDFIUM_UI_LANGUAGE_LABELS')) fail('multilingual language Settings missing');
   for(const key of ['settings.pdf.section','settings.regional.section','settings.metadata.section','settings.documentRegister.section','settings.advanced.section']) if(!settings.includes(key)) fail(`Settings section is not localized: ${key}`);
   for(const key of ['settings.pdf.includeHeaderFooter.name','settings.pdf.backupOriginal.name','settings.regional.dateFormat.name','settings.regional.timeFormat.name','settings.regional.decimalSeparator.name','settings.metadata.fields.name','settings.metadata.hideFiles.name','settings.documentRegister.rememberFilters.name','settings.advanced.diagnostics.name']) if(!settings.includes(key)) fail(`Settings item is not localized: ${key}`);
   if(settings.includes('regionalLocale')||lifecycle.includes('regionalLocale')||read('src/metadata/field-type-registry.js').includes('regionalLocale')) fail('removed Locale setting or dependency remains in production source');
-  if(!settings.includes("regionalDateFormat")||!settings.includes("regionalTimeFormat")||!settings.includes("regionalDecimalSeparator")) fail('existing regional formatting settings were displaced by i18n work');
+  if(!settings.includes('regionalDateFormat')||!settings.includes('regionalTimeFormat')||!settings.includes('regionalDecimalSeparator')) fail('existing regional formatting settings were displaced by i18n work');
   if(!read('src/metadata/field-type-registry.js').includes('metadataPresentationSettings')||!read('src/metadata/field-type-registry.js').includes('uiBooleanLabels')) fail('boolean presentation is not routed through i18n presentation context');
   for(const key of ['documentInfo.button','documentInfo.title','documentInfo.cancel','documentInfo.save','documentInfo.edit','documentInfo.closeAria']) {
     if(!documentInfo.includes(key) && !view.includes(key)) fail(`DocumentInfo pilot translation key not used: ${key}`);
@@ -88,8 +106,8 @@ module.exports=function verifyI18nContract(){
   if(!categoryFoundation.includes('function createDefaultCategories()')||!categoryConfig.includes('createDefaultCategories()')||categoryFoundation.includes('factory.category.')) fail('category factory defaults must be canonical English and independent of UI language');
   if(!schemaContractSource.includes('function metadataDefaultSchema()')||!schemaRepositorySource.includes('defaultSchemaFactory = null')||!read('src/plugin/features/14-metadata-schema.js').includes('metadataDefaultSchema()')||schemaContractSource.includes('factory.metadata.')) fail('metadata factory defaults must be canonical English at creation/reset time');
   if(!baseConfigSource.includes('metadataDocumentRegisterStandardBaseYaml(schema)')||!documentRegisterFeature.includes('metadataDocumentRegisterStandardBaseYaml(schema)')||baseConfigSource.includes('factory.base.')) fail('standard Base factory text must be canonical English');
-  for(const localeName of ['en','nb']) {
-    const locale=JSON.parse(read(`src/i18n/${localeName}.json`));
+  for(const localeName of supportedLocales) {
+    const locale=translations[localeName];
     if(Object.keys(locale).some(key=>key.startsWith('factory.'))) fail(`factory defaults leaked into ${localeName} UI translation keys`);
   }
   if(settings.includes('settings.language.reloadNote')||!settings.includes('setRequestedLanguage?.(')||!settings.includes("refreshDocumentInfoViews?.('ui-language-change')")||!view.includes('refreshLocalizedUi()')) fail('language change must apply immediately to live Settings/PDF/DocumentInfo UI');
@@ -97,9 +115,8 @@ module.exports=function verifyI18nContract(){
   for(const key of Object.keys(resolver)) delete global[key];
   return {
     canonicalLocale:'en',
-    pilotLocales:['en','nb'],
-    englishCoverage:report.locales.en.coverage,
-    norwegianCoverage:report.locales.nb.coverage,
+    supportedLocales,
+    localeCoverage:Object.fromEntries(supportedLocales.map(locale=>[locale,report.locales[locale].coverage])),
     englishFallback:true,
     obsidianLanguageResolverIsolated:true,
     regionalFormattingSeparate:true,
@@ -121,6 +138,7 @@ module.exports=function verifyI18nContract(){
     canonicalEnglishFactoryDefaults:true,
     persistedLabelsRemainUserOwned:true,
     liveUiLanguageSwitch:true,
-    commandPaletteRefreshRequiresPluginReload:true
+    commandPaletteRefreshRequiresPluginReload:true,
+    multilingualLocales100Percent:true
   };
 };

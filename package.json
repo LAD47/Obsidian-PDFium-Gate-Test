@@ -1,7 +1,7 @@
 {
   "name": "obsidian-pdfium-gate-test",
   "private": true,
-  "version": "0.1.220",
+  "version": "0.1.221",
   "scripts": {
     "build": "node build.js",
     "verify": "node scripts/verify-build.js",

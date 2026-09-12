@@ -12,9 +12,11 @@ function pdfiumInterpolateTranslation(template, params = {}) {
 
 function createPdfiumI18n({ requestedLanguage='auto', obsidianApi=null, windowObject=null, translations={} } = {}) {
   let requested=pdfiumNormalizeLanguageSetting(requestedLanguage);
-  const english=translations.en && typeof translations.en==='object' ? translations.en : {};
-  const norwegian=translations.nb && typeof translations.nb==='object' ? translations.nb : {};
-  const dictionaries={en:english,nb:norwegian};
+  const dictionaries=Object.create(null);
+  for(const [locale,dictionary] of Object.entries(translations || {})) {
+    if(dictionary && typeof dictionary==='object' && !Array.isArray(dictionary)) dictionaries[String(locale)]=dictionary;
+  }
+  const english=dictionaries.en || {};
 
   function resolvedLanguage() {
     return pdfiumResolveUiLanguage(requested,obsidianApi,windowObject);

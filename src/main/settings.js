@@ -20,22 +20,23 @@ class PdfiumGateSettingsTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName(t('settings.language.name'))
       .setDesc(t('settings.language.description'))
-      .addDropdown(dropdown => dropdown
-        .addOption('auto',t('settings.language.followObsidian'))
-        .addOption('en',t('settings.language.english'))
-        .addOption('nb',t('settings.language.norwegianBokmal'))
-        .setValue(pdfiumNormalizeLanguageSetting(this.plugin.settings?.uiLanguage || 'auto'))
-        .onChange(async value => {
-          const normalized=pdfiumNormalizeLanguageSetting(value);
-          this.plugin.i18n?.setRequestedLanguage?.(normalized);
-          await this.saveSetting('uiLanguage', normalized);
-          try {
-            const leaves=this.app.workspace?.getLeavesOfType?.(VIEW_TYPE) || [];
-            for(const leaf of leaves) leaf?.view?.refreshLocalizedUi?.();
-          } catch (_) {}
-          try { this.plugin.ports?.refreshDocumentInfoViews?.('ui-language-change'); } catch (_) {}
-          this.display();
-        }));
+      .addDropdown(dropdown => {
+        dropdown.addOption('auto',t('settings.language.followObsidian'));
+        for(const locale of PDFIUM_UI_LANGUAGE_CODES) dropdown.addOption(locale,PDFIUM_UI_LANGUAGE_LABELS[locale] || locale);
+        return dropdown
+          .setValue(pdfiumNormalizeLanguageSetting(this.plugin.settings?.uiLanguage || 'auto'))
+          .onChange(async value => {
+            const normalized=pdfiumNormalizeLanguageSetting(value);
+            this.plugin.i18n?.setRequestedLanguage?.(normalized);
+            await this.saveSetting('uiLanguage', normalized);
+            try {
+              const leaves=this.app.workspace?.getLeavesOfType?.(VIEW_TYPE) || [];
+              for(const leaf of leaves) leaf?.view?.refreshLocalizedUi?.();
+            } catch (_) {}
+            try { this.plugin.ports?.refreshDocumentInfoViews?.('ui-language-change'); } catch (_) {}
+            this.display();
+          });
+      });
 
     containerEl.createEl('h3', { text: t('settings.pdf.section') });
 
