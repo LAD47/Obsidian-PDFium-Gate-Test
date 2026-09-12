@@ -356,7 +356,6 @@ The pilot intentionally does not migrate the whole plugin in one build. Remainin
 
 - Category bootstrap, folder selection, category editor, inheritance/override actions and validation are localized.
 - Category context-menu actions and category mutation notices/errors are localized.
-- Category Command Palette entries and the effective-category configuration heading are localized.
 - Persisted category identity/data is unchanged and never rewritten on language change.
 - A new `check:i18n-ui` verification step protects migrated surfaces from hard-coded UI text in future changes.
 - `I18N-AUDIT.md` records remaining migration surfaces and persistent-default exceptions.
@@ -398,3 +397,10 @@ No PDF runtime, annotation, selection, metadata-record, DocumentRecords, cache/s
 - Standard Base generated presentation text is canonical English; the existing canonical Base path remains unchanged for compatibility during the test phase.
 
 No PDF runtime, annotation, selection, DocumentRecords, cache/startup or Main Bridge execution contract changes.
+
+
+# 0.1.219 — architecture documentation split
+
+0.1.219 is a release-readiness documentation/governance build from 0.1.218. `ARCHITECTURE.md` is now a concise stable index and the detailed architecture contracts live in 14 domain files under `docs/architecture/`. Runtime feature ownership, Main Bridge, metadata persistence, PDF identity, annotation behavior, cache/startup and i18n behavior are unchanged.
+
+The build adds `scripts/check-architecture-docs.js` and `npm run check:architecture-docs`; the normal `npm run check` pipeline now verifies that every canonical architecture document is indexed and that relative Markdown links resolve.
