@@ -190,6 +190,6 @@ module.exports=function verifyDocumentRegisterBasesContract(){
     textContainsFilter:true,
     headerFilterDoesNotWriteNativeBasesFilters:true,
     humanStatusAndPdfActions:viewSource.includes("text:activeRecord ? this.t('common.active') : this.t('common.missing')")&&viewSource.includes("text:this.t('common.open')"),
-    multilingualUiRoadmapDocumented:read('MILESTONE.md').includes('Future localization reminder')
+    multilingualUiRoadmapDocumented:read('docs/history/MILESTONE.md').includes('Future localization reminder')
   };
 };
