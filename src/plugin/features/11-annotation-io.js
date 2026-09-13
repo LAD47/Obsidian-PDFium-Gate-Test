@@ -56,7 +56,7 @@ class AnnotationIoFeature {
       await this.ports.copyObsidianPdfSelectionReference(file, text, syntheticContext, null, mode, outwardText);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] could not copy category highlight`, {mode,file:file?.path || null,error:message});
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] could not copy category highlight`, {mode,file:file?.path || null,error:message});
       new Notice(this.i18n.t('annotation.copyCategoryFailed',{version:PLUGIN_VERSION,error:message}), 8000);
     }
   }

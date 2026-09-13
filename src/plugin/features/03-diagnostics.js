@@ -122,7 +122,7 @@ class DiagnosticsFeature {
           input: forwardedInput
         }, 80);
       } catch (error) {
-        console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] focus retest input log failed`, error);
+        console.warn(`[PDFium Gate ${PLUGIN_VERSION}] focus retest input log failed`, error);
       }
     };
 
@@ -180,7 +180,7 @@ class DiagnosticsFeature {
           at: new Date().toISOString(), stage: 'context-menu-error',
           error: error instanceof Error ? error.message : String(error)
         }, 40);
-        console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] native context-menu gate failed`, error);
+        console.warn(`[PDFium Gate ${PLUGIN_VERSION}] native context-menu gate failed`, error);
       }
     };
 
@@ -194,7 +194,7 @@ class DiagnosticsFeature {
       this.state.diagnostics.focusRetest.listenerCount = this.state.diagnostics.focusRetestListeners.size;
       return true;
     } catch (error) {
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] focus retest could not attach to WebContents ${id}`, error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] focus retest could not attach to WebContents ${id}`, error);
       return false;
     }
   }
@@ -235,7 +235,7 @@ class DiagnosticsFeature {
           this.attachFocusRetestListeners(wc, 'web-contents-created');
           this.recordFocusRetestFocus(wc, 'web-contents-created', 'main-app');
         } catch (error) {
-          console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] focus retest web-contents-created failed`, error);
+          console.warn(`[PDFium Gate ${PLUGIN_VERSION}] focus retest web-contents-created failed`, error);
         }
       });
 
@@ -247,14 +247,14 @@ class DiagnosticsFeature {
       // Focus/input history listeners are diagnostics-only. The 100 ms
       // focus-history poll runs only while diagnostics are enabled.
       this.syncFocusRetestDiagnosticsPolling();
-      console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] focus retest diagnostics installed`, {
+      console.log(`[PDFium Gate ${PLUGIN_VERSION}] focus retest diagnostics installed`, {
         initialExistingCount: state.initialExistingCount,
         listenerCount: state.listenerCount
       });
     } catch (error) {
       state.installed = false;
       state.installError = error instanceof Error ? error.message : String(error);
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] focus retest diagnostics unavailable`, error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] focus retest diagnostics unavailable`, error);
     }
   }
 
@@ -459,7 +459,7 @@ class DiagnosticsFeature {
       new Notice(text, duration);
     }
     const log = rec.severity === 'error' ? console.warn : console.log;
-    log(`[PDFium Gate Test ${PLUGIN_VERSION}] runtime compatibility gate`, rec);
+    log(`[PDFium Gate ${PLUGIN_VERSION}] runtime compatibility gate`, rec);
     return rec;
   }
 
@@ -560,7 +560,7 @@ class DiagnosticsFeature {
       const main = report?.mainBridge?.capabilities ? 'main-capabilities=JA' : 'main-capabilities=NEI';
       const remaining = Number(report?.remainingDirectPlatformAccess?.summary?.productionDirectCandidates ?? -1);
       new Notice(this.i18n.t('diagnostics.platformCopied',{version:PLUGIN_VERSION,transport,main,remaining}), 9000);
-      console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] platform capability report`, report);
+      console.log(`[PDFium Gate ${PLUGIN_VERSION}] platform capability report`, report);
     } catch (error) {
       new Notice(this.i18n.t('diagnostics.platformFailed',{version:PLUGIN_VERSION,error:error instanceof Error ? error.message : String(error)}), 12000);
     }
@@ -588,7 +588,7 @@ class DiagnosticsFeature {
         el.classList.toggle('pdfium-gate-diagnostics-hidden', !visible);
       }
     } catch (error) {
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] kunne ikke oppdatere diagnostikkvisning`, error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] kunne ikke oppdatere diagnostikkvisning`, error);
     }
     this.syncFocusRetestDiagnosticsPolling();
   }
@@ -597,7 +597,7 @@ class DiagnosticsFeature {
     this.settings = this.settings || { diagnosticsEnabled: false };
     this.settings.diagnosticsEnabled = !this.settings.diagnosticsEnabled;
     try { await this.obsidianPluginDataAdapter.saveData(this.settings); } catch (error) {
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] kunne ikke lagre diagnostikkinnstilling`, error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] kunne ikke lagre diagnostikkinnstilling`, error);
     }
     this.refreshDiagnosticsVisibility();
     new Notice(this.i18n.t('diagnostics.toggleNotice',{version:PLUGIN_VERSION,state:this.settings.diagnosticsEnabled ? this.i18n.t('diagnostics.stateOn') : this.i18n.t('diagnostics.stateOff')}), 5000);

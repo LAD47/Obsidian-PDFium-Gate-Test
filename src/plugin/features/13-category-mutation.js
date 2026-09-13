@@ -18,7 +18,7 @@ class CategoryMutationFeature {
       new Notice(t(result?.grouped && Number(result?.affectedCount || 0) > 1 ? 'category.mutation.savedWhole' : 'category.mutation.saved',{category:categoryLabel(category)}), 2500);
       return true;
     } catch (error) {
-      console.error(`[PDFium Gate Test ${PLUGIN_VERSION}] change existing highlight category failed`, error);
+      console.error(`[PDFium Gate ${PLUGIN_VERSION}] change existing highlight category failed`, error);
       new Notice(t('category.mutation.changeFailed',{error:error instanceof Error ? error.message : String(error)}), 12000);
       return false;
     }
@@ -41,7 +41,7 @@ class CategoryMutationFeature {
       new Notice(t(result?.grouped && Number(result?.affectedCount || 0) > 1 ? 'category.mutation.removedWhole' : 'category.mutation.removed',{count:result?.affectedCount || 0}), 2500);
       return true;
     } catch (error) {
-      console.error(`[PDFium Gate Test ${PLUGIN_VERSION}] remove existing highlight failed`, error);
+      console.error(`[PDFium Gate ${PLUGIN_VERSION}] remove existing highlight failed`, error);
       new Notice(t('category.mutation.removeFailed',{error:error instanceof Error ? error.message : String(error)}), 12000);
       return false;
     }
@@ -175,7 +175,7 @@ class CategoryMutationFeature {
           writerInput:{range:selectionContext?.nativeResolvedRange||null, pages:selectionContext?.nativeResolvedPages||null, geometry:exactGeometry||null},
           writer:diagnostic.writer
         });
-        console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] native selection writer diagnostic`, nativeWriterDiagnostic);
+        console.log(`[PDFium Gate ${PLUGIN_VERSION}] native selection writer diagnostic`, nativeWriterDiagnostic);
       }
       stage('writer-returned', written && written.ok ? 'OK' : `ERROR: ${(written && written.error) || 'unknown'}`);
       if (!written || !written.ok || !written.pdfBuffer) {
@@ -206,7 +206,7 @@ class CategoryMutationFeature {
 
       diagnostic.ok = true;
       stage('complete', `working PDF updated directly; backup ${workTarget.backupEnabled ? workTarget.backupPath : 'OFF'}; first page ${firstPage}`);
-      console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] selection highlight diagnostic`, diagnostic);
+      console.log(`[PDFium Gate ${PLUGIN_VERSION}] selection highlight diagnostic`, diagnostic);
       // Keep successful category diagnostics available in logs, but do not
       // interrupt the user's marking flow with an automatic modal. Error diagnostics
       // below remain automatic when advanced diagnostics is enabled.
@@ -215,7 +215,7 @@ class CategoryMutationFeature {
     } catch (error) {
       diagnostic.error = error instanceof Error ? error.message : String(error);
       stage('stopped', diagnostic.error);
-      console.error(`[PDFium Gate Test ${PLUGIN_VERSION}] selection highlight diagnostic failed:`, diagnostic, error);
+      console.error(`[PDFium Gate ${PLUGIN_VERSION}] selection highlight diagnostic failed:`, diagnostic, error);
       if (this.settings?.diagnosticsEnabled) new SelectionHighlightDiagnosticModal(this.app, this, diagnostic).open();
       new Notice(t('category.mutation.stopped',{error:diagnostic.error}), 18000);
       return false;
@@ -232,7 +232,7 @@ class CategoryMutationFeature {
       const destination = this.ports.makeAnnotationTestPath(file);
       const created = await this.obsidianVaultWriteAdapter.createBinary(destination, result.pdfBuffer);
       new Notice(t('category.mutation.testCopyCreated',{path:destination}), 10000);
-      console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] standard highlight test created`, {
+      console.log(`[PDFium Gate ${PLUGIN_VERSION}] standard highlight test created`, {
         source: file.path,
         destination,
         page: n,
@@ -248,7 +248,7 @@ class CategoryMutationFeature {
       this.ports.queuePendingPage(created.path, n);
       await leaf.openFile(created, { active: true });
     } catch (error) {
-      console.error(`[PDFium Gate Test ${PLUGIN_VERSION}] annotation write test failed:`, error);
+      console.error(`[PDFium Gate ${PLUGIN_VERSION}] annotation write test failed:`, error);
       new Notice(t('category.mutation.testFailed',{error:error instanceof Error ? error.message : String(error)}), 15000);
     }
   }

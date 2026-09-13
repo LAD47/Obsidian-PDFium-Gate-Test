@@ -5,7 +5,7 @@ const path = require('path');
 const { moduleBody, buildAnnotatorSource, buildI18nSource, buildSharedBridgeSource, buildRendererPlatformSource, buildRendererFoundationSource, buildRendererPostNormalizationCoreSource, buildNormalizationSource, buildMetadataSource, buildMainBridgeSource, buildPluginSource } = require('./scripts/source-bundle');
 
 const ROOT = __dirname;
-function read(p){ return fs.readFileSync(path.join(ROOT,p),'utf8'); }
+function read(p){ return fs.readFileSync(path.join(ROOT,p),'utf8').replace(/\r\n?/g,'\n'); }
 function write(p,s){ fs.mkdirSync(path.dirname(path.join(ROOT,p)),{recursive:true}); fs.writeFileSync(path.join(ROOT,p),s,'utf8'); }
 const i18nSource = buildI18nSource(ROOT);
 const sharedBridgeSource = buildSharedBridgeSource(ROOT);

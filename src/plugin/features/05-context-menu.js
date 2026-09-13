@@ -263,7 +263,7 @@ class ContextMenuFeature {
             identityDiagnostic:outwardFilter?.identityDiagnostic||null,
             writer:null
           });
-          console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] native selection identity diagnostic`, nativeIdentityDiagnostic);
+          console.log(`[PDFium Gate ${PLUGIN_VERSION}] native selection identity diagnostic`, nativeIdentityDiagnostic);
         }
         if (contextEvent?.selectionSource === 'native-context-selection' && outwardFilter?.range && Array.isArray(outwardFilter?.pages) && outwardFilter.pages.length) {
           contextEvent = {

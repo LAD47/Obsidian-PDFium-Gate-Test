@@ -206,7 +206,7 @@ async onload() {
       callback: () => {
         const info = this.state.navigation.lastInterceptedLink || this.i18n.t('lifecycle.lastInterceptNone');
         new Notice(`PDFium ${PLUGIN_VERSION} | ${info}`, 12000);
-        console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] last intercepted link:`, info);
+        console.log(`[PDFium Gate ${PLUGIN_VERSION}] last intercepted link:`, info);
       }
     });
 
@@ -216,7 +216,7 @@ async onload() {
       this.ports.installMainProcessUxBridge();
       const refreshDocumentInfoAfterRecordEvent=(operation,reason)=>{
         void Promise.resolve(operation).then(()=>this.ports.refreshDocumentInfoViews(reason)).catch(error=>{
-          console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] metadata record lifecycle event failed`,error);
+          console.warn(`[PDFium Gate ${PLUGIN_VERSION}] metadata record lifecycle event failed`,error);
           this.ports.refreshDocumentInfoViews(`${reason}-error`);
         });
       };
@@ -237,7 +237,7 @@ async onload() {
       ok:false, originalViewType:null, reason:'adapter-unavailable', error:'Obsidian view-registry adapter mangler'
     };
     if (!takeover.ok) {
-      console.error('[PDFium Gate Test] Could not replace .pdf view:', takeover.error || takeover.reason);
+      console.error('[PDFium Gate] Could not replace .pdf view:', takeover.error || takeover.reason);
       new Notice(this.i18n.t('lifecycle.takeoverUnavailable'));
       return;
     }
@@ -260,10 +260,10 @@ async onload() {
     try {
       const result = this.obsidianOpenLinkHookAdapter?.restore?.();
       if (result && !result.ok) {
-        console.error('[PDFium Gate Test] Could not restore workspace.openLinkText:', result.error || result.reason);
+        console.error('[PDFium Gate] Could not restore workspace.openLinkText:', result.error || result.reason);
       }
     } catch (error) {
-      console.error('[PDFium Gate Test] Could not restore workspace.openLinkText:', error);
+      console.error('[PDFium Gate] Could not restore workspace.openLinkText:', error);
     }
 
     try { this.ports.shutdownAnnotatorHost(); } catch (_) {}
@@ -286,11 +286,11 @@ async onload() {
         ok:false, restored:false, reason:'adapter-unavailable', error:'Obsidian view-registry adapter mangler'
       };
       if (!restored.ok && this.state.lifecycle.originalPdfViewType) {
-        console.error('[PDFium Gate Test] Could not restore original PDF mapping:', restored.error || restored.reason);
+        console.error('[PDFium Gate] Could not restore original PDF mapping:', restored.error || restored.reason);
         new Notice(this.i18n.t('lifecycle.restartRestore'));
       }
     } catch (error) {
-      console.error('[PDFium Gate Test] Could not restore original PDF mapping:', error);
+      console.error('[PDFium Gate] Could not restore original PDF mapping:', error);
       if (this.state.lifecycle.originalPdfViewType) new Notice(this.i18n.t('lifecycle.restartRestore'));
     }
   }

@@ -6,7 +6,7 @@ const path=require('path');
 const ROOT=path.resolve(__dirname,'..');
 
 function fail(message){ throw new Error(message); }
-function read(rel){ return fs.readFileSync(path.join(ROOT,rel),'utf8'); }
+function read(rel){ return fs.readFileSync(path.join(ROOT,rel),'utf8').replace(/\r\n?/g,'\n'); }
 
 // A module/region is added here once its user-facing strings have been migrated.
 // The gate then prevents hard-coded UI text (in any language) from re-entering it.

@@ -1,4 +1,4 @@
-# Translating PDFium Gate Test
+# Translating PDFium Gate
 
 English (`src/i18n/en.json`) is the canonical translation source. The officially supported UI locales are English (`en`), Norwegian Bokmål (`nb`), German (`de`), Spanish (`es`), Swedish (`sv`), Danish (`da`), and French (`fr`). Every officially supported locale must contain the complete canonical key set and pass `npm run check:i18n` with 100% coverage.
 

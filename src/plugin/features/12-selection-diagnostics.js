@@ -46,10 +46,10 @@ class SelectionDiagnosticsFeature {
           primitiveDiagnostics: result.primitiveDiagnostics || null
         }
       };
-      console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] selection bridge diagnostic`, diagnostic);
+      console.log(`[PDFium Gate ${PLUGIN_VERSION}] selection bridge diagnostic`, diagnostic);
       new SelectionBridgeResultModal(this.app, this, diagnostic).open();
     } catch (error) {
-      console.error(`[PDFium Gate Test ${PLUGIN_VERSION}] selection bridge failed:`, error);
+      console.error(`[PDFium Gate ${PLUGIN_VERSION}] selection bridge failed:`, error);
       new Notice(this.i18n.t('selectionDiagnostics.failed',{error:error instanceof Error ? error.message : String(error)}), 15000);
     }
   }

@@ -1,6 +1,6 @@
-# PDFium Gate Test
+# PDFium Gate
 
-**PDFium Gate Test** is an experimental desktop plugin for [Obsidian](https://obsidian.md/) that explores a more capable, source-oriented workflow for PDF documents.
+**PDFium Gate** is an experimental desktop plugin for [Obsidian](https://obsidian.md/) that explores a more capable, source-oriented workflow for PDF documents.
 
 The project is built around a simple idea: a PDF should remain a durable source document, while Obsidian should provide the surrounding workspace for reading, highlighting, linking, structured metadata, document registers, notes, and long-term analysis.
 
@@ -79,7 +79,7 @@ The plugin's automatic PDF-backup feature is an additional safeguard for PDF mod
 
 ## Installation with BRAT
 
-PDFium Gate Test is not yet distributed through Obsidian Community Plugins. Current test releases are installed through [BRAT](https://github.com/TfTHacker/obsidian42-brat).
+PDFium Gate is not yet distributed through Obsidian Community Plugins. Current test releases are installed through [BRAT](https://github.com/TfTHacker/obsidian42-brat).
 
 1. In Obsidian, open **Settings → Community plugins → Browse**.
 2. Search for **BRAT**, install it, and enable it.
@@ -89,7 +89,7 @@ PDFium Gate Test is not yet distributed through Obsidian Community Plugins. Curr
    `LAD47/Obsidian-PDFium-Gate-Test`
 
 5. Install the latest test release, or select a specific frozen release when doing controlled regression testing.
-6. Enable **PDFium Gate Test** under Community plugins.
+6. Enable **PDFium Gate** under Community plugins.
 
 The repository is public, so no GitHub token is required for normal BRAT installation.
 
@@ -171,4 +171,4 @@ Testing, bug reports, translation improvements, and focused pull requests are we
 
 ## License
 
-PDFium Gate Test is released under the [MIT License](LICENSE).
+PDFium Gate is released under the [MIT License](LICENSE).

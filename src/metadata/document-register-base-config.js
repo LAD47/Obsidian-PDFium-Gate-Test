@@ -20,7 +20,7 @@ function metadataDocumentRegisterBaseFields(schema) {
 function metadataDocumentRegisterStandardBaseYaml(schema) {
   const fields = metadataDocumentRegisterBaseFields(schema);
   const lines = [
-    '# PDFium Gate Test — standard Document Register',
+    '# PDFium Gate — standard Document Register',
     '# Created by the plugin. After creation this is a normal user-owned Obsidian Base.',
     '# The plugin will not overwrite later changes to this file.', 
     'filters:',

@@ -1,6 +1,6 @@
 # Release procedure
 
-This document is the authoritative release procedure for **PDFium Gate Test**.
+This document is the authoritative release procedure for **PDFium Gate**.
 
 The purpose of this procedure is to keep source transfer, Git history, generated runtime, frozen archives, and BRAT releases reproducible. Do not improvise a different upload path for normal releases.
 
@@ -33,7 +33,7 @@ The intended permanent Obsidian plugin ID is:
 pdfium-gate
 ```
 
-The current pre-release/test identity (`PDFium Gate Test` / `obsidian-pdfium-gate-test`) is temporary. Do not change the plugin ID ad hoc. The identity change must be performed in a dedicated, controlled build with an audit of code, paths, settings, documentation, GitHub/release automation, and installation behavior.
+The former pre-release/test identity (`PDFium Gate Test` / `obsidian-pdfium-gate-test`) was retired in 0.1.224. The active plugin identity is now `PDFium Gate` / `pdfium-gate`. Historical documentation may retain the former identity where it describes earlier builds.
 
 After the public ID has been adopted, stable and test builds use the **same plugin ID**. Do not create a second installed plugin such as `pdfium-gate-beta`; two independently installed variants could compete for the same PDF integration and configuration.
 
@@ -140,6 +140,21 @@ Before the first public Community release, the repository workflows and this doc
 - the default branch and manifest follow the stable-channel rules above;
 - the public identity is `PDFium Gate` / `pdfium-gate`.
 
+
+## 0.1.224 identity transition
+
+0.1.224 is the dedicated identity transition build described above. It changes
+the installed Obsidian plugin identity to `pdfium-gate`, the visible product
+name to **PDFium Gate**, and the internal active view type to
+`pdfium-gate-view`.
+
+This transition deliberately does **not** rename `.pdf-metadata/`, `File
+Metadata/`, `filemeta_*`, metadata field/category UUIDs, or other durable
+document data. The GitHub repository itself may retain its existing repository
+name until a separate repository-rename step is performed and verified.
+
+See `docs/testing/IDENTITY-TRANSITION-0.1.224.md` for the one-time installation
+and regression test procedure.
 
 ## Standard local working copy
 

@@ -150,7 +150,7 @@ class PdfiumGateView extends FileView {
         // Main Bridge registration is idempotent and instruments physical wrappers
         // without changing active-PDF identity.
         void this.plugin.ensurePdfRuntimeForLeaf('iframe-load', this.leaf).catch(error => {
-          console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] PDF runtime registration failed`, error);
+          console.warn(`[PDFium Gate ${PLUGIN_VERSION}] PDF runtime registration failed`, error);
         });
         const activeLeafAtLoad = this.plugin?.pdfLeafAdapter?.getActiveLeaf?.();
         if (activeLeafAtLoad?.ok && activeLeafAtLoad.leaf === this.leaf) {
@@ -163,11 +163,11 @@ class PdfiumGateView extends FileView {
           const m = String(url || '').match(/\/pdf\/([^/?#]+)\.pdf/i);
           const pdfToken = m ? m[1] : '';
           void this.plugin.prewarmKeyboardTextModel(file, pdfToken).catch(error => {
-            console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] keyboard text-model prewarm failed`, error);
+            console.warn(`[PDFium Gate ${PLUGIN_VERSION}] keyboard text-model prewarm failed`, error);
           });
           if (linkLocator && pdfToken) {
             void this.plugin.activatePdfLinkLocator(pdfToken, linkLocator).catch(error => {
-              console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] link locator failed`, error);
+              console.warn(`[PDFium Gate ${PLUGIN_VERSION}] link locator failed`, error);
             });
           }
         }, 0);
@@ -176,7 +176,7 @@ class PdfiumGateView extends FileView {
       this.viewerEl = viewer;
       viewWin.setTimeout(() => { if (loading.isConnected) loading.remove(); }, 1200);
     } catch (error) {
-      console.error('[PDFium Gate Test] FULL PDF load failed:', error);
+      console.error('[PDFium Gate] FULL PDF load failed:', error);
       loading.setText(this.plugin.i18n?.t?.('pdfView.loadFailed',{error:error instanceof Error ? error.message : String(error)}) || String(error));
     }
   }

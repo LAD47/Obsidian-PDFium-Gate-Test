@@ -81,7 +81,7 @@ class AnnotatorHostFeature {
         });
         if (req.method === 'HEAD') res.end(); else res.end(data);
       } catch (error) {
-        console.error('[PDFium Gate Test] local PDF server error', error);
+        console.error('[PDFium Gate] local PDF server error', error);
         try {
           res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
           res.end('Internal error');
@@ -100,7 +100,7 @@ class AnnotatorHostFeature {
     }
     this.state.http.server = server;
     this.state.http.port = address.port;
-    console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] local PDF server on 127.0.0.1:${this.state.http.port}`);
+    console.log(`[PDFium Gate ${PLUGIN_VERSION}] local PDF server on 127.0.0.1:${this.state.http.port}`);
     return this.state.http.port;
   }
 
@@ -296,7 +296,7 @@ class AnnotatorHostFeature {
         await view.renderFullPage(view.file, targetPage, navigationState);
         refreshed += 1;
       } catch (error) {
-        console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] automatic PDF reload failed`, error);
+        console.warn(`[PDFium Gate ${PLUGIN_VERSION}] automatic PDF reload failed`, error);
       }
     }
     return refreshed;

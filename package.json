@@ -1,15 +1,16 @@
 {
-  "name": "obsidian-pdfium-gate-test",
+  "name": "pdfium-gate",
   "private": true,
-  "version": "0.1.223",
+  "version": "0.1.224",
   "scripts": {
     "build": "node build.js",
     "verify": "node scripts/verify-build.js",
-    "check": "npm run build && npm run check:i18n && npm run check:i18n-ui && npm run check:architecture-docs && npm run check:examples && npm run check:filemeta && npm run verify",
+    "check": "npm run build && npm run check:i18n && npm run check:i18n-ui && npm run check:architecture-docs && npm run check:examples && npm run check:filemeta && npm run check:identity && npm run verify",
     "check:i18n": "node scripts/check-i18n.js",
     "check:i18n-ui": "node scripts/check-i18n-ui.js",
     "check:architecture-docs": "node scripts/check-architecture-docs.js",
     "check:examples": "node scripts/check-examples.js",
-    "check:filemeta": "node scripts/check-filemeta-foundation.js"
+    "check:filemeta": "node scripts/check-filemeta-foundation.js",
+    "check:identity": "node scripts/check-product-identity.js"
   }
 }

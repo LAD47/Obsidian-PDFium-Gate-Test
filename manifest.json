@@ -1,9 +1,9 @@
 {
-  "id": "obsidian-pdfium-gate-test",
-  "name": "PDFium Gate Test",
-  "version": "0.1.223",
+  "id": "pdfium-gate",
+  "name": "PDFium Gate",
+  "version": "0.1.224",
   "minAppVersion": "1.13.7",
-  "description": "PDFium Gate test build 0.1.223 - file-type-neutral metadata record foundation; PDF remains the first supported document profile.",
+  "description": "PDFium Gate 0.1.224 - permanent product identity transition to pdfium-gate; runtime features unchanged.",
   "author": "OpenAI / test build",
   "isDesktopOnly": true
 }

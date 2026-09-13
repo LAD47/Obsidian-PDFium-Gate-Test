@@ -239,14 +239,14 @@ class DocumentRecordsFeature {
     if(this.state.documentRecords.initialized || this.state.documentRecords.readyPromise || this.state.documentRecords.warmupIdleHandle) return false;
     const scheduler=this.obsidianWorkspaceLifecycleAdapter;
     if(!scheduler || typeof scheduler.scheduleIdle!=='function') {
-      void this.ensureDocumentRecordIndexReady('cold-start-demand').catch(error=>console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] metadata record index warmup failed`,error));
+      void this.ensureDocumentRecordIndexReady('cold-start-demand').catch(error=>console.warn(`[PDFium Gate ${PLUGIN_VERSION}] metadata record index warmup failed`,error));
       return false;
     }
     this.state.documentRecords.warmupScheduledAtMs=documentRecordBenchmarkNowMs();
     this.state.documentRecords.warmupScheduleMode='idle-after-layout-ready+metadata-resolved';
     this.state.documentRecords.warmupIdleHandle=scheduler.scheduleIdle(()=>{
       this.state.documentRecords.warmupIdleHandle=null;
-      void this.ensureDocumentRecordIndexReady('cold-start-idle').catch(error=>console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] metadata record idle warmup failed`,error));
+      void this.ensureDocumentRecordIndexReady('cold-start-idle').catch(error=>console.warn(`[PDFium Gate ${PLUGIN_VERSION}] metadata record idle warmup failed`,error));
     });
     return true;
   }
@@ -268,7 +268,7 @@ class DocumentRecordsFeature {
     try { cacheState=await this.getDocumentRecordIndexCache().load(schema); }
     catch(error) {
       cacheState={ok:true,usable:false,reason:'load-error',entries:new Map(),error:error instanceof Error?error.message:String(error)};
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] Metadata index-cache ignoreres; Markdown brukes som sannhet.`,error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] Metadata index-cache ignoreres; Markdown brukes som sannhet.`,error);
     }
     const cacheLoadedAt=documentRecordBenchmarkNowMs();
 
@@ -304,7 +304,7 @@ class DocumentRecordsFeature {
         indexPopulateMs+=documentRecordBenchmarkNowMs()-indexStarted;
       } catch(error) {
         invalidCount++;
-        console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] Ignorerer ugyldig metadata-record ${file?.path || ''}`,error);
+        console.warn(`[PDFium Gate ${PLUGIN_VERSION}] Ignorerer ugyldig metadata-record ${file?.path || ''}`,error);
       }
     }
 
@@ -316,7 +316,7 @@ class DocumentRecordsFeature {
       try { await this.getDocumentRecordIndexCache().write(schema,cacheWriteItems); }
       catch(error) {
         cacheWriteError=error instanceof Error?error.message:String(error);
-        console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] Metadata index-cache kunne ikke oppdateres; Markdown-indexen er fortsatt gyldig.`,error);
+        console.warn(`[PDFium Gate ${PLUGIN_VERSION}] Metadata index-cache kunne ikke oppdateres; Markdown-indexen er fortsatt gyldig.`,error);
       }
       cacheWriteMs=documentRecordBenchmarkNowMs()-writeStarted;
     }

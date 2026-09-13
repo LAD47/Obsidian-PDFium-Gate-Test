@@ -1,6 +1,6 @@
-# Contributing to PDFium Gate Test
+# Contributing to PDFium Gate
 
-Thank you for helping improve PDFium Gate Test.
+Thank you for helping improve PDFium Gate.
 
 The project is still in pre-release development. Contributions are welcome, but changes should remain focused, reviewable, and conservative about user data.
 
@@ -20,7 +20,7 @@ The current practical compatibility baseline is Obsidian 1.13.7. Most regression
 
 Please open a GitHub Issue and include, when relevant:
 
-- PDFium Gate Test version;
+- PDFium Gate version;
 - Obsidian version;
 - operating system;
 - clear reproduction steps;

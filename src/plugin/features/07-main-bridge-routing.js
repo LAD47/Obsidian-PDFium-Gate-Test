@@ -277,11 +277,11 @@ class MainBridgeRoutingFeature {
       this.state.diagnostics.mainBridge.lastSnapshotAt = new Date().toISOString();
       const listenerCount = Number(initial?.embeddedKeyboardInputListenerCount || 0);
       new Notice(this.i18n.t('mainBridge.installDone',{version:PLUGIN_VERSION,count:listenerCount,listenerWord:this.i18n.t(listenerCount===1?'mainBridge.listenerOne':'mainBridge.listenerMany')}), 9000);
-      console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] main-process UX bridge installed`, initial);
+      console.log(`[PDFium Gate ${PLUGIN_VERSION}] main-process UX bridge installed`, initial);
       this.ports.evaluateRuntimeCompatibilityGate('main-bridge-install', true);
     } catch (error) {
       this.state.diagnostics.mainBridge.state = { installed: false, error: error instanceof Error ? error.message : String(error) };
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] main-process UX bridge unavailable`, error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] main-process UX bridge unavailable`, error);
       new Notice(this.i18n.t('mainBridge.installFailed',{version:PLUGIN_VERSION,error:this.state.diagnostics.mainBridge.state.error}), 10000);
       try { this.ports.evaluateRuntimeCompatibilityGate('main-bridge-install-failed', true); } catch (_) {}
     }

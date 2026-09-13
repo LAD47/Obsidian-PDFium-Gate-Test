@@ -45,7 +45,7 @@ class DocumentInfoFeature {
     this.state.documentInfo.editingPdfPath=null;
     this.refreshDocumentInfoViews('open');
     void this.ports.ensureDocumentRecordIndexReady().then(()=>this.refreshDocumentInfoViews('record-index-ready')).catch(error=>{
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] DocumentInfo metadata-index init failed`,error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] DocumentInfo metadata-index init failed`,error);
       this.refreshDocumentInfoViews('record-index-error');
     });
     return true;
@@ -238,7 +238,7 @@ class DocumentInfoFeature {
     const exact=this.pdfLeafAdapter?.resolveExactToken?.(token);
     if(!exact?.ok || exact.leaf!==view?.leaf) {
       const result={ok:false,reason:exact?.reason || 'leaf-token-mismatch',error:exact?.error || 'Eksakt PDF-leaf kunne ikke verifiseres'};
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] DocumentInfo focus restore failed closed`,result);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] DocumentInfo focus restore failed closed`,result);
       return result;
     }
     const transport=this.mainProcessTransport;
@@ -249,7 +249,7 @@ class DocumentInfoFeature {
       return await transport.focusPdfRuntime(token);
     } catch(error) {
       const result={ok:false,reason:'focus-runtime-failed',error:error instanceof Error?error.message:String(error)};
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] DocumentInfo focus restore failed`,result);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] DocumentInfo focus restore failed`,result);
       return result;
     }
   }

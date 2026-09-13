@@ -13,7 +13,7 @@ class PdfiumGateSettingsTab extends PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl('h2', { text: 'PDFium Gate Test' });
+    containerEl.createEl('h2', { text: 'PDFium Gate' });
 
     const t=(key,params)=>this.plugin.i18n?.t?.(key,params) || key;
     const exampleText=(key,params)=>metadataExampleUiText(this.plugin.i18n,key,params);

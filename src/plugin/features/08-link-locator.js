@@ -94,19 +94,19 @@ class LinkLocatorFeature {
   installOpenLinkTextHook() {
     const adapter = this.obsidianOpenLinkHookAdapter;
     if (!adapter || typeof adapter.install !== 'function') {
-      console.error('[PDFium Gate Test] openLinkText adapter is unavailable.');
+      console.error('[PDFium Gate] openLinkText adapter is unavailable.');
       return;
     }
     const result = adapter.install(async (linktext, sourcePath, newLeaf, openViewState) => {
       try {
         return !!(await this.tryOpenPdfPageLink(linktext, sourcePath, newLeaf, openViewState));
       } catch (error) {
-        console.error('[PDFium Gate Test] openLinkText hook failed:', error);
+        console.error('[PDFium Gate] openLinkText hook failed:', error);
         return false;
       }
     });
     if (!result?.ok) {
-      console.error('[PDFium Gate Test] could not install workspace.openLinkText adapter:', result?.error || result?.reason || 'unknown error');
+      console.error('[PDFium Gate] could not install workspace.openLinkText adapter:', result?.error || result?.reason || 'unknown error');
     }
   }
 
@@ -125,7 +125,7 @@ class LinkLocatorFeature {
       ? this.obsidianLinkResolutionAdapter.resolveFirst(parsed.filePart, sourcePath || '')
       : { ok:false, file:null, reason:'adapter-unavailable', error:'obsidian-link-resolution adapter mangler' };
     if (!linkResolution?.ok) {
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] Obsidian link-resolution adapter failed`, linkResolution);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] Obsidian link-resolution adapter failed`, linkResolution);
       return false;
     }
     const file = linkResolution.file;
@@ -136,7 +136,7 @@ class LinkLocatorFeature {
       linkLocator=await this.buildPdfSelectionStartLocator(file,page,selectionRange);
     }
     this.state.navigation.lastInterceptedLink = `${rawLink} -> ${file.path} -> page ${page}`;
-    console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] intercepted openLinkText:`, {
+    console.log(`[PDFium Gate ${PLUGIN_VERSION}] intercepted openLinkText:`, {
       linktext: rawLink, sourcePath, newLeaf, page, file: file.path, selectionRange, linkLocator
     });
 
@@ -193,7 +193,7 @@ class LinkLocatorFeature {
       ? this.pdfLeafAdapter.acquireOpenTarget(!!newLeaf)
       : { ok:false, leaf:null, reason:'adapter-unavailable', error:'pdf-leaf adapter mangler' };
     if (!openTarget?.ok || !openTarget.leaf) {
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] PDF leaf open-target adapter failed`, openTarget);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] PDF leaf open-target adapter failed`, openTarget);
       return false;
     }
     const leaf = openTarget.leaf;

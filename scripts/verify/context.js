@@ -8,7 +8,7 @@ const sourceBundle = require('../source-bundle');
 
 const ROOT = path.resolve(__dirname, '../..');
 const fail = msg => { throw new Error(msg); };
-const read = rel => fs.readFileSync(path.join(ROOT, rel), 'utf8');
+const read = rel => fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/\r\n?/g, '\n');
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 const run = (args, opts={}) => cp.execFileSync(process.execPath, args, { cwd: ROOT, stdio:'pipe', encoding:'utf8', ...opts });
 
@@ -110,7 +110,7 @@ p.settings={backupOriginalPdf:true,diagnosticsEnabled:false};
 p.obsidianVaultReadAdapter={getBasePath(){return '/vault';},getAbstractFileByPath(){return null;}};
 let hiddenBackupExists=false, hiddenBackupCopyCount=0;
 p.nodeFilesystemAdapter={
-  statKind(q){ if(q.endsWith('/docs/.pdfium-backup'))return 'directory'; if(q.endsWith('/docs/.pdfium-backup/report.pdf'))return hiddenBackupExists?'file':'missing'; return 'missing'; },
+  statKind(q){ const normalized=String(q||'').split(String.fromCharCode(92)).join('/'); if(normalized.endsWith('/docs/.pdfium-backup'))return 'directory'; if(normalized.endsWith('/docs/.pdfium-backup/report.pdf'))return hiddenBackupExists?'file':'missing'; return 'missing'; },
   ensureDir(){return true;},copyFile(){hiddenBackupCopyCount++;hiddenBackupExists=true;return true;}
 };
 let t=p.resolveSelectionHighlightWriteTarget(file);

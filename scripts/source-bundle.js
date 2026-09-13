@@ -139,7 +139,7 @@ const PLUGIN_FEATURE_ORDER = Object.freeze([
 ]);
 
 function read(root, rel) {
-  return fs.readFileSync(path.join(root, rel), 'utf8');
+  return fs.readFileSync(path.join(root, rel), 'utf8').replace(/\r\n?/g, '\n');
 }
 
 function moduleBody(root, rel) {

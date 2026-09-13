@@ -20,7 +20,7 @@ class MetadataSchemaFeature {
       this.state.metadata.loaded = false;
       this.state.metadata.lastError = message;
       this.state.metadata.lastBackupPath = null;
-      console.error(`[PDFium Gate Test ${PLUGIN_VERSION}] metadata schema load failed:`, error);
+      console.error(`[PDFium Gate ${PLUGIN_VERSION}] metadata schema load failed:`, error);
       new Notice(this.i18n.t('metadataSchema.lifecycle.loadFailed',{version:PLUGIN_VERSION,error:message}), 12000);
       return { ok:false, error:message };
     }

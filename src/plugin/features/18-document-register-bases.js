@@ -73,7 +73,7 @@ class DocumentRegisterBasesFeature {
       })
     });
     if (registered === false) {
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] Bases view registration unavailable; Bases core plugin/API is not available.`);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] Bases view registration unavailable; Bases core plugin/API is not available.`);
       return { ok:false, registered:false, reason:'bases-unavailable' };
     }
     this.obsidianPluginRegistrationAdapter.addCommand({

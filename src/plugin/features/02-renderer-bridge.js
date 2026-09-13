@@ -7,7 +7,7 @@ class RendererBridgeFeature {
     // synthesizing Ctrl/Cmd keystrokes into the app renderer.
     this.state.bridge.command.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.OBSIDIAN_COMMAND,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] obsidian-command bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] obsidian-command bridge rejected`,parsed?.error); return; }
       const detail=parsed.detail;
       const commandId = String(detail.commandId || '');
       const rec = {
@@ -46,12 +46,12 @@ class RendererBridgeFeature {
     // Serialize them so repeated keypresses build on the exact previous range.
     this.state.bridge.keyboardSelection.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.KEYBOARD_SELECTION,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] keyboard-selection bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] keyboard-selection bridge rejected`,parsed?.error); return; }
       const detail=parsed.detail;
       this.state.bridge.keyboardSelection.queue = this.state.bridge.keyboardSelection.queue
         .then(() => this.ports.handlePdfKeyboardSelectionRequest(detail))
         .catch(error => {
-          console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] keyboard-selection queue failed`, error);
+          console.warn(`[PDFium Gate ${PLUGIN_VERSION}] keyboard-selection queue failed`, error);
         });
     };
 
@@ -59,11 +59,11 @@ class RendererBridgeFeature {
     // cross-page identity still resolves from Chromium selection text + gesture geometry.
     this.state.bridge.nativeCopy.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.NATIVE_COPY,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] native-copy bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] native-copy bridge rejected`,parsed?.error); return; }
       const detail=parsed.detail;
       this.state.bridge.nativeCopy.queue = this.state.bridge.nativeCopy.queue
         .then(() => this.ports.handlePdfNativeCopyRequest(detail))
-        .catch(error => console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] native-copy queue failed`, error));
+        .catch(error => console.warn(`[PDFium Gate ${PLUGIN_VERSION}] native-copy queue failed`, error));
     };
 
     // Keyboard Ctrl+C is an outward-copy operation. Keep the custom
@@ -71,30 +71,30 @@ class RendererBridgeFeature {
     // where PDF bytes + Artifact/continuity logic are available.
     this.state.bridge.keyboardCopy.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.KEYBOARD_COPY,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] keyboard-copy bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] keyboard-copy bridge rejected`,parsed?.error); return; }
       this.state.bridge.keyboardCopy.queue = this.state.bridge.keyboardCopy.queue
         .then(() => this.ports.handlePdfKeyboardCopyRequest(parsed.detail))
-        .catch(error => console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] keyboard-copy queue failed`, error));
+        .catch(error => console.warn(`[PDFium Gate ${PLUGIN_VERSION}] keyboard-copy queue failed`, error));
     };
 
     this.state.bridge.contextMenu.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.PDF_CONTEXT_MENU,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] context-menu bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] context-menu bridge rejected`,parsed?.error); return; }
       this.ports.handlePdfContextMenuBridgeEvent(parsed.detail);
     };
     this.state.bridge.categoryShortcut.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.CATEGORY_SHORTCUT,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] category-shortcut bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] category-shortcut bridge rejected`,parsed?.error); return; }
       this.ports.handleCategoryShortcutBridgeEvent(parsed.detail);
     };
     this.state.bridge.escapeDismiss.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.ESCAPE_DISMISS,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] escape-dismiss bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] escape-dismiss bridge rejected`,parsed?.error); return; }
       this.ports.handleEscapeDismissBridgeEvent(parsed.detail);
     };
     this.state.bridge.pdfMouseActivation.handler = event => {
       const parsed=readRendererBridgeEventDetail(RENDERER_BRIDGE_EVENTS.PDF_MOUSE_ACTIVATION,event);
-      if(!parsed?.ok) { console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] pdf-mouse-activation bridge rejected`,parsed?.error); return; }
+      if(!parsed?.ok) { console.warn(`[PDFium Gate ${PLUGIN_VERSION}] pdf-mouse-activation bridge rejected`,parsed?.error); return; }
       void this.ports.handlePdfMouseActivationBridgeEvent(parsed.detail);
     };
 
@@ -128,7 +128,7 @@ class RendererBridgeFeature {
       this.state.bridge.rendererWindows.add(win);
       return true;
     } catch (error) {
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] renderer-window bridge registration failed`, error);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] renderer-window bridge registration failed`, error);
       return false;
     }
   }

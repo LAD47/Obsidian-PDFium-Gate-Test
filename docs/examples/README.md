@@ -1,6 +1,6 @@
 # PDFium Gate example files
 
-These files are the canonical example set for PDFium Gate Test. From plugin Settings, the user can explicitly copy the same set into the Vault under:
+These files are the canonical example set for PDFium Gate. From plugin Settings, the user can explicitly copy the same set into the Vault under:
 
 `Examples-Obsidian-PDFium-Gate/`
 

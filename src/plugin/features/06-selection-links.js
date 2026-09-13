@@ -224,7 +224,7 @@ class SelectionLinksFeature {
         },
         pairCandidates:Array.isArray(endpointDiagnostics?.pairCandidates) ? endpointDiagnostics.pairCandidates : []
       });
-      console.log(`[PDFium Gate Test ${PLUGIN_VERSION}] selection-link diagnostic`, this.state.navigation.lastSelectionLinkDiagnostic);
+      console.log(`[PDFium Gate ${PLUGIN_VERSION}] selection-link diagnostic`, this.state.navigation.lastSelectionLinkDiagnostic);
 
       this.ports.pushFocusRetestItem(this.state.diagnostics.focusRetest.contextMenuActions, {
         at:new Date().toISOString(), stage:mode === 'quote' ? 'renderer-dom-copy-as-quote' : 'renderer-dom-copy-selection-link',
@@ -273,7 +273,7 @@ class SelectionLinksFeature {
         endpointDiagnostics:failureDiagnostics,
         coordinateDiagnostics:failureDiagnostics?.coordinateDiagnostics || null
       };
-      console.warn(`[PDFium Gate Test ${PLUGIN_VERSION}] selection-link diagnostic failed`, this.state.navigation.lastSelectionLinkDiagnostic);
+      console.warn(`[PDFium Gate ${PLUGIN_VERSION}] selection-link diagnostic failed`, this.state.navigation.lastSelectionLinkDiagnostic);
       this.ports.pushFocusRetestItem(this.state.diagnostics.focusRetest.contextMenuActions, {
         at:new Date().toISOString(), stage:'renderer-dom-copy-selection-reference-error', mode, file:file.path, error:message
       }, 40);
