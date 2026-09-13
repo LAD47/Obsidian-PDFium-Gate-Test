@@ -77,23 +77,17 @@ Recommended minimum procedure:
 
 The plugin's automatic PDF-backup feature is an additional safeguard for PDF modifications. **It is not a replacement for a full Vault backup.** The plugin also creates and updates metadata/configuration files and plugin settings during normal use.
 
-## Installation with BRAT
+## Installation
 
-PDFium Gate is not yet distributed through Obsidian Community Plugins. Current test releases are installed through [BRAT](https://github.com/TfTHacker/obsidian42-brat).
+PDFium Gate is distributed through **Obsidian Community Plugins**.
 
-1. In Obsidian, open **Settings → Community plugins → Browse**.
-2. Search for **BRAT**, install it, and enable it.
-3. Use BRAT's **Add a beta plugin for testing** command.
-4. Enter this repository:
+1. In Obsidian, open **Settings → Community plugins**.
+2. Select **Browse**.
+3. Search for **PDFium Gate**.
+4. Select **Install**.
+5. Enable **PDFium Gate** under Community plugins.
 
-   `LAD47/Obsidian-PDFium-Gate-Test`
-
-5. Install the latest test release, or select a specific frozen release when doing controlled regression testing.
-6. Enable **PDFium Gate** under Community plugins.
-
-The repository is public, so no GitHub token is required for normal BRAT installation.
-
-BRAT can also be used to check for and install newer test releases.
+Updates are delivered through Obsidian's normal Community Plugins update mechanism.
 
 ## Requirements and test status
 
@@ -153,7 +147,7 @@ npm run check
 
 The pipeline builds the runtime and checks internationalization, migrated UI text, architecture documentation integrity, deterministic build output, dependency boundaries, shared-state ownership, metadata contracts, and other regression gates.
 
-Generated root runtime files are committed so GitHub/BRAT releases can install the plugin directly.
+Generated root runtime files are committed so GitHub releases can provide the files used by Obsidian Community Plugins.
 
 ## Release direction
 
