@@ -11,6 +11,7 @@ Please read:
 - [README.md](README.md) for the project goals and current beta status;
 - [ARCHITECTURE.md](ARCHITECTURE.md) for the stable architecture entry point;
 - [docs/architecture/](docs/architecture/) for detailed technical contracts;
+- [RELEASE.md](RELEASE.md) for the authoritative build/archive/BRAT release procedure;
 - [TRANSLATING.md](TRANSLATING.md) for translation work.
 
 The current practical compatibility baseline is Obsidian 1.13.7. Most regression testing has been performed on Windows 11. macOS and Linux testing is especially useful.
@@ -87,7 +88,7 @@ Avoid reaching across feature boundaries when an explicit operation/port already
 
 English is the canonical UI source language. Officially supported locales must remain complete and pass the i18n checks.
 
-For translation-only changes, follow [TRANSLATING.md](TRANSLATING.md). Do not translate stable identifiers, UUIDs, `pdfmeta_*` properties, machine values, paths, or user-owned labels.
+For translation-only changes, follow [TRANSLATING.md](TRANSLATING.md). Do not translate stable identifiers, UUIDs, `filemeta_*` properties, machine values, paths, or user-owned labels. Legacy `pdfmeta_*` references may remain where tests or historical documentation explicitly cover legacy compatibility/rejection behavior.
 
 ## Documentation
 
