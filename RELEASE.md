@@ -14,6 +14,133 @@ The purpose of this procedure is to keep source transfer, Git history, generated
 - `archive/<version>` is immutable release evidence. Never repoint or rewrite an existing archive branch.
 - A GitHub/BRAT release is a release-distribution baseline. It becomes a user-confirmed runtime baseline only after explicit testing in Obsidian.
 
+
+## Stable and test release channels — decided future policy
+
+This section records a product/release decision that becomes mandatory before PDFium Gate is distributed to ordinary users through the Obsidian Community directory.
+
+### Public product identity
+
+The public product name is:
+
+```text
+PDFium Gate
+```
+
+The intended permanent Obsidian plugin ID is:
+
+```text
+pdfium-gate
+```
+
+The current pre-release/test identity (`PDFium Gate Test` / `obsidian-pdfium-gate-test`) is temporary. Do not change the plugin ID ad hoc. The identity change must be performed in a dedicated, controlled build with an audit of code, paths, settings, documentation, GitHub/release automation, and installation behavior.
+
+After the public ID has been adopted, stable and test builds use the **same plugin ID**. Do not create a second installed plugin such as `pdfium-gate-beta`; two independently installed variants could compete for the same PDF integration and configuration.
+
+### Two distribution channels
+
+PDFium Gate will have two deliberately separate release channels:
+
+**Stable channel**
+
+- Distributed through the official Obsidian Community directory.
+- Intended for ordinary users.
+- Contains only releases that have completed the project's verification and explicit practical testing.
+- Obsidian manages normal stable installation and updating.
+- Stable releases are normal GitHub Releases, not prereleases.
+- After public launch, the default branch manifest must represent the currently approved stable release and must not be advanced merely because a test build exists.
+
+**Test channel**
+
+- Distributed as GitHub prereleases from the same repository and the same codebase.
+- Intended only for users who explicitly opt in to testing.
+- Uses prerelease versions such as `1.1.0-beta.1`, `1.1.0-beta.2`, etc.
+- Must not cause ordinary Community-directory users to receive test code.
+- BRAT may remain useful during development, but it is **not a required dependency** of the long-term PDFium Gate test program.
+- A test release may additionally provide a simple ZIP containing the installable plugin files so testers can install it manually.
+
+Stable and test versions are alternative versions of the same plugin; they are not intended to run side by side.
+
+### Test-program UI inside PDFium Gate
+
+A future Settings section may expose a voluntary test-program surface, for example:
+
+```text
+Test program
+
+Installed version:   1.0.0
+Stable version:      1.0.0
+Latest test version: 1.1.0-beta.3
+
+[ View test version ]
+```
+
+The purpose of this UI is discovery and informed opt-in, not self-updating.
+
+The plugin may:
+
+- tell the user which version is installed;
+- show the latest stable and test versions;
+- explain that test builds may contain defects;
+- recommend a complete Vault backup before testing;
+- open the appropriate GitHub prerelease or installation instructions.
+
+The Community-distributed plugin must **not download and replace its own executable plugin files or silently switch itself to a test build**. Installation/update of plugin code remains external to the running plugin and must respect Obsidian Community policies.
+
+Any network access used only to discover release information must be documented transparently in the README and implemented conservatively.
+
+### Test-release package
+
+A test prerelease should expose the normal installable files:
+
+```text
+main.js
+manifest.json
+styles.css
+```
+
+It may also expose a convenience archive such as:
+
+```text
+pdfium-gate-1.1.0-beta.3.zip
+```
+
+containing those files at the ZIP root.
+
+Manual test installation replaces the installed `pdfium-gate` plugin files and therefore requires an Obsidian/plugin restart as documented in the test instructions.
+
+### Promotion from test to stable
+
+A beta build does not become stable merely because CI is green.
+
+Promotion requires:
+
+1. repository verification succeeds;
+2. the build has been explicitly tested in the target Obsidian environment;
+3. required regression tests are accepted;
+4. no known blocker remains for the release;
+5. the exact stable candidate is frozen under `archive/<stable-version>`;
+6. a normal (non-prerelease) GitHub Release is created with the approved stable version;
+7. only then is the stable/default-branch manifest advanced for Community distribution.
+
+This separation is intended to ensure that normal users receive only versions we have consciously approved, while volunteer testers can remain ahead of the stable channel.
+
+### Returning from test to stable
+
+Testers must always have a documented path back to the stable Community version. Because stable and test builds share the same plugin identity, returning to stable means replacing/removing the test installation and reinstalling or restoring the approved Community release according to the current documented procedure.
+
+### Current 0.1.x development exception
+
+The existing `0.1.x` line remains a pre-release development/test line. The current BRAT-oriented workflow may continue while the product is not yet in the Obsidian Community directory.
+
+Before the first public Community release, the repository workflows and this document must be updated so that:
+
+- test prereleases can advance without exposing them as stable Community updates;
+- stable releases are explicitly promoted;
+- the default branch and manifest follow the stable-channel rules above;
+- the public identity is `PDFium Gate` / `pdfium-gate`.
+
+
 ## Standard local working copy
 
 The normal Windows working copy is:
